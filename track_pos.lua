@@ -197,42 +197,51 @@ function script:retrace(hard)
 		return
 	end
 
+	-- start of soft retrace
+
 	for i = #script.trace, 1, -1 do
 		local trace = script.trace[i]
 
+		while script.dir ~= (trace.dir+2) % 4 do
+			script:turnLeft(1)
+		end
+
 		if trace.y > 0 then
-			script:down(trace.y, true)
+			script:down(trace.y, false)
 			goto continue
 		elseif script.y < 0 then
-			script:up(script.y*-1, true)
+			script:up(script.y*-1, false)
 			goto continue
 		end
 
-		while script.dir ~= (trace.dir+2) % 4 do
-			script.turnLeft(1)
+		if script.dir % 2 == 0 and trace.z ~= 0 then
+			print('got x for z:', script.dir, script.z)
+		elseif script.dir % 2 ~= 0 and trace.x ~= 0  then
+			print('got z for x:', script.dir, script.x)
 		end
 
-		if trace.dir % 2 == 0 then
-			local old = trace.x
-			if trace.x > 0 then
-				script:back(trace.x, true)
-			elseif trace.x < 0 then
-				script:forward(trace.x*-1, true)
+		if trace.x ~= 0 then
+			local x = trace.x
+			if x < 0 then
+				x = x * -1
 			end
 
+			script:forward(x, false)
+
 			print('current_dir: '..tostring(script.dir)..
+				' current_x: '..tostring(script.x)..
 				' trace_dir: '..tostring(trace.dir)..
-				' trace_x: '..tostring(trace.x)..
-				' old_trace_x: '..tostring(old)
+				' trace_x: '..tostring(trace.x)
 			)
 			goto continue
 		end
 
-		if trace.z > 0 then
-			script:back(trace.z, true)
-		elseif trace.z < 0 then
-			script:forward(trace.z*-1, true)
+		local z = trace.z
+		if z < 0 then
+			z = z * -1
 		end
+
+		script:forward(z, false)
 
 		::continue::
 	end
@@ -278,20 +287,25 @@ end
 local function retrace_test()
 	script:forward(5) script:turnLeft(3)
 	script:forward(4) script:turnLeft(2)
-	script:forward(7) script:turnLeft(5)
+	script:forward(8) script:turnLeft(5)
+	script:forward(8) script:turnLeft(5)
 	script:forward(1)
 	script:back(3)
 	script:forward(1)
 	script:up(4)      script:turnRight(1)
-	script:forward(9) script:turnRight(1)
+	script:up(4)      script:turnRight(1)
+	script:forward(9) script:turnRight(7)
 	script:back(3)
 	script:forward(2)
-	script:down(3)
+	script:down(4)
+	-- script:forward(9) script:turnRight(2)
+	-- script:forward(7) script:turnRight(1)
+
+	print(test.print_table(script))
 
 	script:retrace(false)
 	print(script.x, script.y, script.z)
 
-	-- print(test.print_table(script))
 end
 
 -- movement_test()
