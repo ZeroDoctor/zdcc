@@ -1,27 +1,12 @@
 
--- remeber to comment this out before use
+-- remember to comment out below before use
+local turtle = require("test.turtle_test_api")
+-- remember to comment out above before use
 
-local test = require('test.table')
-
-local turtle = {
-	dig = function() return true end,
-	digUp = function() return true end,
-	digDown = function() return true end,
-	detect = function() return true end,
-	detectUp = function() return true end,
-	detectDown = function() return true end,
-	forward = function() return true, nil end,
-	back = function() return true, nil end,
-	up = function() return true, nil end,
-	down = function() return true, nil end,
-	turnLeft = function() return true, nil end,
-	turnRight = function() return true, nil end,
-}
-
-local forward_face = 0;
-local right_face = 1;
-local back_face = 2;
-local left_face = 3;
+local forward_face = 0
+local right_face = 1
+local back_face = 2
+local left_face = 3
 
 local script = {
 	x = 0,
@@ -29,9 +14,12 @@ local script = {
 	z = 0,
 	dir = forward_face, -- (0, 1, 2, 3) = (forward, right, back, left) relative to starting origin
 	trace = {}, -- {x, y, z, dir} for soft retrace
+	cost = 0, -- current fuel cost
+	limit = 0,
+	should_goback = false,
 }
 
-local function det_dir(num, sc)
+local function det_dir(num, sc) -- determine direction
 
 	if sc.dir == forward_face then
 		sc.x = sc.x + num
@@ -46,9 +34,25 @@ local function det_dir(num, sc)
 	return sc
 end
 
+local function check_limit(num, sc)
+	if sc.limit ~= 0 then
+		local next = sc.cost + num
+
+		if next > sc.limit then
+			num = next - sc.limit
+			sc.limit = 0
+			sc.should_goback = true
+		end
+	end
+
+	return num
+end
+
 function script:forward(num, force)
 	force = force or true
 	num = num or 1
+
+	num = check_limit(num, script)
 
 	local count = 0
 	for _ = 1, num, 1 do
@@ -64,13 +68,16 @@ function script:forward(num, force)
 
 	table.insert(script.trace, det_dir(count, {x=0, y=0, z=0, dir=script.dir}))
 	script = det_dir(count, script)
+	script.cost = script.cost + count
 end
 
 function script:back(num, force)
 	force = force or true
 	num = num or 1
 
-	if force then
+	num = check_limit(num, script)
+
+	if force then -- yeah so just...
 		script:turnLeft(2)
 
 		script:forward(num, force)
@@ -89,11 +96,14 @@ function script:back(num, force)
 
 	table.insert(script.trace, det_dir(count, {x=0, y=0, z=0, dir=script.dir}))
 	script = det_dir(count, script)
+	script.cost = script.cost + count
 end
 
 function script:up(num, force)
 	force = force or true
 	num = num or 1
+
+	num = check_limit(num, script)
 
 	local count = 0
 	for _ = 1, num, 1 do
@@ -109,11 +119,14 @@ function script:up(num, force)
 
 	table.insert(script.trace, {x=0, y=count, z=0, dir=script.dir})
 	script.y = script.y + count
+	script.cost = script.cost + count
 end
 
 function script:down(num, force)
 	force = force or true
 	num = num or 1
+
+	num = check_limit(num, script)
 
 	local count = 0
 	for _ = 1, num, 1 do
@@ -129,6 +142,7 @@ function script:down(num, force)
 
 	table.insert(script.trace, {x=0, y=-count, z=0, dir=script.dir})
 	script.y = script.y - count
+	script.cost = script.cost + count
 end
 
 function script:turnLeft(num)
@@ -162,11 +176,12 @@ end
 function script:retrace(hard)
 	hard = hard or false -- always soft retrace to avoid break anything undesired
 
+	print('[info:track] retracing steps using [hard='..tostring(hard)..']')
+
 	if hard then
 		while script.dir ~= forward_face do -- make sure its facing forward
 			script:turnLeft(1)
 		end
-
 
 		if script.y > 0 then
 			script:down(script.y, true)
@@ -194,6 +209,7 @@ function script:retrace(hard)
 			script:turnLeft(1)
 		end
 
+		script:reset_trace(false)
 		return
 	end
 
@@ -206,110 +222,68 @@ function script:retrace(hard)
 			script:turnLeft(1)
 		end
 
-		if trace.y > 0 then
-			script:down(trace.y, false)
-			goto continue
-		elseif script.y < 0 then
-			script:up(script.y*-1, false)
-			goto continue
-		end
-
-		if script.dir % 2 == 0 and trace.z ~= 0 then
-			print('got x for z:', script.dir, script.z)
-		elseif script.dir % 2 ~= 0 and trace.x ~= 0  then
-			print('got z for x:', script.dir, script.x)
-		end
-
-		if trace.x ~= 0 then
-			local x = trace.x
-			if x < 0 then
-				x = x * -1
-			end
-
-			script:forward(x, false)
-
-			print('current_dir: '..tostring(script.dir)..
-				' current_x: '..tostring(script.x)..
-				' trace_dir: '..tostring(trace.dir)..
-				' trace_x: '..tostring(trace.x)
-			)
-			goto continue
-		end
-
-		local z = trace.z
-		if z < 0 then
-			z = z * -1
-		end
-
-		script:forward(z, false)
-
-		::continue::
+		script:_trace(trace)
 	end
 
+	while script.dir ~= forward_face do -- make sure its face forward
+		script:turnLeft(1)
+	end
+
+	script:reset_trace(false)
 end
 
-local function movement_test()
-	script:forward(5) script:turnLeft(3)
-	script:forward(4) script:turnLeft(2)
-	script:forward(7) script:turnLeft(5)
-	script:forward(1)
-	script:back(3)
-	script:forward(1)
-	script:up(4)      script:turnRight(1)
-	script:forward(9) script:turnRight(1)
-	script:back(3)
-	script:forward(2)
-	script:down(3)
-
-	local want = {
-		x = 5,
-		y = 1,
-		z = -12,
-		dir = 0
-	}
-
-	if want.x ~= script.x then
-		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(script.x))
-	end
-	if want.y ~= script.y then
-		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(script.y))
-	end
-	if want.z ~= script.z then
-		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(script.z))
-	end
-	if want.dir ~= script.dir then
-		print('[error] with dir\n\t want '..tostring(want.dir)..'\n\t got '..tostring(script.dir))
+function script:_trace(trace)
+	if trace.y > 0 then
+		script:down(trace.y, false)
+		return
+	elseif trace.y < 0 then
+		script:up(trace.y*-1, false)
+		return
 	end
 
-	-- print(test.print_table(script))
+	-- not suppose to happen but lets check if
+	-- we got x position for a z direction and vice versa
+	if script.dir % 2 == 0 and trace.z ~= 0 then
+		print('[warning:track] got x for z:', script.dir, script.z)
+	elseif script.dir % 2 ~= 0 and trace.x ~= 0  then
+		print('[warning:track] got z for x:', script.dir, script.x)
+	end
+
+	if trace.x ~= 0 then
+		local x = trace.x
+		if x < 0 then
+			x = x * -1
+		end
+
+		script:forward(x, false)
+
+		return
+	end
+
+	local z = trace.z
+	if z < 0 then
+		z = z * -1
+	end
+
+	script:forward(z, false)
 end
 
-local function retrace_test()
-	script:forward(5) script:turnLeft(3)
-	script:forward(4) script:turnLeft(2)
-	script:forward(8) script:turnLeft(5)
-	script:forward(8) script:turnLeft(5)
-	script:forward(1)
-	script:back(3)
-	script:forward(1)
-	script:up(4)      script:turnRight(1)
-	script:up(4)      script:turnRight(1)
-	script:forward(9) script:turnRight(7)
-	script:back(3)
-	script:forward(2)
-	script:down(4)
-	-- script:forward(9) script:turnRight(2)
-	-- script:forward(7) script:turnRight(1)
+function script:reset_trace(hard)
+	hard = hard or false -- doesn't reset origin if false
 
-	print(test.print_table(script))
+	print('[info:track] reseting trace...')
 
-	script:retrace(false)
-	print(script.x, script.y, script.z)
+	if hard then
+		script.x = 0
+		script.y = 0
+		script.z = 0
+		script.dir = 0
+	end
 
+	for k in pairs(script.trace) do
+		script.trace[k] = nil
+	end
 end
-
--- movement_test()
-retrace_test()
 
 return script
 
