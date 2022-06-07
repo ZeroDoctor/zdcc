@@ -1,73 +1,100 @@
 
-return { -- used for testing purposes
-	dig = function(side) return true end,
-	digUp = function(side) return true end,
-	digDown = function(side) return true end,
+local script = {
+	current_slot = 1,
+	inventory = {},
+}
 
-	detect = function() return false end,
-	detectUp = function() return false end,
-	detectDown = function() return false end,
+function script:init(config)
+	self.current_slot = config.current_slot or 1
+	self.inventory = config.inventory or {}
+end
 
-	forward = function() return true, nil end,
-	back = function() return true, nil end,
-	up = function() return true, nil end,
-	down = function() return true, nil end,
-	turnLeft = function() return true, nil end,
-	turnRight = function() return true, nil end,
+function script:dig(side) return true end
+function script:digUp(side) return true end
+function script:digDown(side) return true end
 
-	place = function(text) end,
-	placeUp = function(text) end,
-	placeDown = function(text) end,
+function script:detect() return false end
+function script:detectUp() return false end
+function script:detectDown() return false end
 
-	drop = function(count) end,
-	dropUp = function(count) end,
-	dropDown = function(count) end,
+function script:forward() return true, nil end
+function script:back() return true, nil end
+function script:up() return true, nil end
+function script:down() return true, nil end
+function script:turnLeft() return true, nil end
+function script:turnRight() return true, nil end
 
-	select = function(slot) end,
-	getItemCount = function(slot) end,
-	getItemSpace = function(slot) end,
-	
-	compare = function () end,
-	compareUp = function () end,
-	compareDown = function () end,
+function script:place(text) end
+function script:placeUp(text) end
+function script:placeDown(text) end
 
-	attack = function(side) end,
-	attackUp = function(side) end,
-	attackDown = function(side) end,
-	
-	suck = function(count) end,
-	suckUp = function(count) end,
-	suckDown = function(count) end,
+function script:drop(count) end
+function script:dropUp(count) end
+function script:dropDown(count) end
 
-	getFuelLevel = function() end,
-	getFuelLimit = function() end,
-	refuel = function(count) end,
+function script:compare() end
+function script:compareUp() end
+function script:compareDown() end
 
-	compareTo = function(slot) end,
-	transferTo = function(slot, count) end,
+function script:attack(side) end
+function script:attackUp(side) end
+function script:attackDown(side) end
 
-	getSelectedSlot = function() end,
+function script:suck(count) end
+function script:suckUp(count) end
+function script:suckDown(count) end
 
-	inspect = function()
-		return true, {
-			name = "minecraft:oak_log",
-			state = { axis = "x" },
-			tags = {["minecraft:logs"] = true},
-		}
-	end,
-	inspectUp = function()
-		return true, {
-			name = "minecraft:oak_log",
-			state = { axis = "x" },
-			tags = {["minecraft:logs"] = true},
-		}
-	end,
-	inspectDown = function()
-		return true, {
+function script:getFuelLevel() end
+function script:getFuelLimit() end
+function script:refuel(count) end
+
+function script:compareTo(slot) end
+function script:transferTo(slot, count) return true end
+
+function script:select(slot)
+	self.current_slot = slot
+end
+function script:getItemCount(slot)
+	slot = slot or self.current_slot
+	return self.inventory[slot] or 0
+end
+function script:getItemSpace(slot)
+	slot = slot or self.current_slot
+	if slot ~= 1 then return 64 end
+	return 53
+end
+function script:getSelectedSlot()
+	return 1
+end
+function script:getItemDetail(slot, detail)
+	if slot ~= 1 then return nil end
+	return {
+		name = "minecraft:oak_log",
+		count = 11,
+	}
+end
+
+function script:inspect()
+	return true, {
 		name = "minecraft:oak_log",
 		state = { axis = "x" },
 		tags = {["minecraft:logs"] = true},
-	};
-	end,
-}
+	}
+end
+function script:inspectUp()
+	return true, {
+		name = "minecraft:oak_log",
+		state = { axis = "x" },
+		tags = {["minecraft:logs"] = true},
+	}
+end
+function script:inspectDown()
+	return true, {
+		name = "minecraft:oak_log",
+		state = { axis = "x" },
+		tags = {["minecraft:logs"] = true},
+	}
+end
+
+return script
 

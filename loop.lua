@@ -3,7 +3,8 @@
 local turtle = require("test.turtle_test_api")
 -- remember to comment out above before use
 
-local track = require("track_pos")
+local track = require("track_move")
+local careful = require("careful_dig")
 
 local script = {
 	init = function(self) end,
@@ -26,6 +27,9 @@ function script:start(config)
 	end
 
 	track.hard_reset = config.hard_reset
+	careful.avoid = config.avoid
+
+	track:init(careful)
 
 	script:init()
 

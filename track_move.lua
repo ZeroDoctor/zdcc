@@ -16,9 +16,11 @@ local script = {
 	z = 0,
 	dir = forward_face, -- (0, 1, 2, 3) = (forward, right, back, left) relative to starting origin
 	trace = {}, -- {x, y, z, dir} for soft retrace
-	cost = 0, -- current fuel cost
-	limit = 0,
 	hard_reset = false,
+
+	cost = 0, -- current fuel cost
+	limit = 0, -- limit of fuel usage
+
 	goback = false,
 	should_goback = false,
 }
@@ -60,8 +62,10 @@ function script:forward(num, force)
 	force = force or true
 	num = num or 1
 
-	num = check_limit(num, script)
+	-- ensure we have enough fuel
+	num = check_limit(num, self)
 
+	-- start moving
 	local count = 0
 	for _ = 1, num, 1 do
 		if force then
@@ -74,12 +78,16 @@ function script:forward(num, force)
 		end
 	end
 
-	table.insert(script.trace, det_dir(count, {x=0, y=0, z=0, dir=script.dir}))
-	script = det_dir(count, script)
-	script.cost = script.cost + count
+	-- keep track of movement
+	det_dir(count, self)
+	self.cost = self.cost + count
+	if not self.goback then
+		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.dir}))
 
-	if script.should_goback and not script.goback then
-		script:retrace(script.hard_reset)
+		-- retrace steps if limit reached
+		if self.should_goback then
+			script:retrace(self.hard_reset)
+		end
 	end
 end
 
@@ -87,8 +95,10 @@ function script:back(num, force)
 	force = force or true
 	num = num or 1
 
-	num = check_limit(num, script)
+	-- ensure we have enough fuel
+	num = check_limit(num, self)
 
+	-- start moving
 	if force then -- yeah so just...
 		script:turnLeft(2)
 
@@ -106,12 +116,16 @@ function script:back(num, force)
 		end
 	end
 
-	table.insert(script.trace, det_dir(count, {x=0, y=0, z=0, dir=script.dir}))
-	script = det_dir(count, script)
-	script.cost = script.cost + count
+	-- keep track of movement
+	det_dir(count, self)
+	self.cost = self.cost + count
+	if not self.goback then
+		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.dir}))
 
-	if script.should_goback and not script.goback then
-		script:retrace(script.hard_reset)
+		-- retrace steps if limit reached
+		if self.should_goback then
+			script:retrace(self.hard_reset)
+		end
 	end
 end
 
@@ -119,8 +133,10 @@ function script:up(num, force)
 	force = force or true
 	num = num or 1
 
-	num = check_limit(num, script)
+	-- ensure we have enough fuel
+	num = check_limit(num, self)
 
+	-- start moving
 	local count = 0
 	for _ = 1, num, 1 do
 		if force then
@@ -133,12 +149,17 @@ function script:up(num, force)
 		end
 	end
 
-	table.insert(script.trace, {x=0, y=count, z=0, dir=script.dir})
-	script.y = script.y + count
-	script.cost = script.cost + count
+	-- keep track of movement
+	self.y = self.y + count
+	self.cost = self.cost + count
 
-	if script.should_goback and not script.goback then
-		script:retrace(script.hard_reset)
+	if not self.goback then
+		table.insert(self.trace, {x=0, y=count, z=0, dir=self.dir})
+
+		-- retrace steps if limit reached
+		if self.should_goback and not self.goback then
+			script:retrace(self.hard_reset)
+		end
 	end
 end
 
@@ -146,8 +167,10 @@ function script:down(num, force)
 	force = force or true
 	num = num or 1
 
-	num = check_limit(num, script)
+	-- ensure we have enough fuel
+	num = check_limit(num, self)
 
+	-- start moving
 	local count = 0
 	for _ = 1, num, 1 do
 		if force then
@@ -160,12 +183,16 @@ function script:down(num, force)
 		end
 	end
 
-	table.insert(script.trace, {x=0, y=-count, z=0, dir=script.dir})
-	script.y = script.y - count
-	script.cost = script.cost + count
+	-- keep track of movement
+	self.y = self.y - count
+	self.cost = self.cost + count
+	if not self.goback then
+		table.insert(self.trace, {x=0, y=-count, z=0, dir=self.dir})
 
-	if script.should_goback and not script.goback then
-		script:retrace(script.hard_reset)
+		-- retrace steps if limit reached
+		if self.should_goback then
+			script:retrace(self.hard_reset)
+		end
 	end
 end
 
@@ -180,7 +207,7 @@ function script:turnLeft(num)
 		end
 	end
 
-	script.dir = (script.dir-count) % 4
+	self.dir = (self.dir-count) % 4
 end
 
 function script:turnRight(num)
@@ -194,43 +221,43 @@ function script:turnRight(num)
 		end
 	end
 
-	script.dir = (script.dir+count) % 4
+	self.dir = (self.dir+count) % 4
 end
 
 function script:retrace(hard)
-	hard = hard or false -- always soft retrace to avoid break anything undesired
+	hard = hard or false -- always soft retrace to avoid breaking anything undesired
 
-	script.goback = true
+	self.goback = true
 	print('[info:track] retracing steps using [hard='..tostring(hard)..']')
 
 	if hard then
-		while script.dir ~= forward_face do -- make sure its facing forward
+		while self.dir ~= forward_face do -- make sure its facing forward
 			script:turnLeft(1)
 		end
 
-		if script.y > 0 then
-			script:down(script.y, true)
-		elseif script.y < 0 then
-			script:up(script.y*-1, true)
+		if self.y > 0 then
+			script:down(self.y, true)
+		elseif self.y < 0 then
+			script:up(self.y*-1, true)
 		end
 
-		if script.x > 0 then
-			script:back(script.x, true)
-		elseif script.x < 0 then
-			script:forward(script.x*-1, true)
+		if self.x > 0 then
+			script:back(self.x, true)
+		elseif self.x < 0 then
+			script:forward(self.x*-1, true)
 		end
 
-		while script.dir ~= right_face do -- make sure its facing right
+		while self.dir ~= right_face do -- make sure its facing right
 			script:turnLeft(1)
 		end
 
-		if script.z > 0 then
-			script:back(script.z, true)
-		elseif script.z < 0 then
-			script:forward(script.z*-1, true)
+		if self.z > 0 then
+			script:back(self.z, true)
+		elseif self.z < 0 then
+			script:forward(self.z*-1, true)
 		end
 
-		while script.dir ~= forward_face do -- make sure its facing forward
+		while self.dir ~= forward_face do -- make sure its facing forward
 			script:turnLeft(1)
 		end
 
@@ -240,17 +267,17 @@ function script:retrace(hard)
 
 	-- start of soft retrace
 
-	for i = #script.trace, 1, -1 do
-		local trace = script.trace[i]
+	for i = #self.trace, 1, -1 do
+		local trace = self.trace[i]
 
-		while script.dir ~= (trace.dir+2) % 4 do
+		while self.dir ~= (trace.dir+2) % 4 do
 			script:turnLeft(1)
 		end
 
 		script:_trace(trace)
 	end
 
-	while script.dir ~= forward_face do -- make sure its face forward
+	while self.dir ~= forward_face do -- make sure its face forward
 		script:turnLeft(1)
 	end
 
@@ -268,10 +295,10 @@ function script:_trace(trace)
 
 	-- not suppose to happen but lets check if
 	-- we got x position for a z direction and vice versa
-	if script.dir % 2 == 0 and trace.z ~= 0 then
-		print('[warning:track] got x for z:', script.dir, script.z)
-	elseif script.dir % 2 ~= 0 and trace.x ~= 0  then
-		print('[warning:track] got z for x:', script.dir, script.x)
+	if self.dir % 2 == 0 and trace.z ~= 0 then
+		print('[warning:track] got x for z:', self.dir, self.z)
+	elseif self.dir % 2 ~= 0 and trace.x ~= 0  then
+		print('[warning:track] got z for x:', self.dir, self.x)
 	end
 
 	if trace.x ~= 0 then
@@ -298,17 +325,18 @@ function script:reset_trace(hard)
 
 	print('[info:track] reseting trace...')
 
-	script.should_goback = false
+	self.should_goback = false
+	self.cost = 0
 
 	if hard then
-		script.x = 0
-		script.y = 0
-		script.z = 0
-		script.dir = 0
+		self.x = 0
+		self.y = 0
+		self.z = 0
+		self.dir = 0
 	end
 
-	for k in pairs(script.trace) do
-		script.trace[k] = nil
+	for k in pairs(self.trace) do
+		self.trace[k] = nil
 	end
 end
 

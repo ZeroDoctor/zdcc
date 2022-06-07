@@ -1,6 +1,6 @@
 
-local test = require("test.table")
-local trace = require("track_pos")
+local test = require("test.tbl")
+local trace = require("track_move")
 
 local function movement_test()
 	print('testing movement test...')

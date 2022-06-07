@@ -1,4 +1,4 @@
-local move_test = require("test.movement_test")
+local move_test = require("test.move_test")
 
 move_test.movement_test()
 move_test.retrace_test()

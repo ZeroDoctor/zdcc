@@ -6,11 +6,10 @@ local turtle = require("test.turtle_test_api")
 local script = {
 	must_empty = true,
 	avoid = {},
-	patch = {},
 }
 
 function script:dig(side)
-	if not script.must_empty then
+	if not self.must_empty then
 		if turtle.detect() then
 			return turtle.dig(side)
 		end
@@ -20,7 +19,7 @@ function script:dig(side)
 
 	local running = true
 	while running do
-		for _, value in ipairs(script.avoid) do -- iterate through blocks to avoid
+		for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
 			local found_block, block_meta = turtle.inspect()
 			if found_block then
 				for key in pairs(block_meta.tags) do -- iterate through current block tags
@@ -41,7 +40,7 @@ function script:dig(side)
 end
 
 function script:digUp(side)
-	if not script.must_empty then
+	if not self.must_empty then
 		if turtle.detectUp() then
 			return turtle.digUp(side)
 		end
@@ -51,7 +50,7 @@ function script:digUp(side)
 
 	local running = true
 	while running do
-		for _, value in ipairs(script.avoid) do -- iterate through blocks to avoid
+		for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
 			local found_block, block_meta = turtle.inspectUp()
 			if found_block then
 				for key in pairs(block_meta.tags) do -- iterate through current block tags
@@ -72,7 +71,7 @@ function script:digUp(side)
 end
 
 function script:digDown(side)
-	if not script.must_empty then
+	if not self.must_empty then
 		if turtle.detectDown() then
 			return turtle.digDown(side)
 		end
@@ -82,7 +81,7 @@ function script:digDown(side)
 
 	local running = true
 	while running do
-		for _, value in ipairs(script.avoid) do -- iterate through blocks to avoid
+		for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
 			local found_block, block_meta = turtle.inspectDown()
 			if found_block then
 				for key in pairs(block_meta.tags) do -- iterate through current block tags
