@@ -4,9 +4,9 @@ return { -- used for testing purposes
 	digUp = function(side) return true end,
 	digDown = function(side) return true end,
 
-	detect = function() return true end,
-	detectUp = function() return true end,
-	detectDown = function() return true end,
+	detect = function() return false end,
+	detectUp = function() return false end,
+	detectDown = function() return false end,
 
 	forward = function() return true, nil end,
 	back = function() return true, nil end,
@@ -48,8 +48,26 @@ return { -- used for testing purposes
 
 	getSelectedSlot = function() end,
 
-	inspect = function() end,
-	inspectUp = function() end,
-	inspectDown = function() end,
+	inspect = function()
+		return true, {
+			name = "minecraft:oak_log",
+			state = { axis = "x" },
+			tags = {["minecraft:logs"] = true},
+		}
+	end,
+	inspectUp = function()
+		return true, {
+			name = "minecraft:oak_log",
+			state = { axis = "x" },
+			tags = {["minecraft:logs"] = true},
+		}
+	end,
+	inspectDown = function()
+		return true, {
+		name = "minecraft:oak_log",
+		state = { axis = "x" },
+		tags = {["minecraft:logs"] = true},
+	};
+	end,
 }
 

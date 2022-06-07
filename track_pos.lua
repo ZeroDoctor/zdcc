@@ -3,6 +3,8 @@
 local turtle = require("test.turtle_test_api")
 -- remember to comment out above before use
 
+local careful = require("careful_dig")
+
 local forward_face = 0
 local right_face = 1
 local back_face = 2
@@ -16,8 +18,14 @@ local script = {
 	trace = {}, -- {x, y, z, dir} for soft retrace
 	cost = 0, -- current fuel cost
 	limit = 0,
+	hard_reset = false,
+	goback = false,
 	should_goback = false,
 }
+
+function script:init(care)
+	careful = care
+end
 
 local function det_dir(num, sc) -- determine direction
 
@@ -34,7 +42,7 @@ local function det_dir(num, sc) -- determine direction
 	return sc
 end
 
-local function check_limit(num, sc)
+local function check_limit(num, sc) -- check if refuel is needed
 	if sc.limit ~= 0 then
 		local next = sc.cost + num
 
@@ -56,8 +64,8 @@ function script:forward(num, force)
 
 	local count = 0
 	for _ = 1, num, 1 do
-		if force and turtle.detect() then
-			turtle.dig()
+		if force then
+			careful:dig()
 		end
 
 		local s = turtle.forward()
@@ -69,6 +77,10 @@ function script:forward(num, force)
 	table.insert(script.trace, det_dir(count, {x=0, y=0, z=0, dir=script.dir}))
 	script = det_dir(count, script)
 	script.cost = script.cost + count
+
+	if script.should_goback and not script.goback then
+		script:retrace(script.hard_reset)
+	end
 end
 
 function script:back(num, force)
@@ -97,6 +109,10 @@ function script:back(num, force)
 	table.insert(script.trace, det_dir(count, {x=0, y=0, z=0, dir=script.dir}))
 	script = det_dir(count, script)
 	script.cost = script.cost + count
+
+	if script.should_goback and not script.goback then
+		script:retrace(script.hard_reset)
+	end
 end
 
 function script:up(num, force)
@@ -107,8 +123,8 @@ function script:up(num, force)
 
 	local count = 0
 	for _ = 1, num, 1 do
-		if force and turtle.detectUp()then
-			turtle.digUp()
+		if force then
+			careful:digUp()
 		end
 
 		local s = turtle.up()
@@ -120,6 +136,10 @@ function script:up(num, force)
 	table.insert(script.trace, {x=0, y=count, z=0, dir=script.dir})
 	script.y = script.y + count
 	script.cost = script.cost + count
+
+	if script.should_goback and not script.goback then
+		script:retrace(script.hard_reset)
+	end
 end
 
 function script:down(num, force)
@@ -130,8 +150,8 @@ function script:down(num, force)
 
 	local count = 0
 	for _ = 1, num, 1 do
-		if force and turtle.detectDown() then
-			turtle.digDown()
+		if force then
+			careful:digDown()
 		end
 
 		local s = turtle.down()
@@ -143,6 +163,10 @@ function script:down(num, force)
 	table.insert(script.trace, {x=0, y=-count, z=0, dir=script.dir})
 	script.y = script.y - count
 	script.cost = script.cost + count
+
+	if script.should_goback and not script.goback then
+		script:retrace(script.hard_reset)
+	end
 end
 
 function script:turnLeft(num)
@@ -176,6 +200,7 @@ end
 function script:retrace(hard)
 	hard = hard or false -- always soft retrace to avoid break anything undesired
 
+	script.goback = true
 	print('[info:track] retracing steps using [hard='..tostring(hard)..']')
 
 	if hard then
@@ -272,6 +297,8 @@ function script:reset_trace(hard)
 	hard = hard or false -- doesn't reset origin if false
 
 	print('[info:track] reseting trace...')
+
+	script.should_goback = false
 
 	if hard then
 		script.x = 0

@@ -18,11 +18,14 @@ function script:start(config)
 	config.patch = config.patch or {}
 	config.refuel = config.refuel or true
 	config.retrace_feel = config.retrace_feel or false
+	config.hard_reset = config.hard_reset or false
 
 	config.move_limit = turtle.getFuelLevel() / 2
 	if config.refuel then
 		track.limit = config.move_limit
 	end
+
+	track.hard_reset = config.hard_reset
 
 	script:init()
 
@@ -30,7 +33,7 @@ function script:start(config)
 	while running do
 		running = script:update(track)
 
-		if track.should_goback then
+		if config.refuel and track.should_goback then
 			track:retrace(config.retrace_feel)
 		end
 
