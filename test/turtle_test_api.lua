@@ -1,12 +1,39 @@
 
+local blocks = {
+	{
+		name = 'minecraft:air',
+		tags = {['minecraft:void'] = true},
+		vec = {},
+		solid = false,
+	},
+	{
+		name = 'minecraft:oak_log',
+		tags = {['minecraft:logs'] = true},
+		vec = {},
+		solid = true,
+	},
+}
+
 local script = {
 	current_slot = 1,
 	inventory = {},
+	world = {},
 }
 
 function script.init(self, config)
 	self.current_slot = config.current_slot or 1
 	self.inventory = config.inventory or {}
+
+	for x = 1, 10, 1 do
+		for y = 1, 10, 1 do
+			for z = 1, 10, 1 do
+				-- TODO: create a random function to determine which block goes where
+				local b = blocks[1]
+				b.vec = {x = x, y = y, z = z}
+				table.insert(self.world, b)
+			end
+		end
+	end
 end
 
 function script.dig(side) return true end

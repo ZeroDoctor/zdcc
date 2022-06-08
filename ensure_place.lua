@@ -3,7 +3,7 @@
 local turtle = require("test.turtle_test_api")
 -- remember to comment out above before use
 
--- place/patch = {
+-- put/patch = {
 -- 	{
 -- 		name = "minecraft:oak_log",
 -- 		tag = "torch",
@@ -15,7 +15,7 @@ local turtle = require("test.turtle_test_api")
 
 local script = {
 	patch = {}, -- occurs when no blocks exists
-	place = {}, -- occurs when blocks already exist
+	put = {}, -- occurs when blocks already exist
 	check = require('check_inventory'),
 	careful =  require('careful_dig'),
 	force_place = false, -- TODO: if true then place block if solid block not found
@@ -90,10 +90,7 @@ local function turn_dir(solid, config, sc)
 	end
 end
 
-function script:init(config, check, careful)
-	self.patch = config.patch or {}
-	self.place = config.place or {}
-
+function script:init(check, careful)
 	if check ~= nil then
 		self.check = check
 	end
@@ -108,7 +105,7 @@ function script:auto()
 		turn_dir(false, p, self)
 	end
 
-	for _, p in ipairs(self.place) do
+	for _, p in ipairs(self.put) do
 		turn_dir(true, p, self)
 	end
 end

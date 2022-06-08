@@ -29,7 +29,7 @@ local script = {
 }
 
 function script:init(care, en)
-	careful = care
+	careful = care or careful
 	ensure = en
 end
 
@@ -71,7 +71,7 @@ function script:forward(num, force)
 
 	-- start moving
 	local count = 0
-	for _ = 1, num, 1 do
+	for i = 1, num, 1 do
 		if force then
 			careful:dig()
 		end
@@ -79,6 +79,12 @@ function script:forward(num, force)
 		local s = turtle.forward()
 		if s then
 			count = count + 1
+		end
+
+		if ensure ~= nil and
+			((math.abs(self.x) + i) % self.auto_place_after == 0 or
+			(math.abs(self.z) + i) % self.auto_place_after == 0) then
+			ensure:auto()
 		end
 	end
 
@@ -113,10 +119,16 @@ function script:back(num, force)
 	end
 
 	local count = 0
-	for _ = 1, num, 1 do
+	for i = 1, num, 1 do
 		local s = turtle.back()
 		if s then
 			count = count + 1
+		end
+
+		if ensure ~= nil and
+			((math.abs(self.x) + i) % self.auto_place_after == 0 or
+			(math.abs(self.z) + i) % self.auto_place_after == 0) then
+			ensure:auto()
 		end
 	end
 
@@ -142,7 +154,7 @@ function script:up(num, force)
 
 	-- start moving
 	local count = 0
-	for _ = 1, num, 1 do
+	for i = 1, num, 1 do
 		if force then
 			careful:digUp()
 		end
@@ -150,6 +162,11 @@ function script:up(num, force)
 		local s = turtle.up()
 		if s then
 			count = count + 1
+		end
+
+		if ensure ~= nil and
+			(math.abs(self.y) + i) % self.auto_place_after == 0 then
+			ensure:auto()
 		end
 	end
 
@@ -176,7 +193,7 @@ function script:down(num, force)
 
 	-- start moving
 	local count = 0
-	for _ = 1, num, 1 do
+	for i = 1, num, 1 do
 		if force then
 			careful:digDown()
 		end
@@ -184,6 +201,11 @@ function script:down(num, force)
 		local s = turtle.down()
 		if s then
 			count = count + 1
+		end
+
+		if ensure ~= nil and
+			(math.abs(self.y) + i) % self.auto_place_after == 0 then
+			ensure:auto()
 		end
 	end
 
@@ -265,7 +287,7 @@ function script:retrace(hard)
 			script:turnLeft(1)
 		end
 
-		script:reset_trace(false)
+		script:reset_trace(self.hard_reset)
 		return
 	end
 
@@ -285,7 +307,7 @@ function script:retrace(hard)
 		script:turnLeft(1)
 	end
 
-	script:reset_trace(false)
+	script:reset_trace(self.hard_reset)
 end
 
 function script:_trace(trace)

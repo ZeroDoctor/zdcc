@@ -29,11 +29,6 @@ local script = {
 -- TODO: maybe add 'remove()' and 'add()' methods
 -- to reduce update() usage
 
-function script:init(config)
-	self.enable_tags = config.enable_tags or false
-	self.max_slots = config.max_slots or 16
-end
-
 function script:search_tag(tag)
 	for _, inv in ipairs(self.inventory) do
 		for k in pairs(inv.tags) do
