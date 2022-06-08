@@ -4,6 +4,7 @@ local turtle = require("test.turtle_test_api")
 -- remember to comment out above before use
 
 local careful = require("careful_dig")
+local ensure = require("ensure_place")
 
 local forward_face = 0
 local right_face = 1
@@ -23,10 +24,13 @@ local script = {
 
 	goback = false,
 	should_goback = false,
+
+	auto_place_after = 5,
 }
 
-function script:init(care)
+function script:init(care, en)
 	careful = care
+	ensure = en
 end
 
 local function det_dir(num, sc) -- determine direction

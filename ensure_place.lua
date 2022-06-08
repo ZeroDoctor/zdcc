@@ -5,25 +5,97 @@ local turtle = require("test.turtle_test_api")
 
 -- place/patch = {
 -- 	{
--- 		tags = {"torch", "lever"},
+-- 		name = "minecraft:oak_log",
+-- 		tag = "torch",
 -- 		where = ensure.left(),
 -- 		location = 12,
+-- 		force = false, -- if true then blocks can be replaced with new block
 -- 	},
 -- }
 
 local script = {
 	patch = {}, -- occurs when no blocks exists
 	place = {}, -- occurs when blocks already exist
-	track = require('track_move'),
-	careful = require('careful_dig'),
+	check = require('check_inventory'),
+	careful =  require('careful_dig'),
+	force_place = false, -- TODO: if true then place block if solid block not found
 }
 
-function script:init(config, track, careful)
+local function find_slot(config, sc)
+	local slot = config.slot
+
+	if config.name ~= nil then
+		local o = sc.check:search_name(config.name)
+		if o ~= nil then
+			slot = o.location
+		end
+	elseif config.tag ~= nil then
+		local o = sc.check:search_tag(config.tag)
+		if o ~= nil then
+			slot = o.location
+		end
+	end
+
+	return slot
+end
+
+local function turn_dir(solid, config, sc)
+	if config.where == sc:front() then
+		if solid and not turtle.detect() then
+			return
+		end
+
+		sc:place(config)
+	elseif config.where == sc:right() then
+		turtle.turnRight()
+		if solid and not turtle.detect() then
+			turtle.turnLeft()
+			return
+		end
+
+		sc:place(config)
+		turtle.turnLeft()
+	elseif config.where == sc:back() then
+		turtle.turnRight()
+		turtle.turnRight()
+		if solid and not turtle.detect() then
+			turtle.turnLeft()
+			turtle.turnLeft()
+			return
+		end
+
+		sc:place(config)
+		turtle.turnLeft()
+		turtle.turnLeft()
+	elseif config.where == sc:left() then
+		turtle.turnLeft()
+		if solid and not turtle.detect() then
+			turtle.turnRight()
+		end
+
+		sc:place(config)
+		turtle.turnRight()
+	elseif config.where == sc:top() then
+		if solid and not turtle.detectUp() then
+			return
+		end
+
+		sc:placeUp(config)
+	elseif config.where == sc:bottom() then
+		if solid and not turtle.detectDown() then
+			return
+		end
+
+		sc:placeDown(config)
+	end
+end
+
+function script:init(config, check, careful)
 	self.patch = config.patch or {}
 	self.place = config.place or {}
 
-	if track ~= nil then
-		self.track = track
+	if check ~= nil then
+		self.check = check
 	end
 
 	if careful ~= nil then
@@ -32,27 +104,64 @@ function script:init(config, track, careful)
 end
 
 function script:auto()
+	for _, p in ipairs(self.patch) do
+		turn_dir(false, p, self)
+	end
+
+	for _, p in ipairs(self.place) do
+		turn_dir(true, p, self)
+	end
 end
 
-function script:place(text, config)
+function script:place(config, text)
 	if config == nil then
 		return turtle.place(text)
 	end
 
+	local prev_slot = turtle.getSelectedSlot()
+	local slot = find_slot(config, self)
+	if slot == nil then
+		return false, "couldn't find object with name "..config.name..
+		" or with tag "..config.tag.." or in slot "..tostring(config.slot)
+	end
+
+	turtle.select(slot)
+	turtle.place(text)
+	turtle.select(prev_slot)
 end
 
-function script:placeUp(text, config)
+function script:placeUp(config, text)
 	if config == nil then
 		return turtle.placeUp(text)
 	end
 
+	local prev_slot = turtle.getSelectedSlot()
+	local slot = find_slot(config, self)
+	if slot == nil then
+		return false, "couldn't find object with name "..config.name..
+		" or with tag "..config.tag.." or in slot "..tostring(config.slot)
+	end
+
+	turtle.select(slot)
+	turtle.placeUp(text)
+	turtle.select(prev_slot)
 end
 
-function script:placeDown(text, config)
+function script:placeDown(config, text)
 	if config == nil then
 		return turtle.placeDown(text)
 	end
 
+	local prev_slot = turtle.getSelectedSlot()
+	local slot = find_slot(config, self)
+	if slot == nil then
+		return false, "couldn't find object with name "..config.name..
+		" or with tag "..config.tag.." or in slot "..tostring(config.slot)
+	end
+
+	turtle.select(slot)
+	turtle.placeDown(text)
+	turtle.select(prev_slot)
 end
 
 function script:front() return 0 end

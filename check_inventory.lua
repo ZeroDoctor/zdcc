@@ -8,6 +8,7 @@ local turtle = require("test.turtle_test_api")
 -- 		name = "minecraft:oak_log",
 -- 		tags = {["minecraft:logs"] = true},
 -- 		count = 32,
+-- 		location = 1,
 -- 	},
 -- }
 --
@@ -22,18 +23,43 @@ local script = {
 	inventory = {},
 	map = {},
 	max_slots = 16,
+	enable_tags = false,
 }
 
+-- TODO: maybe add 'remove()' and 'add()' methods
+-- to reduce update() usage
+
+function script:init(config)
+	self.enable_tags = config.enable_tags or false
+	self.max_slots = config.max_slots or 16
+end
+
+function script:search_tag(tag)
+	for _, inv in ipairs(self.inventory) do
+		for k in pairs(inv.tags) do
+			local r = string.find(k, tag)
+			if r ~= nil then
+				return inv
+			end
+		end
+	end
+end
+
 function script:search_name(name)
-	return self.map[name]
+	if self.map[name].location == nil or #self.map[name].location == 0 then
+		return nil
+	end
+
+	return self.inventory[self.map[name].location[1]]
 end
 
 function script:update()
 	for i = 1, self.max_slots, 1 do
-		local t = turtle.getItemDetail(i)
+		local t = turtle.getItemDetail(i, self.enable_tags)
 		if t ~= nil then
 			self.inventory[i] = t
-			if self.map[t.name] ~= nil then
+			self.inventory[i].location = i
+			if self.map[t.name] ~= nil then -- found a previous item with same name
 				local prev = self.map[t.name]
 				table.insert(prev.location, i)
 				prev.count = prev.count + t.count
