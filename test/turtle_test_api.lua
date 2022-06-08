@@ -71,7 +71,7 @@ function script.suck(count) end
 function script.suckUp(count) end
 function script.suckDown(count) end
 
-function script.getFuelLevel() end
+function script.getFuelLevel() return 80 end
 function script.getFuelLimit() end
 function script.refuel(count) end
 

@@ -3,16 +3,15 @@
 local turtle = require("test.turtle_test_api")
 -- remember to comment out above before use
 
-local track = require("track_move")
-local careful = require("careful_dig")
-local ensure = require("ensure_place")
-local check = require("check_inventory")
 
 local script = {
-	init = function(self, move, dig, put, inventory) end,
-	update = function(self, move, dig, put, inventory)
-		return false
-	end,
+	move = require("track_move"),
+	dig = require("careful_dig"),
+	place = require("ensure_place"),
+	inventory = require("check_inventory"),
+
+	init = function() end,
+	update = function() return false end,
 }
 
 -- start initialize modules, prepares loop
@@ -37,6 +36,7 @@ local script = {
 -- 	config.max_slots = 16,
 -- }```
 function script:start(config)
+	config = config or {}
 	-- sane defaults
 	config.avoid = config.avoid or {}
 	config.patch = config.patch or {}
@@ -49,37 +49,43 @@ function script:start(config)
 	config.max_slots = config.max_slots or 16
 
 	-- setup modules
-	check.enable_tags = check.enable_tags
-	check.max_slots = config.max_slots
+	self.inventory.enable_tags = config.enable_tags
+	self.inventory.max_slots = config.max_slots
 
-	careful.avoid = config.avoid
+	self.dig.avoid = config.avoid
 
-	ensure.patch = config.patch or {}
-	ensure.put = config.put or {}
-	ensure:init(check, careful)
+	self.place.patch = config.patch or {}
+	self.place.put = config.put or {}
+	self.place:init(self.inventory, self.dig)
 
-	track.hard_reset = config.hard_reset
+	self.move.hard_reset = config.hard_reset
 	if config.refuel then
-		track.limit = config.move_limit
+		self.move.limit = config.move_limit
 	end
 
 	if config.patch == nil and config.put == nil then
-		track:init(careful, nil)
+		self.move:init(self.dig, nil)
 	else
-		track:init(careful, ensure)
+		self.move:init(self.dig, self.ensure)
 	end
 
 	-- setup loop
-	script:init(track, careful, ensure, check)
+	self.inventory:update()
+	script:init()
 
   local running = true
 	while running do
-		running = script:update(track, careful, ensure, check)
+		running = script:update() or false
 
-		if config.refuel and track.should_goback then
-			track:retrace(config.retrace_feel)
+		if config.refuel and self.move.should_goback then
+			self.move:retrace(config.retrace_feel)
 		end
 
+		if self.move.goback and self.move.x == 0
+			and self.move.y == 0 and self.move.z == 0 then
+			self.move.goback = false
+			running = false
+		end
 	end
 end
 
