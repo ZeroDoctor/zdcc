@@ -31,6 +31,10 @@ local script = {
 
 function script:search_tag(tag)
 	for _, inv in ipairs(self.inventory) do
+		if inv.tags == nil then
+			return
+		end
+
 		for k in pairs(inv.tags) do
 			local r = string.find(k, tag)
 			if r ~= nil then
@@ -61,6 +65,7 @@ function script:update()
 				self.map[t.name] = prev
 			else
 				self.map[t.name] = t
+				self.map[t.name].location = {}
 				table.insert(self.map[t.name].location, i)
 			end
 		end
