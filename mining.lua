@@ -15,7 +15,7 @@ io.write("how many points to expect? ")
 local max_number_points = io.read("n")
 
 local vectors = {}
-for i=0, max_number_points, 1 do
+for _=1, max_number_points, 1 do
 	io.write("enter x, y, and z sperated by spaces ")
 
 	table.insert(vectors, {
