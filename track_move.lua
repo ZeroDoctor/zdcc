@@ -267,41 +267,48 @@ function script:to(x, y, z, force)
 	force = force or false
 
 	if self.dir % 2 == 0 then
-		script:turn(forward_face)
+		local m = math.abs(x - self.x)
 		if self.x < x then
-			script:forward(x, force)
+			script:turn(forward_face)
+			script:forward(m, force)
 		elseif self.x > x then
-			script:back(x, force)
+			script:turn(back_face)
+			script:forward(m, force)
 		end
 
+		m = math.abs(z - self.z)
 		if self.z < z then
-			script:turnRight(1)
-			script:forward(z, force)
+			script:turn(right_face)
+			script:forward(m, force)
 		elseif self.z > z then
-			script:turnLeft(1)
-			script:forward(z, force)
+			script:turn(left_face)
+			script:forward(m, force)
 		end
 	else
-		script:turn(right_face)
+		local m = math.abs(z - self.z)
 		if self.z < z then
-			script:forward(z, force)
+		  script:turn(right_face)
+			script:forward(m, force)
 		elseif self.z > z then
-			script:back(z, force)
+		  script:turn(left_face)
+			script:forward(m, force)
 		end
 
+		m = math.abs(x - self.x)
 		if self.x < x then
-			script:turnLeft(1)
-			script:forward(x, force)
+		  script:turn(forward_face)
+			script:forward(m, force)
 		elseif self.x > x then
-			script:turnRight(1)
-			script:forward(x, force)
+			script:turn(back_face)
+			script:forward(m, force)
 		end
 	end
 
+	local m = math.abs(y - self.y)
 	if self.y < y then
-		script:up(y, force)
+		script:up(m, force)
 	elseif self.y > y then
-		script:down(y, force)
+		script:down(m, force)
 	end
 end
 
