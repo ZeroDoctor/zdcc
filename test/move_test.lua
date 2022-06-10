@@ -121,6 +121,8 @@ end
 
 local function to_test()
 	local move = require('track_move')
+	move.limit = 100000
+	test.print_table(move)
 	move:to(1, 2,  3, true)
 	move:to(2, 14, 5, true)
 	move:to(1, 2,  9, true)

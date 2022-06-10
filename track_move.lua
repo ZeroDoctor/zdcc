@@ -5,6 +5,7 @@ local turtle = require("test.turtle_test_api")
 
 local careful = require("careful_dig")
 local ensure = require("ensure_place")
+local check = require("check_inventory")
 
 local forward_face = 0
 local right_face = 1
@@ -21,7 +22,7 @@ local script = {
 	hard_reset = false,
 
 	cost = 0, -- current fuel cost
-	limit = 0, -- limit of fuel usage
+	limit = -1, -- limit of fuel usage. if -1 then ignore limit
 
 	goback = false,
 	should_goback = false,
@@ -29,8 +30,9 @@ local script = {
 	auto_place_after = 5,
 }
 
-function script:init(care, en)
+function script:init(care, en, ch)
 	careful = care or careful
+	check = ch or check
 	ensure = en
 end
 
@@ -50,10 +52,10 @@ local function det_dir(num, sc) -- determine direction
 end
 
 local function check_limit(num, sc) -- check if refuel is needed
-	if sc.limit ~= 0 then
+	if sc.limit ~= 0 and sc.limit ~= -1 then
 		local next = sc.cost + num
 
-		if next > sc.limit then
+		if next >= sc.limit then
 			num = next - sc.limit
 			sc.limit = 0
 			sc.should_goback = true
@@ -259,12 +261,60 @@ function script:turn(face)
 	end
 end
 
+function script:while_to(x, y, z, force)
+  x = x or 0
+	y = y or 0
+	z = z or 0
+	force = force or false
+
+	if x ~= 0 then
+		if x > 0 then
+			script:turn(forward_face)
+		else
+			script:turn(back_face)
+		end
+
+		script:forward(x, force)
+	end
+
+	if z ~= 0 then
+		if z > 0 then
+			script:turn(right_face)
+		else
+			script:turn(left_face)
+		end
+
+		script:forward(z, force)
+	end
+
+	if y ~= 0 then
+		if y > 0 then
+			script:up(y, force)
+			return
+		end
+
+		script:down(y, force)
+	end
+end
 -- to method could be better
-function script:to(x, y, z, force)
+function script:to(x, y, z, force, dumb)
 	x = x or self.x
 	y = y or self.y
 	z = z or self.z
 	force = force or false
+	dumb = dumb or false
+
+	if dumb then
+		if x == 0 then
+			x = self.x
+		end
+		if y == 0 then
+			y = self.y
+		end
+		if z == 0 then
+			z = self.z
+		end
+	end
 
 	if self.dir % 2 == 0 then
 		local m = math.abs(x - self.x)
@@ -313,13 +363,20 @@ function script:to(x, y, z, force)
 end
 
 function script:gobefore()
-	script:to(self.before.x, self.before.y, self.before.z)
+	if self.before == nil then
+		print('[warn:track] before is already nil')
+		return
+	end
+
+	script:to(self.before[1], self.before[2], self.before[3])
+	script:turn(self.before[4])
+	self.before = nil
 end
 
 function script:retrace(hard)
 	hard = hard or false -- always soft retrace to avoid breaking anything undesired
 
-	self.before = {self.x, self.y, self.z}
+	self.before = {self.x, self.y, self.z, self.dir}
 
 	self.goback = true
 	print('[info:track] retracing steps using [hard='..tostring(hard)..']')
@@ -431,6 +488,29 @@ function script:reset_trace(hard)
 
 	for k in pairs(self.trace) do
 		self.trace[k] = nil
+	end
+
+	while self.limit == 0 do
+		print('[info:track] addition pylons (fuel) needed... (press enter when pylons added)')
+		local _ = io.read()
+
+		check:update()
+		local inv = check:search_name('*.coal', true)
+		if inv == nil or inv.location[1] == nil then
+			inv = check:search_name('*.lava', true)
+		end
+
+		if inv ~= nil and inv.location[1] ~= nil then
+			turtle.select(inv.location[1])
+			turtle.refuel()
+		end
+
+		self.limit = turtle.getFuelLevel() / 2
+	end
+
+	if self.limit > 0 then
+		self.goback = false
+		script:gobefore()
 	end
 end
 

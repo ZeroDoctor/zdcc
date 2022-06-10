@@ -80,17 +80,11 @@ function script:start(config)
 
   local running = true
 	while running do
-		running = script:update() or false
-
 		if config.refuel and self.move.should_goback then
 			self.move:retrace(config.retrace_feel)
 		end
 
-		if self.move.goback and self.move.x == 0
-			and self.move.y == 0 and self.move.z == 0 then
-			self.move.goback = false
-			running = false
-		end
+		running = script:update() or false
 	end
 end
 
