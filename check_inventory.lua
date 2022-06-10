@@ -29,6 +29,15 @@ local script = {
 -- TODO: maybe add 'remove()' and 'add()' methods
 -- to reduce update() usage
 
+local function find_item(map, name)
+	for k in pairs(map) do
+			local r = string.find(k, name)
+			if r ~= nil then
+				return k
+			end
+		end
+end
+
 function script:search_tag(tag)
 	for _, inv in ipairs(self.inventory) do
 		if inv.tags == nil then
@@ -44,9 +53,17 @@ function script:search_tag(tag)
 	end
 end
 
-function script:search_name(name)
-	if self.map[name].location == nil or #self.map[name].location == 0 then
-		return nil
+function script:search_name(name, regex)
+	regex = regex or false
+
+	if regex then
+		name = find_item(self.map, name) or name
+	end
+
+	if self.map[name] == nil or
+		self.map[name].location == nil or
+		#self.map[name].location == 0 then
+		return
 	end
 
 	return self.inventory[self.map[name].location[1]]

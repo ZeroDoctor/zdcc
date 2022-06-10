@@ -31,9 +31,10 @@ local script = {
 -- 	refuel = true,
 -- 	hard_retrace = true,
 -- 	hard_reset = true,
--- 	config.move_limit = turtle.getFuelLevel() / 2,
--- 	config.enable_tags = false,
--- 	config.max_slots = 16,
+-- 	move_limit = turtle.getFuelLevel() / 2,
+-- 	enable_tags = false,
+-- 	max_slots = 16,
+-- 	really_ensure_place = false,
 -- }```
 function script:start(config)
 	config = config or {}
@@ -47,6 +48,7 @@ function script:start(config)
 	config.move_limit = turtle.getFuelLevel() / 2
 	config.enable_tags = config.enable_tags or false
 	config.max_slots = config.max_slots or 16
+	config.really_ensure_place = config.really_ensure_place or false
 
 	-- setup modules
 	self.inventory.enable_tags = config.enable_tags
@@ -56,7 +58,8 @@ function script:start(config)
 
 	self.place.patch = config.patch or {}
 	self.place.put = config.put or {}
-	self.place:init(self.inventory, self.dig)
+	self.place.force_goback = config.really_ensure_place
+	self.place:init(self.inventory, self.dig, self.move)
 
 	self.move.hard_reset = config.hard_reset
 	if config.refuel then
@@ -72,6 +75,8 @@ function script:start(config)
 	-- setup loop
 	self.inventory:update()
 	script:init()
+
+	self.move.limit = turtle.getFuelLevel() / 2
 
   local running = true
 	while running do

@@ -19,6 +19,7 @@ local script = {
 	check = require('check_inventory'),
 	careful =  require('careful_dig'),
 	force_place = false, -- TODO: if true then place block if solid block not found
+	force_goback = false,
 }
 
 local function find_slot(config, sc)
@@ -90,14 +91,10 @@ local function turn_dir(solid, config, sc)
 	end
 end
 
-function script:init(check, careful)
-	if check ~= nil then
-		self.check = check
-	end
-
-	if careful ~= nil then
-		self.careful = careful
-	end
+function script:init(check, careful, track)
+	self.check = check or self.check
+	self.careful = careful or self.careful
+	self.track = track or self.track
 end
 
 function script:auto()

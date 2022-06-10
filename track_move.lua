@@ -17,6 +17,7 @@ local script = {
 	z = 0,
 	dir = forward_face, -- (0, 1, 2, 3) = (forward, right, back, left) relative to starting origin
 	trace = {}, -- {x, y, z, dir} for soft retrace
+	before = {},
 	hard_reset = false,
 
 	cost = 0, -- current fuel cost
@@ -250,8 +251,68 @@ function script:turnRight(num)
 	self.dir = (self.dir+count) % 4
 end
 
+function script:turn(face)
+	face = face or script.dir
+
+	while self.dir ~= face do
+		script:turnRight()
+	end
+end
+
+-- to method could be better
+function script:to(x, y, z, force)
+	x = x or self.x
+	y = y or self.y
+	z = z or self.z
+	force = force or false
+
+	if self.dir % 2 == 0 then
+		script:turn(forward_face)
+		if self.x < x then
+			script:forward(x, force)
+		elseif self.x > x then
+			script:back(x, force)
+		end
+
+		if self.z < z then
+			script:turnRight(1)
+			script:forward(z, force)
+		elseif self.z > z then
+			script:turnLeft(1)
+			script:forward(z, force)
+		end
+	else
+		script:turn(right_face)
+		if self.z < z then
+			script:forward(z, force)
+		elseif self.z > z then
+			script:back(z, force)
+		end
+
+		if self.x < x then
+			script:turnLeft(1)
+			script:forward(x, force)
+		elseif self.x > x then
+			script:turnRight(1)
+			script:forward(x, force)
+		end
+	end
+
+	if self.y < y then
+		script:up(y, force)
+	elseif self.y > y then
+		script:down(y, force)
+	end
+end
+
+function script:gobefore()
+	script:to(self.before.x, self.before.y, self.before.z)
+end
+
 function script:retrace(hard)
 	hard = hard or false -- always soft retrace to avoid breaking anything undesired
+
+	self.before = {self.x, self.y, self.z}
 
 	self.goback = true
 	print('[info:track] retracing steps using [hard='..tostring(hard)..']')
