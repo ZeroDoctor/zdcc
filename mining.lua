@@ -31,15 +31,13 @@ end
 
 print("set width, length, and heigth from relative origin of turtle:")
 
-local w = io.read("n")
-local l = io.read("n")
-local h = io.read("n")
+local w = tonumber(io.read())
+local l = tonumber(io.read())
+local h = tonumber(io.read())
 
 loop.update = function(self)
 	shape:cuboid(w, l, h, "y")
-
-	print(tbl.print_table(self.move))
-
+	self.move:retrace(true)
 	return false
 end
 

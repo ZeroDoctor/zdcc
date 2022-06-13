@@ -26,6 +26,7 @@ local script = {
 
 	goback = false,
 	should_goback = false,
+	need_fuel = false,
 
 	auto_place_after = 5,
 }
@@ -52,14 +53,17 @@ local function det_dir(num, sc) -- determine direction
 end
 
 local function check_limit(num, sc) -- check if refuel is needed
-	if sc.limit ~= 0 and sc.limit ~= -1 then
+
+	if sc.should_goback then
 		local next = sc.cost + num
 
 		if next >= sc.limit then
 			num = next - sc.limit
 			sc.limit = 0
-			sc.should_goback = true
+			sc.need_fuel = true
 		end
+	else
+		sc:check_additional_fuel()
 	end
 
 	return num
@@ -98,7 +102,7 @@ function script:forward(num, force)
 		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.dir}))
 
 		-- retrace steps if limit reached
-		if self.should_goback then
+		if self.should_goback and self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -142,7 +146,7 @@ function script:back(num, force)
 		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.dir}))
 
 		-- retrace steps if limit reached
-		if self.should_goback then
+		if self.should_goback and self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -181,7 +185,7 @@ function script:up(num, force)
 		table.insert(self.trace, {x=0, y=count, z=0, dir=self.dir})
 
 		-- retrace steps if limit reached
-		if self.should_goback and not self.goback then
+		if self.should_goback and self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -219,7 +223,7 @@ function script:down(num, force)
 		table.insert(self.trace, {x=0, y=-count, z=0, dir=self.dir})
 
 		-- retrace steps if limit reached
-		if self.should_goback then
+		if self.should_goback and self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -254,7 +258,7 @@ function script:turnRight(num)
 end
 
 function script:turn(face)
-	face = face or script.dir
+	face = face or self.dir
 
 	while self.dir ~= face do
 		script:turnRight()
@@ -262,7 +266,7 @@ function script:turn(face)
 end
 
 function script:while_to(x, y, z, force)
-  x = x or 0
+	x = x or 0
 	y = y or 0
 	z = z or 0
 	force = force or false
@@ -337,16 +341,16 @@ function script:to(x, y, z, force, dumb)
 	else
 		local m = math.abs(z - self.z)
 		if self.z < z then
-		  script:turn(right_face)
+			script:turn(right_face)
 			script:forward(m, force)
 		elseif self.z > z then
-		  script:turn(left_face)
+			script:turn(left_face)
 			script:forward(m, force)
 		end
 
 		m = math.abs(x - self.x)
 		if self.x < x then
-		  script:turn(forward_face)
+			script:turn(forward_face)
 			script:forward(m, force)
 		elseif self.x > x then
 			script:turn(back_face)
@@ -476,7 +480,7 @@ function script:reset_trace(hard)
 
 	print('[info:track] reseting trace...')
 
-	self.should_goback = false
+	self.should_goback = false -- its already back
 	self.cost = 0
 
 	if hard then
@@ -490,7 +494,16 @@ function script:reset_trace(hard)
 		self.trace[k] = nil
 	end
 
-	while self.limit == 0 do
+	script:check_additional_fuel()
+
+	if self.should_before then
+		self.goback = false
+		script:gobefore()
+	end
+end
+
+function script:check_additional_fuel()
+	while turtle.getFuelLevel() == 0 and self.need_fuel do
 		print('[info:track] addition pylons (fuel) needed... (press enter when pylons added)')
 		local _ = io.read()
 
@@ -508,10 +521,7 @@ function script:reset_trace(hard)
 		self.limit = turtle.getFuelLevel() / 2
 	end
 
-	if self.limit > 0 then
-		self.goback = false
-		script:gobefore()
-	end
+	self.need_fuel = false
 end
 
 return script

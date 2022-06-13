@@ -69,7 +69,7 @@ function script:start(config)
 	if config.patch == nil and config.put == nil then
 		self.move:init(self.dig, nil)
 	else
-		self.move:init(self.dig, self.ensure)
+		self.move:init(self.dig, self.place)
 	end
 
 	-- setup loop
