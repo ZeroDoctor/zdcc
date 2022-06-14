@@ -72,6 +72,7 @@ local function turn_dir(solid, config, sc)
 		turtle.turnLeft()
 		if solid and not turtle.detect() then
 			turtle.turnRight()
+			return
 		end
 
 		sc:place(config)
@@ -115,8 +116,8 @@ function script:place(config, text)
 	local prev_slot = turtle.getSelectedSlot()
 	local slot = find_slot(config, self)
 	if slot == nil then
-		return false, "couldn't find object with name "..config.name..
-		" or with tag "..config.tag.." or in slot "..tostring(config.slot)
+		return false, "couldn't find object with name "..tostring(config.name)..
+		" or with tag "..tostring(config.tag).." or in slot "..tostring(config.slot)
 	end
 
 	turtle.select(slot)
