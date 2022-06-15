@@ -260,6 +260,10 @@ end
 function script:turn(face)
 	face = face or self.dir
 
+	if self.dir - 1 == face then
+		script:turnLeft()
+	end
+
 	while self.dir ~= face do
 		script:turnRight()
 	end
@@ -301,24 +305,11 @@ function script:while_to(x, y, z, force)
 	end
 end
 -- to method could be better
-function script:to(x, y, z, force, dumb)
+function script:to(x, y, z, force)
 	x = x or self.x
 	y = y or self.y
 	z = z or self.z
 	force = force or false
-	dumb = dumb or false
-
-	if dumb then
-		if x == 0 then
-			x = self.x
-		end
-		if y == 0 then
-			y = self.y
-		end
-		if z == 0 then
-			z = self.z
-		end
-	end
 
 	if self.dir % 2 == 0 then
 		local m = math.abs(x - self.x)
