@@ -414,7 +414,7 @@ function script:dome(typus, diameter)
 	-- This loop is for each vertical layer through the sphere or dome.
 	for z = zstart,zend do
 		if z ~= zstart then
-			track:to(track.z, track.y + 1, track.z, self.force)
+			track:to(track.x, track.y + 1, track.z, self.force)
 		end
 		--writeOut("Layer " .. z)
 		local cz2 = (radius - z) ^ 2
@@ -470,7 +470,7 @@ function script:dome(typus, diameter)
 					for x = xStart,xEnd,xStep do
 						-- Only blocks within the radius but still within 1 3d-diagonal block of the edge are eligible
 						if isSphereBorder(offset, x, y, z, radius2) then
-							track:to(x, track.y, y, self.force, true)
+							track:to(x, z, y, self.force)
 							if self.place then
 								ensure:place()
 							end

@@ -7,6 +7,18 @@ local blocks = {
 		solid = false,
 	},
 	{
+		name = 'minecraft:dirt',
+		tags = {['minecraft:dirt'] = true},
+		vec = {},
+		solid = true,
+	},
+	{
+		name = 'minecraft:stone',
+		tags = {['minecraft:stone'] = true},
+		vec = {},
+		solid = true,
+	},
+	{
 		name = 'minecraft:oak_log',
 		tags = {['minecraft:logs'] = true},
 		vec = {},
@@ -14,26 +26,46 @@ local blocks = {
 	},
 }
 
+local front_face = 0
+local right_face = 1
+local back_face =  2
+local left_face =  3
+
 local script = {
 	current_slot = 1,
 	inventory = {},
 	world = {},
+	turtle_location = {},
+	turtle_direction = front_face,
 }
 
 function script.init(self, config)
 	self.current_slot = config.current_slot or 1
 	self.inventory = config.inventory or {}
 
-	for x = 1, 10, 1 do
-		for y = 1, 10, 1 do
-			for z = 1, 10, 1 do
-				-- TODO: create a random function to determine which block goes where
-				local b = blocks[1]
+	local current_block = blocks[3] -- stone
+	local max_size = 500
+
+	for x = 1, max_size, 1 do
+		self.world[x] = {}
+		for y = 1, max_size, 1 do
+			self.world[x][y] = {}
+
+			if y > max_size/2 then
+				current_block = blocks[1] -- air
+			elseif y > max_size/2.33 then
+				current_block = blocks[2] -- dirt
+			end
+
+			for z = 1, max_size, 1 do
+				local b = current_block
 				b.vec = {x = x, y = y, z = z}
-				table.insert(self.world, b)
+				self.world[x][y][z] = b
 			end
 		end
 	end
+
+	self.turtle_location = {0, max_size/2+1, 0}
 end
 
 function script.dig(side) return true end
@@ -81,18 +113,22 @@ function script.transferTo(slot, count) return true end
 function script.select(slot)
 	script.current_slot = slot
 end
+
 function script.getItemCount(slot)
 	slot = slot or script.current_slot
 	return script.inventory[slot] or 0
 end
+
 function script.getItemSpace(slot)
 	slot = slot or script.current_slot
 	if slot ~= 1 then return 64 end
 	return 53
 end
+
 function script.getSelectedSlot()
 	return 1
 end
+
 function script.getItemDetail(slot, detail)
 	detail = detail or false
 
@@ -104,25 +140,53 @@ function script.getItemDetail(slot, detail)
 end
 
 function script.inspect()
-	return true, {
-		name = "minecraft:oak_log",
-		state = { axis = "x" },
-		tags = {["minecraft:logs"] = true},
-	}
+	local x_dir = 1
+	local z_dir = 0
+
+	if script.turtle_direction == right_face
+		or script.turtle_direction == left_face then
+
+		x_dir = 0
+		z_dir = 1
+	end
+
+	local x = script.turtle_location.x
+	local y = script.turtle_location.y
+	local z = script.turtle_location.z
+
+	local b = script.world[x+x_dir][y][z+z_dir]
+	if b == nil or b.solid == nil then
+		b = blocks[1]
+	end
+
+	return b.solid, b
 end
+
 function script.inspectUp()
-	return true, {
-		name = "minecraft:oak_log",
-		state = { axis = "x" },
-		tags = {["minecraft:logs"] = true},
-	}
+	local x = script.turtle_location.x
+	local y = script.turtle_location.y
+	local z = script.turtle_location.z
+
+	local b = script.world[x][y+1][z]
+	if b == nil or b.solid == nil then
+		b = blocks[1]
+	end
+
+
+	return b.solid, b
 end
 function script.inspectDown()
-	return true, {
-		name = "minecraft:oak_log",
-		state = { axis = "x" },
-		tags = {["minecraft:logs"] = true},
-	}
+	local x = script.turtle_location.x
+	local y = script.turtle_location.y
+	local z = script.turtle_location.z
+
+	local b = script.world[x][y-1][z]
+	if b == nil or b.solid == nil then
+		b = blocks[1]
+	end
+
+
+	return b.solid, b
 end
 
 return script

@@ -78,7 +78,7 @@ function script:forward(num, force)
 
 	-- start moving
 	local count = 0
-	for i = 1, num, 1 do
+	for _ = 1, num, 1 do
 		if force then
 			careful:dig()
 		end
@@ -89,8 +89,8 @@ function script:forward(num, force)
 		end
 
 		if ensure ~= nil and
-			((math.abs(self.x) + i) % self.auto_place_after == 0 or
-			(math.abs(self.z) + i) % self.auto_place_after == 0) then
+			self.auto_place_after ~= 0 and
+			(self.cost + count) % self.auto_place_after == 0 then
 			ensure:auto()
 		end
 	end
@@ -126,15 +126,15 @@ function script:back(num, force)
 	end
 
 	local count = 0
-	for i = 1, num, 1 do
+	for _ = 1, num, 1 do
 		local s = turtle.back()
 		if s then
 			count = count + 1
 		end
 
 		if ensure ~= nil and
-			((math.abs(self.x) + i) % self.auto_place_after == 0 or
-			(math.abs(self.z) + i) % self.auto_place_after == 0) then
+			self.auto_place_after ~= 0 and
+			(self.cost + count) % self.auto_place_after == 0 then
 			ensure:auto()
 		end
 	end
@@ -172,6 +172,7 @@ function script:up(num, force)
 		end
 
 		if ensure ~= nil and
+			self.auto_place_after ~= 0 and
 			(math.abs(self.y) + i) % self.auto_place_after == 0 then
 			ensure:auto()
 		end
@@ -211,6 +212,7 @@ function script:down(num, force)
 		end
 
 		if ensure ~= nil and
+			self.auto_place_after ~= 0 and
 			(math.abs(self.y) + i) % self.auto_place_after == 0 then
 			ensure:auto()
 		end
