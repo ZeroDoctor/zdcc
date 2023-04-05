@@ -2,7 +2,7 @@
 local base_dir = 'https://raw.githubusercontent.com/ZeroDoctor/zdcc/main'
 
 local files = {
-	'/carefule_dig.lua',
+	'/careful_dig.lua',
 	'/check_inventory.lua',
 	'/ensure_place.lua',
 	'/loop.lua',
