@@ -21,7 +21,7 @@ local files = {
 
 local function download_file(path)
 	print('downloading '..path..'...')
-	local request = http.get(base_dir..path, 'w')
+	local request = http.get(base_dir..path)
 
 	local file = io.open(path, 'w')
 	if file ~= nil then
