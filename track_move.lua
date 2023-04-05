@@ -313,7 +313,7 @@ function script:to(x, y, z, force)
 	z = z or self.z
 	force = force or false
 
-	if self.dir % 2 == 0 then
+	if self.dir % 2 == 0 then -- forward or back
 		local m = math.abs(x - self.x)
 		if self.x < x then
 			script:turn(forward_face)
@@ -331,7 +331,7 @@ function script:to(x, y, z, force)
 			script:turn(left_face)
 			script:forward(m, force)
 		end
-	else
+	else -- left or right
 		local m = math.abs(z - self.z)
 		if self.z < z then
 			script:turn(right_face)
@@ -376,7 +376,7 @@ function script:retrace(hard)
 	self.before = {self.x, self.y, self.z, self.dir}
 
 	self.goback = true
-	print('[info:track] retracing steps using [hard='..tostring(hard)..']')
+	print('[info:track] retracing steps [hard='..tostring(hard)..']')
 
 	if hard then
 		while self.dir ~= forward_face do -- make sure its facing forward
