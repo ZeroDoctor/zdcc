@@ -1,10 +1,10 @@
 -- remember to comment out below before use
 local turtle = require("test.turtle_test_api")
-local tbl = require("test.tbl")
+-- local tbl = require("test.tbl")
 -- remember to comment out above before use
 
-local loop = require("loop")
-local shape = require('make_shape')
+local loop = require("lib.loop")
+local shape = require('lib.make_shape')
 
 -- move = require("track_move"),
 -- dig = require("careful_dig"),
