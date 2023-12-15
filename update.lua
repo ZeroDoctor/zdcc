@@ -28,10 +28,6 @@ local function comment_out_test(content)
 	for i in ipairs(lines) do
 		local istart, _ = string.find(lines[i], "-- #test")
 		local iend, _ = string.find(lines[i], "-- #end")
-		if istart then
-			ignore = false
-			goto continue
-		end
 
 		if iend then
 			ignore = true
@@ -43,7 +39,10 @@ local function comment_out_test(content)
 				lines[i] = "-- "..lines[i]
 			end
 		end
-		:: continue ::
+
+		if istart then
+			ignore = false
+		end
 		content = content..lines[i]..'\n'
 	end
 
