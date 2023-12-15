@@ -1,15 +1,15 @@
--- remember to comment out below before use
-local turtle = require("test.turtle_test_api")
+-- #test
+local turtle = require('test.turtle_test_api')
 -- local tbl = require("test.tbl")
--- remember to comment out above before use
+-- #end
 
-local loop = require("lib.loop")
+local loop = require('lib.loop')
 local shape = require('lib.make_shape')
 
--- move = require("track_move"),
--- dig = require("careful_dig"),
--- place = require("ensure_place"),
--- inventory = require("check_inventory"),
+-- local move = require('lib.track_move')
+-- local dig = require('lib.careful_dig')
+-- local place = require('lib.ensure_place')
+-- local inventory = require('lib.check_inventory')
 
 loop.init = function(self)
 	self.move.auto_place_after = 7

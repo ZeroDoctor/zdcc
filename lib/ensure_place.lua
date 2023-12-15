@@ -1,7 +1,6 @@
-
--- remember to comment out below before use
+-- #test
 local turtle = require("test.turtle_test_api")
--- remember to comment out above before use
+-- #end
 
 -- put/patch = {
 -- 	{
@@ -16,8 +15,8 @@ local turtle = require("test.turtle_test_api")
 local script = {
 	patch = {}, -- occurs when no blocks exists
 	put = {}, -- occurs when blocks already exist
-	check = require('check_inventory'),
-	careful =  require('careful_dig'),
+	check = require('lib.check_inventory'),
+	careful =  require('lib.careful_dig'),
 	force_place = false, -- TODO: if true then place block if solid block not found
 	force_goback = false,
 }

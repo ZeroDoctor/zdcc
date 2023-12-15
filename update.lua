@@ -1,3 +1,4 @@
+local util = require('util.str')
 
 local base_dir = 'https://raw.githubusercontent.com/ZeroDoctor/zdcc/main'
 
@@ -16,8 +17,38 @@ local files = {
 	'/test/turtle_test_api.lua',
 	'/mining.lua',
 	'/test.lua',
+	'/update.lua'
 }
 
+local function comment_out_test(content)
+	local lines = util.split(content, '\n')
+	content = ''
+
+	local ignore = true
+	for i in ipairs(lines) do
+		local istart, _ = string.find(lines[i], "-- #test")
+		local iend, _ = string.find(lines[i], "-- #end")
+		if istart then
+			ignore = false
+			goto continue
+		end
+
+		if iend then
+			ignore = true
+		end
+
+		if not ignore then
+			istart, _ = string.find(lines[i], "--")
+			if istart then
+				lines[i] = "-- "..lines[i]
+			end
+		end
+		:: continue ::
+		content = content..lines[i]..'\n'
+	end
+
+	return content
+end
 
 local function download_file(path)
 	print('downloading '..path..'...')
@@ -25,7 +56,7 @@ local function download_file(path)
 
 	local file = io.open(path, 'w')
 	if file ~= nil then
-		file:write(request.readAll())
+		file:write(comment_out_test(request.readAll()))
 		file:close()
 	end
 

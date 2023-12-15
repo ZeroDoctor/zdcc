@@ -1,7 +1,6 @@
-
--- remember to comment out below before use
+-- #test
 local turtle = require("test.turtle_test_api")
--- remember to comment out above before use
+-- #end
 
 local script = {
 	must_empty = true,

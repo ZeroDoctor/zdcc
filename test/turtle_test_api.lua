@@ -1,4 +1,3 @@
-
 local blocks = {
 	{
 		name = 'minecraft:air',

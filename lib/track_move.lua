@@ -1,11 +1,10 @@
-
--- remember to comment out below before use
+-- #test
 local turtle = require("test.turtle_test_api")
--- remember to comment out above before use
+-- #end
 
-local careful = require("careful_dig")
-local ensure = require("ensure_place")
-local check = require("check_inventory")
+local careful = require("lib.careful_dig")
+local ensure = require("lib.ensure_place")
+local check = require("lib.check_inventory")
 
 local forward_face = 0
 local right_face = 1

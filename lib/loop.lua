@@ -1,14 +1,13 @@
-
--- remember to comment out below before use
+-- #test
 local turtle = require("test.turtle_test_api")
--- remember to comment out above before use
+-- #end
 
 
 local script = {
-	move = require("track_move"),
-	dig = require("careful_dig"),
-	place = require("ensure_place"),
-	inventory = require("check_inventory"),
+	move = require("lib.track_move"),
+	dig = require("lib.careful_dig"),
+	place = require("lib.ensure_place"),
+	inventory = require("lib.check_inventory"),
 
 	init = function() end,
 	update = function() return false end,
