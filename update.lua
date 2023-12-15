@@ -62,7 +62,13 @@ end
 
 local function download_file(path)
 	print('downloading '..path..'...')
-	local request = http.get(base_dir..path)
+	local request = http.get(
+		base_dir..path,
+    {
+        ['Cache-Control'] = 'no-cache, no-store',
+        ['Pragma'] = 'no-cache'
+    }
+	)
 
 	local file = io.open(path, 'w')
 	if file ~= nil then
