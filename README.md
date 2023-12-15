@@ -4,7 +4,13 @@ copy below into computer/turtle in minecraft, run the file and it should downloa
 
 ```lua
 
-local request = http.get('https://raw.githubusercontent.com/ZeroDoctor/zdcc/main/update.lua')
+local request = http.get(
+    'https://raw.githubusercontent.com/ZeroDoctor/zdcc/main/update.lua'
+    {
+        ['Cache-Control'] = 'no-cache, no-store',
+        ['Pragma'] = 'no-cache'
+    }
+)
 
 local file = io.open('/update.lua', 'w')
 if file ~= nil then

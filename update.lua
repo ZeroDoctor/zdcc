@@ -1,5 +1,3 @@
-local util = require('util.str')
-
 local base_dir = 'https://raw.githubusercontent.com/ZeroDoctor/zdcc/main'
 
 local files = {
@@ -20,8 +18,21 @@ local files = {
 	'/update.lua'
 }
 
+local function split(str, split_on)
+	if split_on == nil then
+		split_on = '%s'
+	end
+
+	local result = {}
+	for s in string.gmatch(str, '([^'..split_on..']+)') do
+		table.insert(result, s)
+	end
+
+	return result
+end
+
 local function comment_out_test(content)
-	local lines = util.split(content, '\n')
+	local lines = split(content, '\n')
 	content = ''
 
 	local ignore = true
