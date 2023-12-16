@@ -2,6 +2,8 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
+local tbl = require('test.tbl')
+
 -- put/patch = {
 -- 	{
 -- 		name = "minecraft:oak_log",
@@ -35,6 +37,7 @@ local function find_slot(config, sc)
 			slot = o.location
 		end
 	end
+	tbl.print_table(config)
 
 	return slot
 end

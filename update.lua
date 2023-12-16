@@ -13,11 +13,13 @@ local files = {
 	'/lib/make_shape.lua',
 	'/lib/track_move.lua',
 	'/test/dig_test.lua',
+	'/test/http_test.lua',
 	'/test/loop_test.lua',
 	'/test/move_test.lua',
 	'/test/place_test.lua',
 	'/test/tbl.lua',
 	'/test/turtle_test_api.lua',
+	'/test/update_test.lua',
 	'/mining.lua',
 	'/test.lua',
 	'/update.lua'
