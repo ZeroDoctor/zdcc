@@ -17,7 +17,7 @@ local files = {
 	'/test/loop_test.lua',
 	'/test/move_test.lua',
 	'/test/place_test.lua',
-	'/test/tbl.lua',
+	'/test/textutils_test.lua',
 	'/test/turtle_test_api.lua',
 	'/test/update_test.lua',
 	'/mining.lua',
