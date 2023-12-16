@@ -24,6 +24,11 @@ loop.init = function(self)
 		turtle.select(obj.location[1])
 		turtle.refuel()
 	end
+	obj = self.inventory:search_name('.*charcoal', true)
+	if obj ~= nil then
+		turtle.select(obj.location[1])
+		turtle.refuel()
+	end
 
 	shape.place = false
 	shape:init(self.move, self.place)
