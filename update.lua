@@ -1,3 +1,8 @@
+-- #test
+local http = require('test.http_test')
+local os = require('test.os_test')
+-- #end
+
 local base_dir = 'https://raw.githubusercontent.com/ZeroDoctor/zdcc/main'
 
 local files = {

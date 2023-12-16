@@ -211,9 +211,9 @@ function script:cuboid(width, depth, height, hollow, start_x, start_z)
 	for i = 0, height - 1 do
 		track:to(track.x, i, track.z, self.force)
 		if hollow == "y" then
-			script:platform(width, depth, start_x, start_z)
+			script:platform(depth, width, start_x, start_z)
 		else
-			script:rectangle(width, depth, start_x, start_z)
+			script:rectangle(depth, width, start_x, start_z)
 		end
 	end
 end

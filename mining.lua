@@ -29,10 +29,13 @@ loop.init = function(self)
 	shape:init(self.move, self.place)
 end
 
-print("set width, length, and heigth from relative origin of turtle:")
+print("set width, length, and height from relative origin of turtle:")
 
+print('enter width:')
 local w = tonumber(io.read())
+print('enter length:')
 local l = tonumber(io.read())
+print('enter height:')
 local h = tonumber(io.read())
 
 loop.update = function(self)

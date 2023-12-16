@@ -18,16 +18,9 @@ function script:dig(side)
 
 	local running = true
 	while running do
-		for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
-			local found_block, block_meta = turtle.inspect()
-			if found_block then
-				for key in pairs(block_meta.tags) do -- iterate through current block tags
-					local result = string.find(key, value)
-					if result ~= nil then
-						return false, "found block with tag "..key -- return false if block is found
-					end
-				end
-			end
+		local ok, err = self:is_okay(turtle.inspect)
+		if not ok then
+			return ok, err
 		end
 
 		if not turtle.detect() then -- in the case that avoid array is empty
@@ -49,16 +42,9 @@ function script:digUp(side)
 
 	local running = true
 	while running do
-		for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
-			local found_block, block_meta = turtle.inspectUp()
-			if found_block then
-				for key in pairs(block_meta.tags) do -- iterate through current block tags
-					local result = string.find(key, value)
-					if result ~= nil then
-						return false, "found block with tag "..key -- return false if block is found
-					end
-				end
-			end
+		local ok, err = self:is_okay(turtle.inspectUp)
+		if not ok then
+			return ok, err
 		end
 
 		if not turtle.detectUp() then
@@ -80,16 +66,9 @@ function script:digDown(side)
 
 	local running = true
 	while running do
-		for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
-			local found_block, block_meta = turtle.inspectDown()
-			if found_block then
-				for key in pairs(block_meta.tags) do -- iterate through current block tags
-					local result = string.find(key, value)
-					if result ~= nil then
-						return false, "found block with tag "..key -- return false if block is found
-					end
-				end
-			end
+		local ok, err = self:is_okay(turtle.inspectDown)
+		if not ok then
+			return ok, err
 		end
 
 		if not turtle.detectDown() then
@@ -98,6 +77,23 @@ function script:digDown(side)
 
 		turtle.digDown(side)
 	end
+end
+
+
+function script:is_okay(inspect)
+	for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
+		local found_block, block_meta = inspect()
+		if found_block then
+			for key in pairs(block_meta.tags) do -- iterate through current block tags
+				local result = string.find(key, value)
+				if result ~= nil then
+					return false, "found block with tag "..key -- return false if block is found
+				end
+			end
+		end
+	end
+
+	return true
 end
 
 return script
