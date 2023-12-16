@@ -25,6 +25,27 @@ local blocks = {
 	},
 }
 
+local inventory = {
+	{
+		name = "minecraft:oak_log",
+		tags = {["minecraft:logs"] = true},
+		count = 32,
+		location = 1,
+	},
+	{
+		name = "minecraft:cobblestone",
+		tags = {["minecraft:stone"] = true},
+		count = 16,
+		location = 9,
+	},
+	{
+		name = "minecraft:torch",
+		tags = {["minecraft:light"] = true},
+		count = 4,
+		location = 5,
+	},
+}
+
 local front_face = 0
 local right_face = 1
 local back_face =  2
@@ -131,11 +152,13 @@ end
 function script.getItemDetail(slot, detail)
 	detail = detail or false
 
-	if slot ~= 1 then return nil end
-	return {
-		name = "minecraft:oak_log",
-		count = 11,
-	}
+	for _, v in ipairs(inventory) do
+		if v.location == slot then
+			return v
+		end
+	end
+
+	return nil
 end
 
 function script.inspect()

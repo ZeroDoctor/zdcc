@@ -1,5 +1,6 @@
 -- #test
 local turtle = require("test.turtle_test_api")
+local textutils = require('test.textutils_test')
 -- #end
 
 -- inventory = {
@@ -38,7 +39,7 @@ local function find_item(map, name)
 end
 
 function script:search_tag(tag)
-	for _, inv in ipairs(self.inventory) do
+	for _, inv in pairs(self.inventory) do
 		if inv.tags == nil then
 			return
 		end

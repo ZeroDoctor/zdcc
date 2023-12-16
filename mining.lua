@@ -1,6 +1,5 @@
 -- #test
 local turtle = require('test.turtle_test_api')
--- local tbl = require("test.tbl")
 -- #end
 
 local loop = require('lib.loop')
