@@ -61,6 +61,8 @@ function script:start(config)
 	self.place.force_goback = config.really_ensure_place
 	self.place:init(self.inventory, self.dig, self.move)
 
+	-- TODO: place does not have inventory module
+
 	self.move.hard_reset = config.hard_reset
 	if config.refuel then
 		self.move.limit = config.move_limit
@@ -72,7 +74,6 @@ function script:start(config)
 		self.move:init(self.dig, self.place)
 	end
 
-	log:debug('[self={}]', self)
 	log:debug('[config={}]', config)
 
 	-- setup loop
