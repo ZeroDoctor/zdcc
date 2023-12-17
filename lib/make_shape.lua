@@ -19,8 +19,8 @@ end
 
 -- Shape Building functions
 function script:drawLine(endX, endY, startX, startY)
-	startX = startX or track.x
-	startY = startY or track.z
+	startX = startX or track.location.x
+	startY = startY or track.location.z
 	local deltaX = math.abs(endX - startX)
 	local deltaY = math.abs(endY - startY)
 	local errorVar = 0
@@ -30,7 +30,7 @@ function script:drawLine(endX, endY, startX, startY)
 			if startY < endY then
 				local counterY = startY
 				for counterX = startX, endX do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -43,7 +43,7 @@ function script:drawLine(endX, endY, startX, startY)
 			else
 				local counterY = startY
 				for counterX = startX, endX do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -58,7 +58,7 @@ function script:drawLine(endX, endY, startX, startY)
 			if startY < endY then
 				local counterY = startY
 				for counterX = startX, endX, -1 do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -71,7 +71,7 @@ function script:drawLine(endX, endY, startX, startY)
 			else
 				local counterY = startY
 				for counterX = startX, endX, -1 do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -89,7 +89,7 @@ function script:drawLine(endX, endY, startX, startY)
 			if startX < endX then
 				local counterX = startX
 				for counterY = startY, endY do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -102,7 +102,7 @@ function script:drawLine(endX, endY, startX, startY)
 			else
 				local counterX = startX
 				for counterY = startY, endY do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -117,7 +117,7 @@ function script:drawLine(endX, endY, startX, startY)
 			if startX < endX then
 				local counterX = startX
 				for counterY = startY, endY, -1 do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -130,7 +130,7 @@ function script:drawLine(endX, endY, startX, startY)
 			else
 				local counterX = startX
 				for counterY = startY, endY, -1 do
-					track:to(counterX, track.y, counterY, self.force)
+					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
 						ensure:place()
 					end
@@ -146,8 +146,8 @@ function script:drawLine(endX, endY, startX, startY)
 end
 
 function script:rectangle(width, depth, startX, startY)
-	startX = startX or track.x
-	startY = startY or track.z
+	startX = startX or track.location.x
+	startY = startY or track.location.z
 	local endX = startX + width - 1
 	local endY = startY + depth - 1
 	script:drawLine(startX, endY, startX, startY)
@@ -157,8 +157,8 @@ function script:rectangle(width, depth, startX, startY)
 end
 
 function script:square(length, startX, startY)
-	startX = startX or track.x
-	startY = startY or track.z
+	startX = startX or track.location.x
+	startY = startY or track.location.z
 	script:rectangle(length, length, startX, startY)
 end
 
@@ -169,18 +169,18 @@ function script:wall(depth, height)
 				ensure:place()
 			end
 			if j < height then
-				track:to(track.x, track.y+1, track.z, self.force)
+				track:to(track.location.x, track.location.y+1, track.location.z, self.force)
 			end
 		end
 		if (i ~= depth) then
-			track:to(track.x, track.y, track.z + 1, self.force)
+			track:to(track.location.x, track.location.y, track.location.z + 1, self.force)
 		end
 	end
 end
 
 function script:platform(width, depth, startX, startY)
-	startX = startX or track.x
-	startY = startY or track.z
+	startX = startX or track.location.x
+	startY = startY or track.location.z
 
 	local endX = startX + width - 1
 	local endY = startY + depth - 1
@@ -188,14 +188,14 @@ function script:platform(width, depth, startX, startY)
 	for counterY = startY, endY do
 		if forward then
 			for counterX = startX, endX do
-				track:to(counterX, track.y, counterY, self.force)
+				track:to(counterX, track.location.y, counterY, self.force)
 				if self.place then
 					ensure:place()
 				end
 			end
 		else
 			for counterX = endX, startX, -1 do
-				track:to(counterX, track.y, counterY, self.force)
+				track:to(counterX, track.location.y, counterY, self.force)
 				if self.place then
 					ensure:place()
 				end
@@ -206,10 +206,10 @@ function script:platform(width, depth, startX, startY)
 end
 
 function script:cuboid(width, depth, height, hollow, start_x, start_z)
-	start_x = start_x or track.x
-	start_z = start_z or track.z
+	start_x = start_x or track.location.x
+	start_z = start_z or track.location.z
 	for i = 0, height - 1 do
-		track:to(track.x, i, track.z, self.force)
+		track:to(track.location.x, i, track.location.z, self.force)
 		if hollow == "y" then
 			script:platform(depth, width, start_x, start_z)
 		else
@@ -234,8 +234,8 @@ function script:pyramid(length, hollow)
 end
 
 function script:stair(width, height, startX, startY) -- Last two might be able to be used to make a basic home-like shape later?
-	startX = startX or track.x
-	startY = startY or track.z
+	startX = startX or track.location.x
+	startY = startY or track.location.z
 
 	local endX = startX + width - 1
 	local endY = startY + height - 1
@@ -243,21 +243,21 @@ function script:stair(width, height, startX, startY) -- Last two might be able t
 	for counterY = startY, endY do
 		if forward then
 			for counterX = startX, endX do
-				track:to(counterX, track.y, counterY, self.force)
+				track:to(counterX, track.location.y, counterY, self.force)
 				if self.place then
 					ensure:place()
 				end
 			end
 		else
 			for counterX = endX, startX, -1 do
-				track:to(counterX, track.y, counterY, self.force)
+				track:to(counterX, track.location.y, counterY, self.force)
 				if self.place then
 					ensure:place()
 				end
 			end
 		end
 		if counterY ~= endY then
-			track:to(track.x, track.y + 1, track.z, self.force)
+			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
 			forward = not forward
 		end
 	end
@@ -361,7 +361,7 @@ function script:circle(diameter)
 					for x = xStart,xEnd,xStep do
 						-- Only blocks within the radius but still within 1 3d-diagonal block of the edge are eligible
 						if isSphereBorder(offset, x, y, z, radius2) then
-							track:to(x, track.y, y, self.force)
+							track:to(x, track.location.y, y, self.force)
 							if self.place then
 								ensure:place()
 							end
@@ -413,7 +413,7 @@ function script:dome(typus, diameter)
 	-- This loop is for each vertical layer through the sphere or dome.
 	for z = zstart,zend do
 		if z ~= zstart then
-			track:to(track.x, track.y + 1, track.z, self.force)
+			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
 		end
 		--writeOut("Layer " .. z)
 		local cz2 = (radius - z) ^ 2
@@ -485,7 +485,7 @@ function script:cylinder(diameter, height)
 	for i = 1, height do
 		script:circle(diameter)
 		if i ~= height then
-			track:to(track.x, track.y + 1, track.z, self.force)
+			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
 		end
 	end
 end
@@ -593,7 +593,7 @@ function script:circleLikePolygonPrism(numSides, diameter, height, offsetAngle)
 	for i = 1, height do
 		script:circleLikePolygon(numSides, diameter, offsetAngle)
 		if i ~= height then
-			track:to(track.x, track.y + 1, track.z, self.force, true)
+			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
 		end
 	end
 end
@@ -603,7 +603,7 @@ function script:polygonPrism(numSides, sideLength, height, offsetAngle)
 	for i = 1, height do
 		script:polygon(numSides, sideLength, offsetAngle)
 		if i ~= height then
-			track:to(track.x, track.y+1, track.z, self.force)
+			track:to(track.location.x, track.location.y+1, track.location.z, self.force)
 		end
 	end
 end

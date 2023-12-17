@@ -82,9 +82,13 @@ end
 
 function script:is_okay(inspect)
 	for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
-		local found_block, block_meta = inspect()
-		if found_block then
-			for key in pairs(block_meta.tags) do -- iterate through current block tags
+		local found, block = inspect()
+		if found then
+			if string.find(block.name, value) then
+				return false, "found block with name "..block.name
+			end
+
+			for key in pairs(block.tags) do -- iterate through current block tags
 				local result = string.find(key, value)
 				if result ~= nil then
 					return false, "found block with tag "..key -- return false if block is found
