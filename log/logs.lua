@@ -1,6 +1,7 @@
 -- #test
-local textutils = require('test.textutils_test')
 -- #end
+
+local textutils = require('test.textutils_test')
 
 local levels = {
 	['DEBUG'] = 0,
@@ -37,7 +38,7 @@ local function log(self, str, ...)
 			if type(args[i]) == 'table' then
 				out = textutils.serialise(args[i])
 			end
-			str = str:sub(1, _start-1)..out..str:sub(_end+1, #str)
+			str = str:sub(1, _start-1)..tostring(out)..str:sub(_end+1, #str)
 		else
 			str = str..' <extra:'..args[i]..'>'
 		end

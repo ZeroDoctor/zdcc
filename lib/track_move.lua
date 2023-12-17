@@ -99,11 +99,10 @@ function script:forward(num, force)
 	end
 
 	-- keep track of movement
-	self.location = det_dir(count, self.location)
+	det_dir(count, self.location)
 	self.cost = self.cost + count
 	if not self.goback then
-		self.location = det_dir(count, {x=0, y=0, z=0, dir=self.location.dir})
-		table.insert(self.trace, self.location)
+		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.location.dir}))
 
 		-- retrace steps if limit reached
 		if self.should_goback and self.need_fuel then
@@ -144,11 +143,10 @@ function script:back(num, force)
 	end
 
 	-- keep track of movement
-	self.location = det_dir(count, self.location)
+	det_dir(count, self.location)
 	self.cost = self.cost + count
 	if not self.goback then
-		self.location = det_dir(count, {x=0, y=0, z=0, dir=self.location.dir})
-		table.insert(self.trace, self.location)
+		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.location.dir}))
 
 		-- retrace steps if limit reached
 		if self.should_goback and self.need_fuel then
@@ -391,7 +389,7 @@ function script:retrace(hard)
 
 		if self.location.y > 0 then
 			script:down(self.location.y, true)
-		elseif self.y < 0 then
+		elseif self.location.y < 0 then
 			script:up(self.location.y*-1, true)
 		end
 
@@ -407,7 +405,7 @@ function script:retrace(hard)
 
 		if self.location.z > 0 then
 			script:back(self.location.z, true)
-		elseif self.z < 0 then
+		elseif self.location.z < 0 then
 			script:forward(self.location.z*-1, true)
 		end
 
