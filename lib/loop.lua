@@ -53,6 +53,7 @@ function script:start(config)
 	-- setup modules
 	self.inventory.enable_tags = config.enable_tags
 	self.inventory.max_slots = config.max_slots
+	self.inventory:update()
 
 	self.dig.avoid = config.avoid
 
@@ -77,7 +78,6 @@ function script:start(config)
 	log:debug('[config={}]', config)
 
 	-- setup loop
-	self.inventory:update()
 	script:init()
 
 	self.move.limit = turtle.getFuelLevel() / 2
