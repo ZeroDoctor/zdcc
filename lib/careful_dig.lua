@@ -2,6 +2,8 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
+local log = require('log.logs')
+
 local script = {
 	must_empty = true,
 	avoid = {},
@@ -18,9 +20,8 @@ function script:dig(side)
 
 	local running = true
 	while running do
-		local ok, err = self:is_okay(turtle.inspect)
-		if not ok then
-			return ok, err
+		if not self:is_okay(turtle.inspect) then
+			return false
 		end
 
 		if not turtle.detect() then -- in the case that avoid array is empty
@@ -42,9 +43,8 @@ function script:digUp(side)
 
 	local running = true
 	while running do
-		local ok, err = self:is_okay(turtle.inspectUp)
-		if not ok then
-			return ok, err
+		if not self:is_okay(turtle.inspectUp) then
+			return false
 		end
 
 		if not turtle.detectUp() then
@@ -61,18 +61,17 @@ function script:digDown(side)
 			return turtle.digDown(side)
 		end
 
-		return true, nil
+		return true
 	end
 
 	local running = true
 	while running do
-		local ok, err = self:is_okay(turtle.inspectDown)
-		if not ok then
-			return ok, err
+		if not self:is_okay(turtle.inspectDown) then
+			return false
 		end
 
 		if not turtle.detectDown() then
-			return true, nil
+			return true
 		end
 
 		turtle.digDown(side)
@@ -85,13 +84,15 @@ function script:is_okay(inspect)
 		local found, block = inspect()
 		if found then
 			if string.find(block.name, value) then
-				return false, "found block with name "..block.name
+				log:info('{dig} found block with [name={}]', block.name)
+				return false
 			end
 
 			for key in pairs(block.tags) do -- iterate through current block tags
 				local result = string.find(key, value)
 				if result ~= nil then
-					return false, "found block with tag "..key -- return false if block is found
+				log:info('{dig} found block with [tag={}]', key)
+					return false
 				end
 			end
 		end

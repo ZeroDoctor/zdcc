@@ -2,6 +2,9 @@
 local turtle = require('test.turtle_test_api')
 -- #end
 
+local log = require('log.logs')
+log:init(0)
+
 local loop = require('lib.loop')
 local shape = require('lib.make_shape')
 
@@ -33,13 +36,13 @@ loop.init = function(self)
 	shape:init(self.move, self.place)
 end
 
-print("set width, length, and height from relative origin of turtle:")
+log:info('set width, length, and height from relative origin of turtle:')
 
-print('enter width:')
+log:info('enter width:')
 local w = tonumber(io.read())
-print('enter length:')
+log:info('enter length:')
 local l = tonumber(io.read())
-print('enter height:')
+log:info('enter height:')
 local h = tonumber(io.read())
 
 loop.update = function(self)
@@ -63,3 +66,4 @@ local config = {
 
 loop:start(config)
 
+log:cleanup()

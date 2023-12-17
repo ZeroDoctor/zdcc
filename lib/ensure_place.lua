@@ -2,6 +2,8 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
+local log = require('log.logs')
+
 -- put/patch = {
 -- 	{
 -- 		name = "minecraft:oak_log",
@@ -115,8 +117,10 @@ function script:place(config, text)
 	local prev_slot = turtle.getSelectedSlot()
 	local slot = find_slot(config, self)
 	if slot == nil then
-		return false, "couldn't find object with name "..tostring(config.name)..
-		" or with tag "..tostring(config.tag).." or in slot "..tostring(config.slot)
+		log:error('failed to find [name={}] object with [tag={}] or [slot={}]',
+			config.name, config.tag, config.slot
+		)
+		return false
 	end
 
 	turtle.select(slot)
@@ -132,8 +136,10 @@ function script:placeUp(config, text)
 	local prev_slot = turtle.getSelectedSlot()
 	local slot = find_slot(config, self)
 	if slot == nil then
-		return false, "couldn't find object with name "..config.name..
-		" or with tag "..config.tag.." or in slot "..tostring(config.slot)
+		log:error('failed to find [name={}] object with [tag={}] or [slot={}]',
+			config.name, config.tag, config.slot
+		)
+		return false
 	end
 
 	turtle.select(slot)
@@ -149,8 +155,10 @@ function script:placeDown(config, text)
 	local prev_slot = turtle.getSelectedSlot()
 	local slot = find_slot(config, self)
 	if slot == nil then
-		return false, "couldn't find object with name "..config.name..
-		" or with tag "..config.tag.." or in slot "..tostring(config.slot)
+		log:error('failed to find [name={}] object with [tag={}] or [slot={}]',
+			config.name, config.tag, config.slot
+		)
+		return false
 	end
 
 	turtle.select(slot)

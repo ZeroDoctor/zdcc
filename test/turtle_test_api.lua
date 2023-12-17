@@ -1,3 +1,6 @@
+
+local log = require('log.logs')
+
 local blocks = {
 	{
 		name = 'minecraft:air',
@@ -30,19 +33,19 @@ local inventory = {
 		name = "minecraft:oak_log",
 		tags = {["minecraft:logs"] = true},
 		count = 32,
-		location = 1,
+		location = {1},
 	},
 	{
 		name = "minecraft:cobblestone",
 		tags = {["minecraft:stone"] = true},
 		count = 16,
-		location = 9,
+		location = {9},
 	},
 	{
 		name = "minecraft:torch",
 		tags = {["minecraft:light"] = true},
 		count = 4,
-		location = 5,
+		location = {5},
 	},
 }
 
@@ -53,7 +56,7 @@ local left_face =  3
 
 local script = {
 	current_slot = 1,
-	inventory = {},
+	inventory = inventory or {},
 	world = {},
 	turtle_location = {},
 	turtle_direction = front_face,
@@ -136,7 +139,16 @@ end
 
 function script.getItemCount(slot)
 	slot = slot or script.current_slot
-	return script.inventory[slot] or 0
+
+	for _, inv in ipairs(script.inventory) do
+		for _, loc in ipairs(inv.location) do
+			if loc == slot then
+				return inv.count
+			end
+		end
+	end
+
+	return 0
 end
 
 function script.getItemSpace(slot)
@@ -152,9 +164,11 @@ end
 function script.getItemDetail(slot, detail)
 	detail = detail or false
 
-	for _, v in ipairs(inventory) do
-		if v.location == slot then
-			return v
+	for _, v in ipairs(script.inventory) do
+		for _, value in ipairs(v.location) do
+			if value == slot then
+				return v
+			end
 		end
 	end
 

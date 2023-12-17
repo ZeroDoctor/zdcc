@@ -8,6 +8,16 @@ local function slice(str, first, last)
 	return sliced
 end
 
+local function slice_tbl(tbl, first, last, step)
+	 local sliced = {}
+
+  for i = first or 1, last or #tbl, step or 1 do
+    sliced[#sliced+1] = tbl[i]
+  end
+
+  return sliced
+end
+
 local function split(str, split_on)
 	if split_on == nil then
 		split_on = '%s'
@@ -53,4 +63,5 @@ return {
 	slice = slice,
 	split = split,
 	trim = trim,
+	slice_tbl = slice_tbl,
 }

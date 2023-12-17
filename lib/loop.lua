@@ -2,6 +2,7 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
+local log = require('log.logs')
 
 local script = {
 	move = require("lib.track_move"),
@@ -70,6 +71,9 @@ function script:start(config)
 	else
 		self.move:init(self.dig, self.place)
 	end
+
+	log:debug('[self={}]', self)
+	log:debug('[config={}]', config)
 
 	-- setup loop
 	self.inventory:update()

@@ -5,6 +5,7 @@ local turtle = require("test.turtle_test_api")
 local careful = require("lib.careful_dig")
 local ensure = require("lib.ensure_place")
 local check = require("lib.check_inventory")
+local log = require("log.logs")
 
 local forward_face = 0
 local right_face = 1
@@ -366,7 +367,7 @@ end
 
 function script:gobefore()
 	if self.before == nil then
-		print('[warn:track] before is already nil')
+		log:warn('{track} before is already nil')
 		return
 	end
 
@@ -381,7 +382,7 @@ function script:retrace(hard)
 	self.before = {self.location.x, self.location.y, self.location.z, self.location.dir}
 
 	self.goback = true
-	print('[info:track] retracing steps [hard='..tostring(hard)..']')
+	log:info('{track} retracing steps [hard={}]', hard)
 
 	if hard then
 		while self.location.dir ~= forward_face do -- make sure its facing forward
@@ -449,9 +450,15 @@ function script:_trace(trace)
 	-- not suppose to happen but lets check if
 	-- we got x position for a z direction and vice versa
 	if self.location.dir % 2 == 0 and trace.z ~= 0 then
-		print('[warning:track] got x for z:', self.location.dir, self.location.z)
+		log:warn('{track} got x for z [dir={}] [z={}]',
+			self.location.dir,
+			self.location.z
+		)
 	elseif self.location.dir % 2 ~= 0 and trace.x ~= 0  then
-		print('[warning:track] got z for x:', self.location.dir, self.location.x)
+		log:warn('{track} got z for x [dir={}] [x={}]',
+			self.location.dir,
+			self.location.x
+		)
 	end
 
 	if trace.x ~= 0 then
@@ -476,7 +483,7 @@ end
 function script:reset_trace(hard)
 	hard = hard or false -- doesn't reset origin if false
 
-	print('[info:track] reseting trace...')
+	log:info('{track} reseting trace...')
 
 	self.should_goback = false -- its already back
 	self.cost = 0
@@ -502,7 +509,7 @@ end
 
 function script:check_additional_fuel()
 	while turtle.getFuelLevel() == 0 and self.need_fuel do
-		print('[info:track] addition pylons (fuel) needed... (press enter when pylons added)')
+		log:info('{track} additional pylons (fuel) required... (press enter when pylons added)')
 		local _ = io.read()
 
 		check:update()
