@@ -45,6 +45,8 @@ local l = tonumber(io.read())
 log:info('enter height:')
 local h = tonumber(io.read())
 
+log:debug('w={} l={} h={}', w, l, h)
+
 loop.update = function(self)
 	shape:cuboid(w, l, h, "y")
 	self.move:retrace(true)

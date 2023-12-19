@@ -15,17 +15,17 @@ function script:dig(side)
 			return turtle.dig(side)
 		end
 
-		return true, nil
+		return true
 	end
 
 	local running = true
 	while running do
-		if not self:is_okay(turtle.inspect) then
-			return false
+		if not turtle.detect() then -- in the case that avoid array is empty
+			return true
 		end
 
-		if not turtle.detect() then -- in the case that avoid array is empty
-			return true, nil
+		if not self:is_okay(turtle.inspect) then
+			return false
 		end
 
 		turtle.dig(side)
@@ -38,17 +38,17 @@ function script:digUp(side)
 			return turtle.digUp(side)
 		end
 
-		return true, nil
+		return true
 	end
 
 	local running = true
 	while running do
-		if not self:is_okay(turtle.inspectUp) then
-			return false
+		if not turtle.detectUp() then
+			return true
 		end
 
-		if not turtle.detectUp() then
-			return true, nil
+		if not self:is_okay(turtle.inspectUp) then
+			return false
 		end
 
 		turtle.digUp(side)
@@ -66,32 +66,31 @@ function script:digDown(side)
 
 	local running = true
 	while running do
-		if not self:is_okay(turtle.inspectDown) then
-			return false
-		end
-
 		if not turtle.detectDown() then
 			return true
+		end
+
+		if not self:is_okay(turtle.inspectDown) then
+			return false
 		end
 
 		turtle.digDown(side)
 	end
 end
 
-
 function script:is_okay(inspect)
 	for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
 		local found, block = inspect()
 		if found then
 			if string.find(block.name, value) then
-				log:info('{dig} found block with [name={}]', block.name)
+				log:info('{dig} found block with [name={}]. avoiding...', block.name)
 				return false
 			end
 
 			for key in pairs(block.tags) do -- iterate through current block tags
 				local result = string.find(key, value)
 				if result ~= nil then
-				log:info('{dig} found block with [tag={}]', key)
+					log:info('{dig} found block with [tag={}]. avoiding...', key)
 					return false
 				end
 			end

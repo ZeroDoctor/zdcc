@@ -80,6 +80,7 @@ function script:update()
 	for i = 1, self.max_slots, 1 do
 		local t = turtle.getItemDetail(i, self.enable_tags)
 		if t ~= nil then
+			t.location = {i}
 			self.inventory[i] = t
 			count[t.name] = (count[t.name] or 0) + 1
 			if self.map[t.name] ~= nil and #self.map[t.name].location < count[t.name] then -- found a previous item with same name
