@@ -6,13 +6,17 @@ local os = require('test.os_test')
 local base_dir = 'https://raw.githubusercontent.com/ZeroDoctor/zdcc/main'
 
 local files = {
+	'/client/client.lua',
 	'/lib/careful_dig.lua',
 	'/lib/check_inventory.lua',
 	'/lib/ensure_place.lua',
 	'/lib/loop.lua',
 	'/lib/make_shape.lua',
+	'/lib/map_inspect.lua',
 	'/lib/track_move.lua',
 	'/log/logs.lua',
+	'/programs/mining.lua',
+	'/server/server.lua',
 	'/test/dig_test.lua',
 	'/test/http_test.lua',
 	'/test/inventory_test.lua',
@@ -26,7 +30,6 @@ local files = {
 	'/test/update_test.lua',
 	'/util/str.lua',
 	'/util/tbl.lua',
-	'/mining.lua',
 	'/test.lua',
 	'/update.lua'
 }
