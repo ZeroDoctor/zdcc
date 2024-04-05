@@ -82,6 +82,10 @@ local function download_file(path)
         ['Pragma'] = 'no-cache'
     }
 	)
+	if request == nil then
+		print('[ERROR] failed to download: '..path)
+		return
+	end
 
 	local file = io.open(path, 'w')
 	if file ~= nil then
