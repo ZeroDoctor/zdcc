@@ -2,9 +2,9 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
-local careful = require("lib.careful_dig")
-local ensure = require("lib.ensure_place")
-local check = require("lib.check_inventory")
+local careful = require("../lib.careful_dig")
+local ensure = require("../lib.ensure_place")
+local check = require("../lib.check_inventory")
 
 local log = require("../log.logs")
 

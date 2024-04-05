@@ -17,8 +17,8 @@ local log = require('../log.logs')
 local script = {
 	patch = {}, -- occurs when no blocks exists
 	put = {}, -- occurs when blocks already exist
-	check = require('lib.check_inventory'),
-	careful =  require('lib.careful_dig'),
+	check = require('../lib.check_inventory'),
+	careful =  require('../lib.careful_dig'),
 	force_place = false, -- TODO: if true then place block if solid block not found
 	force_goback = false,
 }

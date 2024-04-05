@@ -1,5 +1,5 @@
 
-local track = require("lib.track_move")
+local track = require("../lib.track_move")
 
 local script = {}
 

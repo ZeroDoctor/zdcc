@@ -1,5 +1,5 @@
-local ensure = require("lib.ensure_place")
-local track = require("lib.track_move")
+local ensure = require("../lib.ensure_place")
+local track = require("../lib.track_move")
 
 local script = {
 	place = false,

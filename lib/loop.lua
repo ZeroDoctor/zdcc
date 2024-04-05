@@ -5,10 +5,10 @@ local turtle = require("test.turtle_test_api")
 local log = require('../log.logs')
 
 local script = {
-	move = require("lib.track_move"),
-	dig = require("lib.careful_dig"),
-	place = require("lib.ensure_place"),
-	inventory = require("lib.check_inventory"),
+	move = require("../lib.track_move"),
+	dig = require("../lib.careful_dig"),
+	place = require("../lib.ensure_place"),
+	inventory = require("../lib.check_inventory"),
 
 	init = function() end,
 	update = function() return false end,
