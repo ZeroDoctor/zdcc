@@ -1,9 +1,12 @@
 
 local textutils = require("test.textutils_test")
+local log = require('./log.logs')
 
 local function movement_test()
-	print('testing movement test...')
-	local script = require('track_move')
+	log:info('testing movement test...')
+	local script = require('../lib.track_move')
+	script.log = log
+	script:init()
 
 	script:forward(5) script:turnLeft(3)
 	script:forward(4) script:turnLeft(2)
@@ -24,25 +27,25 @@ local function movement_test()
 		dir = 0
 	}
 
-	if want.x ~= script.x then
-		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(script.x))
+	if want.x ~= script.location.x then
+		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(script.location.x))
 	end
-	if want.y ~= script.y then
-		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(script.y))
+	if want.y ~= script.location.y then
+		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(script.location.y))
 	end
-	if want.z ~= script.z then
-		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(script.z))
+	if want.z ~= script.location.z then
+		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(script.location.z))
 	end
-	if want.dir ~= script.dir then
-		print('[error] with dir\n\t want '..tostring(want.dir)..'\n\t got '..tostring(script.dir))
+	if want.dir ~= script.location.dir then
+		print('[error] with dir\n\t want '..tostring(want.dir)..'\n\t got '..tostring(script.location.dir))
 	end
 
 	-- print(test.print_table(script))
 end
 
 local function retrace_test()
-	print('testing soft retace test...')
-	local script = require('track_move')
+	log:info('testing soft retace test...')
+	local script = require('../lib.track_move')
 
 	script:forward(5) script:turnLeft(3)
 	script:forward(4) script:turnLeft(2)
@@ -62,7 +65,7 @@ local function retrace_test()
 
 	script:retrace(false)
 
-	-- print(test.print_table(script))
+	-- print(textutils.serialise(script))
 	-- print(script.x, script.y, script.z, script.dir)
 
 	local want = {
@@ -72,20 +75,20 @@ local function retrace_test()
 		dir = 0
 	}
 
-	if want.x ~= script.x then
-		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(script.x))
+	if want.x ~= script.location.x then
+		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(script.location.x))
 	end
-	if want.y ~= script.y then
-		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(script.y))
+	if want.y ~= script.location.y then
+		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(script.location.y))
 	end
-	if want.z ~= script.z then
-		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(script.z))
+	if want.z ~= script.location.z then
+		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(script.location.z))
 	end
-	if want.dir ~= script.dir then
-		print('[error] with dir\n\t want '..tostring(want.dir)..'\n\t got '..tostring(script.dir))
+	if want.dir ~= script.location.dir then
+		print('[error] with dir\n\t want '..tostring(want.dir)..'\n\t got '..tostring(script.location.dir))
 	end
 
-	print('testing hard retace test...')
+	log:info('testing hard retace test...')
 
 	script:forward(5) script:turnLeft(3)
 	script:forward(4) script:turnLeft(2)
@@ -105,22 +108,23 @@ local function retrace_test()
 
 	script:retrace(true)
 
-	if want.x ~= script.x then
-		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(script.x))
+	if want.x ~= script.location.x then
+		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(script.location.x))
 	end
-	if want.y ~= script.y then
-		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(script.y))
+	if want.y ~= script.location.y then
+		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(script.location.y))
 	end
-	if want.z ~= script.z then
-		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(script.z))
+	if want.z ~= script.location.z then
+		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(script.location.z))
 	end
-	if want.dir ~= script.dir then
-		print('[error] with dir\n\t want '..tostring(want.dir)..'\n\t got '..tostring(script.dir))
+	if want.dir ~= script.location.dir then
+		print('[error] with dir\n\t want '..tostring(want.dir)..'\n\t got '..tostring(script.location.dir))
 	end
 end
 
 local function to_test()
-	local move = require('track_move')
+	local move = require('../lib.track_move')
+
 	move.limit = 100000
 	textutils.serialise(move)
 	move:to(1, 2,  3, true)
@@ -135,14 +139,14 @@ local function to_test()
 	local	want = {x = 4, y = 2, z = 11}
 	-- local	want = {x = -2, y = 0, z = 1}
 
-	if want.x ~= move.x then
-		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(move.x))
+	if want.x ~= move.location.x then
+		print('[error] with x\n\t want '..tostring(want.x)..'\n\t got '..tostring(move.location.x))
 	end
-	if want.y ~= move.y then
-		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(move.y))
+	if want.y ~= move.location.y then
+		print('[error] with y\n\t want '..tostring(want.y)..'\n\t got '..tostring(move.location.y))
 	end
-	if want.z ~= move.z then
-		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(move.z))
+	if want.z ~= move.location.z then
+		print('[error] with z\n\t want '..tostring(want.z)..'\n\t got '..tostring(move.location.z))
 	end
 end
 

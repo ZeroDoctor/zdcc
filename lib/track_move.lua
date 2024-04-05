@@ -33,12 +33,14 @@ local script = {
 	need_fuel = false,
 
 	auto_place_after = 5,
+	log = log,
 }
 
 function script:init(care, en, ch)
 	careful = care or careful
 	check = ch or check
 	ensure = en
+	log = script.log or log
 end
 
 local function det_dir(num, location) -- determine direction
@@ -423,7 +425,7 @@ function script:retrace(hard)
 	for i = #self.trace, 1, -1 do
 		local trace = self.trace[i]
 
-		while self.location.dir ~= (trace.location.dir+2) % 4 do
+		while self.location.dir ~= (trace.dir+2) % 4 do
 			script:turnLeft(1)
 		end
 
