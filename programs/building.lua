@@ -9,7 +9,7 @@ local loop = require('../lib.loop')
 local shape = require('../lib.make_shape')
 
 loop.init = function(self)
-	self.move.auto_place_after = 7
+	self.move.auto_place_after = 1
 
 	local obj = self.inventory:search_name('.*coal', true)
 	if obj ~= nil then
@@ -53,6 +53,7 @@ local config = {
 	put = {
 		{
 			name = "minecraft:stone",
+			where = loop:back_dir(),
 			location = 16,
 		},
 	},
