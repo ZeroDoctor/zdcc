@@ -5,7 +5,8 @@ local turtle = require("test.turtle_test_api")
 local careful = require("lib.careful_dig")
 local ensure = require("lib.ensure_place")
 local check = require("lib.check_inventory")
-local log = require("log.logs")
+
+local log = require("../log.logs")
 
 local forward_face = 0
 local right_face = 1

@@ -2,11 +2,11 @@
 local turtle = require('test.turtle_test_api')
 -- #end
 
-local log = require('log.logs')
+local log = require('../log.logs')
 log:init(0)
 
-local loop = require('lib.loop')
-local shape = require('lib.make_shape')
+local loop = require('../lib.loop')
+local shape = require('../lib.make_shape')
 
 -- local move = require('lib.track_move')
 -- local dig = require('lib.careful_dig')

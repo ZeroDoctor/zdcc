@@ -1,7 +1,6 @@
 -- #test
--- #end
-
 local textutils = require('test.textutils_test')
+-- #end
 
 local levels = {
 	['DEBUG'] = 0,

@@ -2,8 +2,8 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
-local log = require('log.logs')
-local tbl = require('util.tbl')
+local log = require('../log.logs')
+local tbl = require('../util.tbl')
 
 -- inventory = {
 -- 	{

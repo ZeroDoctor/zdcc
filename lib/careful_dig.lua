@@ -2,7 +2,7 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
-local log = require('log.logs')
+local log = require('../log.logs')
 
 local script = {
 	must_empty = true,
