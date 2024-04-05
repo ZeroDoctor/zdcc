@@ -78,18 +78,18 @@ function script:update()
 	local count = {}
 
 	for i = 1, self.max_slots, 1 do
-		local t = turtle.getItemDetail(i, self.enable_tags)
-		if t ~= nil then
-			t.location = {i}
-			self.inventory[i] = t
-			count[t.name] = (count[t.name] or 0) + 1
-			if self.map[t.name] ~= nil and #self.map[t.name].location < count[t.name] then -- found a previous item with same name
-				local prev = tbl.copy(self.map[t.name])
+		local item = turtle.getItemDetail(i, self.enable_tags)
+		if item ~= nil then
+			item.location = {i}
+			self.inventory[i] = item
+			count[item.name] = (count[item.name] or 0) + 1
+			if self.map[item.name] ~= nil and #self.map[item.name].location < count[item.name] then -- found a previous item with same name
+				local prev = tbl.copy(self.map[item.name])
 				prev.count = prev.count + self.inventory[i].count
 				table.insert(prev.location, self.inventory[i].location[1])
-				self.map[t.name] = prev
+				self.map[item.name] = prev
 			else
-				self.map[t.name] = t
+				self.map[item.name] = item
 			end
 		end
 	end

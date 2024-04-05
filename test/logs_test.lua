@@ -1,4 +1,4 @@
-local log = require('log.logs')
+local log = require('../log.logs')
 local loop = require('test.loop_test')
 
 log:init(0)

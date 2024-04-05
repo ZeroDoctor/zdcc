@@ -10,8 +10,10 @@ local script = {
 }
 
 function script:dig(side)
+	log:info('digging...')
 	if not self.must_empty then
 		if turtle.detect() then
+			log:info('must empty?')
 			return turtle.dig(side)
 		end
 
@@ -25,6 +27,7 @@ function script:dig(side)
 		end
 
 		if not self:is_okay(turtle.inspect) then
+			log:info('not okay?')
 			return false
 		end
 
