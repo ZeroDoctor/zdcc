@@ -23,16 +23,16 @@ local script = {
 	force_goback = false,
 }
 
-local function find_slot(config, sc)
+function script:find_slot(config)
 	local slot = config.slot
 
 	if config.name ~= nil then
-		local o = sc.check:search_name(config.name)
+		local o = self.check:search_name(config.name)
 		if o ~= nil then
 			slot = o.location[1]
 		end
 	elseif config.tag ~= nil then
-		local o = sc.check:search_tag(config.tag)
+		local o = self.check:search_tag(config.tag)
 		if o ~= nil then
 			slot = o.location[1]
 		end
@@ -41,7 +41,7 @@ local function find_slot(config, sc)
 	return slot
 end
 
-local function turn_dir(config, self)
+function script:turn_dir(config)
 	if config.where == self:front() then
 		self:place(config)
 	elseif config.where == self:right() then
@@ -73,11 +73,11 @@ end
 
 function script:auto()
 	for _, p in ipairs(self.patch) do
-		turn_dir(p, self)
+		script:turn_dir(p)
 	end
 
 	for _, p in ipairs(self.put) do
-		turn_dir(p, self)
+		script:turn_dir(p)
 	end
 end
 
@@ -87,16 +87,16 @@ function script:place(config, text)
 	end
 
 	local prev_slot = turtle.getSelectedSlot()
-	local slot = find_slot(config, self)
+	local slot = script:find_slot(config)
 	if slot == nil then
-		log:error('failed to find [name={}] object with [tag={}]',
+		log:warn('failed to find [name={}] object with [tag={}]',
 			config.name, config.tag
 		)
 		return false
 	end
 
 	if self.careful:dig() then
-		log:error('failed to place [name={}]',
+		log:warn('failed to place [name={}]',
 			config.name
 		)
 		return false
@@ -113,16 +113,16 @@ function script:placeUp(config, text)
 	end
 
 	local prev_slot = turtle.getSelectedSlot()
-	local slot = find_slot(config, self)
+	local slot = script:find_slot(config)
 	if slot == nil then
-		log:error('failed to find [name={}] object with [tag={}] or [slot={}]',
+		log:warn('failed to find [name={}] object with [tag={}] or [slot={}]',
 			config.name, config.tag, config.slot
 		)
 		return false
 	end
 
 	if self.careful:digUp() then
-		log:error('failed to place [name={}]',
+		log:warn('failed to place [name={}]',
 			config.name
 		)
 		return false
@@ -139,16 +139,16 @@ function script:placeDown(config, text)
 	end
 
 	local prev_slot = turtle.getSelectedSlot()
-	local slot = find_slot(config, self)
+	local slot = self:find_slot(config)
 	if slot == nil then
-		log:error('failed to find [name={}] object with [tag={}] or [slot={}]',
+		log:warn('failed to find [name={}] object with [tag={}] or [slot={}]',
 			config.name, config.tag, config.slot
 		)
 		return false
 	end
 
 	if self.careful:digDown() then
-		log:error('failed to place [name={}]',
+		log:warn('failed to place [name={}]',
 			config.name
 		)
 		return false

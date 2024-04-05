@@ -93,7 +93,7 @@ function script:error(str, ...)
 
 	log(self, '[e:'..os.clock()..'] '
 		..str..'\n'
-		..debug.traceback(),
+		..debug.traceback('tracing...', 2),
 		...
 	)
 end

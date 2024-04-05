@@ -16,6 +16,7 @@ local files = {
 	'/lib/track_move.lua',
 	'/log/logs.lua',
 	'/programs/mining.lua',
+	'/programs/building.lua',
 	'/server/server.lua',
 	'/test/dig_test.lua',
 	'/test/http_test.lua',
