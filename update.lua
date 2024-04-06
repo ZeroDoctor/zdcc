@@ -18,6 +18,8 @@ local files = {
 	'/programs/mining.lua',
 	'/programs/building.lua',
 	'/server/server.lua',
+	'/util/str.lua',
+	'/util/tbl.lua',
 	'/update.lua'
 }
 

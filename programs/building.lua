@@ -9,8 +9,6 @@ local loop = require('../lib.loop')
 local shape = require('../lib.make_shape')
 
 loop.init = function(self)
-	self.move.auto_place_after = 1
-
 	local obj = self.inventory:search_name('.*coal', true)
 	if obj ~= nil then
 		turtle.select(obj.location[1])
@@ -50,13 +48,6 @@ end
 
 local config = {
 	avoid = {"minecraft:chest"},
-	put = {
-		{
-			name = "minecraft:stone",
-			where = loop:back_dir(),
-			location = 16,
-		},
-	},
 	refuel = true,
 	hard_retrace = false,
 }
