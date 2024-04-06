@@ -1,5 +1,6 @@
 -- #test
 local turtle = require("test.turtle_test_api")
+local textutils = require("test.textutils_test")
 -- #end
 
 local careful = require("../lib.careful_dig")
@@ -23,7 +24,7 @@ local script = {
 
 	trace = {}, -- {x, y, z, dir} for soft retrace
 	before = {},
-	hard_reset = false,
+	hard_reset = 0, -- 0 = false and 1 = true
 
 	cost = 0, -- current fuel cost
 	limit = -1, -- limit of fuel usage. if -1 then ignore limit
@@ -33,7 +34,6 @@ local script = {
 	need_fuel = false,
 
 	auto_place_after = 5,
-	log = log,
 }
 
 function script:init(care, en, ch)
@@ -58,39 +58,38 @@ local function det_dir(num, location) -- determine direction
 	return location
 end
 
-local function check_limit(num, sc) -- check if refuel is needed
+function script:check_limit(num) -- check if refuel is needed
 
-	if sc.should_goback then
-		local next = sc.cost + num
+	if self.should_goback then
+		local next = self.cost + num
 
-		if next >= sc.limit then
-			num = next - sc.limit
-			sc.limit = 0
-			sc.need_fuel = true
+		if next >= self.limit then
+			num = next - self.limit
+			self.limit = 0
+			self.need_fuel = true
 		end
 	else
-		sc:check_additional_fuel()
+		script:check_additional_fuel()
 	end
 
 	return num
 end
 
 function script:forward(num, force)
-	force = force or true
+	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = check_limit(num, self)
+	num = script:check_limit(num)
 
 	-- start moving
 	local count = 0
 	for _ = 1, num, 1 do
-		if force then
+		if force == 1 then
 			careful:dig()
 		end
 
-		local s = turtle.forward()
-		if s then
+		if turtle.forward() then
 			count = count + 1
 		end
 
@@ -115,26 +114,26 @@ function script:forward(num, force)
 end
 
 function script:back(num, force)
-	force = force or true
+	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = check_limit(num, self)
+	num = script:check_limit(num)
 
 	-- start moving
-	if force then -- yeah so just...
+	if force == 1 then
 		script:turnLeft(2)
 
 		script:forward(num, force)
 
 		script:turnLeft(2)
-		return
+
+		return -- movement already tracked in forward
 	end
 
 	local count = 0
 	for _ = 1, num, 1 do
-		local s = turtle.back()
-		if s then
+		if turtle.back() then
 			count = count + 1
 		end
 
@@ -159,21 +158,20 @@ function script:back(num, force)
 end
 
 function script:up(num, force)
-	force = force or true
+	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = check_limit(num, self)
+	num = script:check_limit(num)
 
 	-- start moving
 	local count = 0
 	for i = 1, num, 1 do
-		if force then
+		if force == 1 then
 			careful:digUp()
 		end
 
-		local s = turtle.up()
-		if s then
+		if turtle.up() then
 			count = count + 1
 		end
 
@@ -199,21 +197,20 @@ function script:up(num, force)
 end
 
 function script:down(num, force)
-	force = force or true
+	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = check_limit(num, self)
+	num = script:check_limit(num)
 
 	-- start moving
 	local count = 0
 	for i = 1, num, 1 do
-		if force then
+		if force == 1 then
 			careful:digDown()
 		end
 
-		local s = turtle.down()
-		if s then
+		if turtle.down() then
 			count = count + 1
 		end
 
@@ -281,7 +278,7 @@ function script:while_to(x, y, z, force)
 	x = x or 0
 	y = y or 0
 	z = z or 0
-	force = force or false
+	force = force or 0
 
 	if x ~= 0 then
 		if x > 0 then
@@ -318,7 +315,7 @@ function script:to(x, y, z, force)
 	x = x or self.location.x
 	y = y or self.location.y
 	z = z or self.location.z
-	force = force or false
+	force = force or 0
 
 	if self.location.dir % 2 == 0 then -- forward or back
 		local m = math.abs(x - self.location.x)
@@ -378,28 +375,28 @@ function script:gobefore()
 end
 
 function script:retrace(hard)
-	hard = hard or false -- always soft retrace to avoid breaking anything undesired
+	hard = hard or 0 -- always soft retrace to avoid breaking anything undesired
 
 	self.before = {self.location.x, self.location.y, self.location.z, self.location.dir}
 
 	self.goback = true
 	log:info('{track} retracing steps [hard={}]', hard)
 
-	if hard then
+	if hard == 1 then
 		while self.location.dir ~= forward_face do -- make sure its facing forward
 			script:turnLeft(1)
 		end
 
 		if self.location.y > 0 then
-			script:down(self.location.y, true)
+			script:down(self.location.y, hard)
 		elseif self.location.y < 0 then
-			script:up(self.location.y*-1, true)
+			script:up(self.location.y*-1, hard)
 		end
 
 		if self.location.x > 0 then
-			script:back(self.location.x, true)
+			script:back(self.location.x, hard)
 		elseif self.location.x < 0 then
-			script:forward(self.location.x*-1, true)
+			script:forward(self.location.x*-1, hard)
 		end
 
 		while self.location.dir ~= right_face do -- make sure its facing right
@@ -407,9 +404,9 @@ function script:retrace(hard)
 		end
 
 		if self.location.z > 0 then
-			script:back(self.location.z, true)
+			script:back(self.location.z, hard)
 		elseif self.location.z < 0 then
-			script:forward(self.location.z*-1, true)
+			script:forward(self.location.z*-1, hard)
 		end
 
 		while self.location.dir ~= forward_face do -- make sure its facing forward
@@ -441,10 +438,10 @@ end
 
 function script:_trace(trace)
 	if trace.y > 0 then
-		script:down(trace.y, false)
+		script:down(trace.y, 0)
 		return
 	elseif trace.y < 0 then
-		script:up(trace.y*-1, false)
+		script:up(trace.y*-1, 0)
 		return
 	end
 
@@ -468,7 +465,7 @@ function script:_trace(trace)
 			x = x * -1
 		end
 
-		script:forward(x, false)
+		script:forward(x, 0)
 
 		return
 	end
@@ -478,18 +475,18 @@ function script:_trace(trace)
 		z = z * -1
 	end
 
-	script:forward(z, false)
+	script:forward(z, 0)
 end
 
 function script:reset_trace(hard)
-	hard = hard or false -- doesn't reset origin if false
+	hard = hard or 0 -- doesn't reset origin if false
 
 	log:info('{track} reseting trace...')
 
 	self.should_goback = false -- its already back
 	self.cost = 0
 
-	if hard then
+	if hard == 1 then
 		self.location.x = 0
 		self.location.y = 0
 		self.location.z = 0

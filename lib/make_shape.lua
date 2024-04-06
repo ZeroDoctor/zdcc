@@ -3,7 +3,7 @@ local track = require("../lib.track_move")
 
 local script = {
 	place = false,
-	force = false,
+	force = 0, -- 0 = false and 1 = true
 }
 
 function script:init(move, place)

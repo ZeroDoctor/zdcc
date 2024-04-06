@@ -1,6 +1,4 @@
 
-local log = require('log.logs')
-
 local blocks = {
 	{
 		name = 'minecraft:air',
