@@ -1,6 +1,10 @@
 
 local textutils = require("test.textutils_test")
-local log = require('./log.logs')
+local log = require('../log.logs')
+
+local function init(l)
+	log = l or log
+end
 
 local function movement_test()
 	local script = require('../lib.track_move')
@@ -150,6 +154,7 @@ local function to_test()
 end
 
 return {
+	init = init,
 	movement_test = movement_test,
 	retrace_test = retrace_test,
 	to_test = to_test,

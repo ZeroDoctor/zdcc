@@ -28,6 +28,10 @@ local script = {
 	enable_tags = false,
 }
 
+function script:init()
+	log = script.log or log
+end
+
 -- TODO: maybe add 'remove()' and 'add()' methods
 -- to reduce update() usage
 
@@ -76,6 +80,7 @@ end
 
 function script:update()
 	local count = {}
+	self.inventory = {}
 
 	for i = 1, self.max_slots, 1 do
 		local item = turtle.getItemDetail(i, self.enable_tags)
@@ -110,7 +115,6 @@ end
 function script:_flatten(t)
 	local free = {}
 
-	log:debug('start [map={}]', t)
 	for _, loc in ipairs(t.location) do -- iterate through all same blocks location
 		local count = turtle.getItemCount(loc)
 		if count < 64 and #free > 0 then
@@ -130,7 +134,6 @@ function script:_flatten(t)
 			table.insert(free, {location=loc, count=count})
 		end
 	end
-	log:debug('end [map={}]', free)
 end
 
 return script

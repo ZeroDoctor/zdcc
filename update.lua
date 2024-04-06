@@ -18,20 +18,6 @@ local files = {
 	'/programs/mining.lua',
 	'/programs/building.lua',
 	'/server/server.lua',
-	'/test/dig_test.lua',
-	'/test/http_test.lua',
-	'/test/inventory_test.lua',
-	'/test/logs_test.lua',
-	'/test/loop_test.lua',
-	'/test/move_test.lua',
-	'/test/os_test.lua',
-	'/test/place_test.lua',
-	'/test/textutils_test.lua',
-	'/test/turtle_test_api.lua',
-	'/test/update_test.lua',
-	'/util/str.lua',
-	'/util/tbl.lua',
-	'/test.lua',
 	'/update.lua'
 }
 

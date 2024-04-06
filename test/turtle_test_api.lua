@@ -1,3 +1,5 @@
+local tbl = require('../util.tbl')
+local log = require('../log/logs')
 
 local blocks = {
 	{
@@ -87,6 +89,7 @@ function script.init(self, config)
 	end
 
 	self.turtle_location = {0, max_size/2+1, 0}
+	log = config.log or log
 end
 
 function script.dig(side) return true end
@@ -129,7 +132,35 @@ function script.getFuelLimit() end
 function script.refuel(count) end
 
 function script.compareTo(slot) end
-function script.transferTo(slot, count) return true end
+function script.transferTo(slot, count)
+	local selected_item = script.getItemDetail(script.current_slot)
+	local slot_item = script.getItemDetail(slot)
+
+	if not selected_item then
+		log:error('[transferTo] no item at selection {}', script.current_slot)
+		return false
+	end
+
+	count = count or selected_item.count
+	if slot_item then
+		if slot_item.name ~= selected_item.name then
+			log:error('[transferTo] can not merge unique items {} and {}',
+				slot_item.name, selected_item.name
+			)
+			return false
+		end
+
+		slot_item.count = slot_item.count + count
+		script.inventory[slot_item.index] = slot_item
+
+	else
+		local tmp = tbl.copy(script.inventory[script.current_slot])
+		table.insert(script.inventory, tmp)
+	end
+
+	table.remove(script.inventory, selected_item.index)
+	return true
+end
 
 function script.select(slot)
 	script.current_slot = slot
@@ -162,9 +193,10 @@ end
 function script.getItemDetail(slot, detail)
 	detail = detail or false
 
-	for _, v in ipairs(script.inventory) do
+	for i, v in ipairs(script.inventory) do
 		for _, value in ipairs(v.location) do
 			if value == slot then
+				v.index = i
 				return v
 			end
 		end
