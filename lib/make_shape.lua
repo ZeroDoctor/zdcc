@@ -4,11 +4,13 @@ local track = require("../lib.track_move")
 local script = {
 	place = false,
 	force = 0, -- 0 = false and 1 = true
+	block = nil
 }
 
-function script:init(move, place)
+function script:init(move, en, block)
 	track = move or track
-	ensure = place or ensure
+	ensure = en or ensure
+	script.block = block
 end
 
 local function round(toRound, decimalPlace) -- Needed for Polygons
@@ -32,7 +34,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterX = startX, endX do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -45,7 +49,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterX = startX, endX do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -60,7 +66,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterX = startX, endX, -1 do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -73,7 +81,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterX = startX, endX, -1 do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -91,7 +101,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterY = startY, endY do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -104,7 +116,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterY = startY, endY do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -119,7 +133,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterY = startY, endY, -1 do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -132,7 +148,9 @@ function script:drawLine(endX, endY, startX, startY)
 				for counterY = startY, endY, -1 do
 					track:to(counterX, track.location.y, counterY, self.force)
 					if self.place then
-						ensure:place()
+						track:turnLeft(2)
+						ensure:place(self.block)
+						track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then

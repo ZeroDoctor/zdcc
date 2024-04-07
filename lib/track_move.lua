@@ -1,6 +1,5 @@
 -- #test
 local turtle = require("test.turtle_test_api")
-local textutils = require("test.textutils_test")
 -- #end
 
 local careful = require("../lib.careful_dig")
@@ -33,7 +32,7 @@ local script = {
 	should_goback = false,
 	need_fuel = false,
 
-	auto_place_after = 5,
+	auto_place_after = 0,
 }
 
 function script:init(care, en, ch)
