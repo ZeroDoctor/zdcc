@@ -37,11 +37,11 @@ end
 
 local function find_item(map, name)
 	for k in pairs(map) do
-			local r = string.find(k, name)
-			if r ~= nil then
-				return k
-			end
+		local r = string.find(k, name)
+		if r ~= nil then
+			return k
 		end
+	end
 end
 
 function script:search_tag(tag)
@@ -66,6 +66,8 @@ function script:search_name(name, regex)
 	if regex then
 		name = find_item(self.map, name) or name
 	end
+
+	log:debug('{inventory:search_name} searching [map={}] with [name={}]', self.map, name)
 
 	if self.map[name] == nil or
 		self.map[name].location == nil or
