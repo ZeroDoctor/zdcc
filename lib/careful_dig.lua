@@ -12,9 +12,7 @@ local script = {
 function script:dig(side)
 	if not self.must_empty then
 		if turtle.detect() then
-			if not turtle.dig(side) then
-				log:warn('failed to dig [side={}]', side)
-			end
+			return turtle.dig(side) 
 		end
 
 		return true
@@ -39,9 +37,7 @@ end
 function script:digUp(side)
 	if not self.must_empty then
 		if turtle.detectUp() then
-			if not turtle.digUp(side) then
-				log:warn('failed to dig up [side={}]', side)
-			end
+			return turtle.digUp(side)
 		end
 
 		return true
@@ -66,9 +62,7 @@ end
 function script:digDown(side)
 	if not self.must_empty then
 		if turtle.detectDown() then
-			if not turtle.digDown(side) then
-				log:warn('failed to dig down [side={}]', side)
-			end
+			return turtle.digDown(side)
 		end
 
 		return true
