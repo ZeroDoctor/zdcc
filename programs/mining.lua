@@ -41,7 +41,7 @@ log:debug('w={} l={} h={}', w, l, h)
 
 loop.update = function(self)
 	shape:cuboid(w, l, h, "y")
-	self.move:retrace(true)
+	self.move:retrace(1)
 	return false
 end
 
