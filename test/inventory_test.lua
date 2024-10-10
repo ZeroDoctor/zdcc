@@ -12,7 +12,15 @@ end
 
 local function test_searchname()
 	check:update()
-	local o = check:search_name('.*minecraft.*', true)
+	local o = check:search_name({'.*minecraft.*'}, true)
+	if o == nil then
+		log:error('did not find name with minecraft [{}]', o)
+	end
+end
+
+local function test_searchname_or()
+	check:update()
+	local o = check:search_name({'.*torch.*', '.*oak.*'}, true)
 	if o == nil then
 		log:error('did not find name with minecraft [{}]', o)
 	end
@@ -127,6 +135,7 @@ end
 return {
 	init            = init,
 	test_searchname = test_searchname,
+	test_searchname_or = test_searchname_or,
 	test_searchtag  = test_searchtag,
 	test_flatten    = test_flatten,
 }

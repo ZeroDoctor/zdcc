@@ -27,7 +27,7 @@ function script:find_slot(config)
 	local slot = config.slot
 
 	if config.name ~= nil then
-		local o = self.check:search_name(config.name)
+		local o = self.check:search_name({config.name})
 		if o ~= nil then
 			slot = o.location[1]
 		end

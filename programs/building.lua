@@ -9,7 +9,7 @@ local loop = require('../lib.loop')
 local shape = require('../lib.make_shape')
 
 loop.init = function(self)
-	local fuel_regex = '.*(coal|lava|charcoal)'
+	local fuel_regex = {'.*coal', '.*lava', '.*charcoal'}
 	local obj = self.inventory:search_name(fuel_regex, true)
 	if obj ~= nil then
 		turtle.select(obj.location[1])

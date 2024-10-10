@@ -510,11 +510,11 @@ function script:check_additional_fuel()
 		local _ = io.read()
 
 		check:update()
-		local inv = check:search_name('*.coal', true)
+		local inv = check:search_name({'*.coal'}, true)
 		if inv == nil or inv.location[1] == nil then
-			inv = check:search_name('*.lava', true)
+			inv = check:search_name({'*.lava'}, true)
 		elseif inv == nil or inv.location[1] == nil then
-			inv = check:search_name('*.charcoal', true)
+			inv = check:search_name({'*.charcoal'}, true)
 		end
 
 		if inv ~= nil and inv.location[1] ~= nil then

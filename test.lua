@@ -29,6 +29,9 @@ log:info('---- start inventory testing ----')
 log:info('---- search name test')
 inv_test.test_searchname()
 
+log:info('---- search name or test')
+inv_test.test_searchname_or()
+
 log:info('---- search tag test')
 inv_test.test_searchtag()
 

@@ -4,6 +4,7 @@ local turtle = require("test.turtle_test_api")
 
 local log = require('../log.logs')
 local tbl = require('../util.tbl')
+local str = require('../util.str')
 
 -- inventory = {
 -- 	{
@@ -35,13 +36,18 @@ end
 -- TODO: maybe add 'remove()' and 'add()' methods
 -- to reduce update() usage
 
-local function find_item(map, name)
+local function find_items(map, list)
+	local found = {}
 	for k in pairs(map) do
-		local r = string.find(k, name)
-		if r ~= nil then
-			return k
+		for _, name in ipairs(list) do
+			local r = string.find(k, name)
+			if r ~= nil then
+				table.insert(found, k)
+			end
 		end
 	end
+
+	return found
 end
 
 function script:search_tag(tag)
@@ -60,24 +66,26 @@ function script:search_tag(tag)
 	end
 end
 
-function script:search_name(name, regex)
+function script:search_name(list, regex)
 	regex = regex or false
 
 	if regex then
-		name = find_item(self.map, name) or name
+		list = find_items(self.map, list) or list
 	end
 
-	log:debug('{inventory:search_name} searching [map={}] with [name={}]', self.map, name)
+	for _, name in ipairs(list) do
+		log:debug('{inventory:search_name} searching [map={}] with [name={}]', self.map, name)
 
-	if self.map[name] == nil or
-		self.map[name].location == nil or
-		#self.map[name].location == 0 then
-		return
+		if self.map[name] == nil or
+			self.map[name].location == nil or
+			#self.map[name].location == 0 then
+			return
+		end
+
+		local found = self.inventory[self.map[name].location[1]]
+		log:debug('{inventory:search_name} found {}', found)
+		return found
 	end
-
-	local found = self.inventory[self.map[name].location[1]]
-	log:debug('{inventory:search_name} found {}', found)
-	return found
 end
 
 function script:update()
