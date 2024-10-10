@@ -498,7 +498,7 @@ function script:reset_trace(hard)
 
 	script:check_additional_fuel()
 
-	if self.should_before then
+	if self.should_goback then
 		self.goback = false
 		script:gobefore()
 	end

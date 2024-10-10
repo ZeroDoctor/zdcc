@@ -29,8 +29,7 @@ local script = {
 -- 	}, ...}, -- pairs
 -- 	put = {...}, -- same as patch
 -- 	refuel = true,
--- 	hard_retrace = true,
--- 	hard_reset = true,
+-- 	hard_reset = 1,
 -- 	move_limit = turtle.getFuelLevel() / 2,
 -- 	enable_tags = false,
 -- 	max_slots = 16,
@@ -43,8 +42,7 @@ function script:start(config)
 	config.patch = config.patch or {}
 	config.put = config.put or {}
 	config.refuel = config.refuel or true
-	config.hard_retrace = config.hard_retrace or false
-	config.hard_reset = config.hard_reset or false
+	config.hard_reset = config.hard_reset or 0
 	config.move_limit = turtle.getFuelLevel() / 2
 	config.enable_tags = config.enable_tags or false
 	config.max_slots = config.max_slots or 16
@@ -85,7 +83,7 @@ function script:start(config)
   local running = true
 	while running do
 		if config.refuel and self.move.should_goback then
-			self.move:retrace(config.retrace_feel)
+			self.move:retrace(config.hard_reset)
 		end
 
 		running = script:update() or false

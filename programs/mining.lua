@@ -55,7 +55,7 @@ local config = {
 		},
 	},
 	refuel = true,
-	hard_retrace = true,
+	hard_reset = 1,
 }
 
 loop:start(config)

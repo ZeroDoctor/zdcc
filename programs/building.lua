@@ -40,7 +40,7 @@ end
 local config = {
 	avoid = {"minecraft:chest"},
 	refuel = true,
-	hard_retrace = false,
+	hard_reset = 0,
 }
 
 loop:start(config)
