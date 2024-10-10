@@ -12,7 +12,7 @@ local script = {
 function script:dig(side)
 	if not self.must_empty then
 		if turtle.detect() then
-			return turtle.dig(side) 
+			return turtle.dig(side)
 		end
 
 		return true

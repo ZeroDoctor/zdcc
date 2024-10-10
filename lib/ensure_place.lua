@@ -95,11 +95,10 @@ function script:place(config, text)
 		return false
 	end
 
-	if self.careful:dig() then
-		log:warn('{place} failed to place [name={}]',
+	if not self.careful:dig() then
+		log:warn('{place} failed to dig for [name={}]',
 			config.name
 		)
-		return false
 	end
 
 	turtle.select(slot)
@@ -121,11 +120,10 @@ function script:placeUp(config, text)
 		return false
 	end
 
-	if self.careful:digUp() then
-		log:warn('{place} failed to place [name={}]',
+	if not self.careful:digUp() then
+		log:warn('{place} failed to dig up for [name={}]',
 			config.name
 		)
-		return false
 	end
 
 	turtle.select(slot)
@@ -147,11 +145,10 @@ function script:placeDown(config, text)
 		return false
 	end
 
-	if self.careful:digDown() then
-		log:warn('{place} failed to place [name={}]',
+	if not self.careful:digDown() then
+		log:warn('{place} failed to dig down for [name={}]',
 			config.name
 		)
-		return false
 	end
 
 	turtle.select(slot)
