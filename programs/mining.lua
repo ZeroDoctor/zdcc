@@ -24,6 +24,7 @@ loop.init = function(self)
 	end
 
 	shape.place = false
+	shape.force = 1
 	shape:init(self.move, self.place)
 end
 
