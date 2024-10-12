@@ -74,11 +74,12 @@ function script:search_name(list, regex)
 	end
 
 	for _, name in ipairs(list) do
-		log:debug('{inventory:search_name} searching [map={}] with [name={}]', self.map, name)
+		log:trace('{inventory:search_name} searching [map={}] with [name={}]', self.map, name)
 
 		if self.map[name] == nil or
 			self.map[name].location == nil or
 			#self.map[name].location == 0 then
+			log:debug('{inventory:search_name} not found [name={}]', name)
 			return
 		end
 

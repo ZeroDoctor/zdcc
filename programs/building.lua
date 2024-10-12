@@ -3,7 +3,7 @@ local turtle = require('test.turtle_test_api')
 -- #end
 
 local log = require('../log.logs')
-log:init(0)
+log:init(1)
 
 local loop = require('../lib.loop')
 local shape = require('../lib.make_shape')
@@ -17,19 +17,22 @@ loop.init = function(self)
 	end
 
 	shape.place = true
+	shape.block = {
+		name = ".*minecraft.*",
+	}
 	shape:init(self.move, self.place)
 end
 
-log:info('set width, length, and height from relative origin of turtle:')
+print('set width, length, and height from relative origin of turtle:')
 
-log:info('enter width:')
+print('enter width:')
 local w = tonumber(io.read())
-log:info('enter length:')
+print('enter length:')
 local l = tonumber(io.read())
-log:info('enter height:')
+print('enter height:')
 local h = tonumber(io.read())
 
-log:debug('w={} l={} h={}', w, l, h)
+log:debug('{building} w={} l={} h={}', w, l, h)
 
 loop.update = function(self)
 	shape:cuboid(w, l, h, "n")
@@ -38,7 +41,7 @@ loop.update = function(self)
 end
 
 local config = {
-	avoid = {"minecraft:chest"},
+	avoid = { "minecraft:chest" },
 	refuel = true,
 	hard_reset = 0,
 }

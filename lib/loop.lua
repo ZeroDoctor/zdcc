@@ -73,7 +73,7 @@ function script:start(config)
 		self.move:init(self.dig, self.place)
 	end
 
-	log:debug('[config={}]', config)
+	log:debug('{loop:start} [config={}]', config)
 
 	-- setup loop
 	script:init()

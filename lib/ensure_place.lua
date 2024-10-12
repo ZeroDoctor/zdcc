@@ -25,9 +25,10 @@ local script = {
 
 function script:find_slot(config)
 	local slot = config.slot
+	local regex = true
 
 	if config.name ~= nil then
-		local o = self.check:search_name({config.name})
+		local o = self.check:search_name({config.name}, regex)
 		if o ~= nil then
 			slot = o.location[1]
 		end
@@ -89,14 +90,14 @@ function script:place(config, text)
 	local prev_slot = turtle.getSelectedSlot()
 	local slot = script:find_slot(config)
 	if slot == nil then
-		log:warn('{place} failed to find [name={}] object with [tag={}]',
+		log:warn('{place:place} failed to find [name={}] object with [tag={}]',
 			config.name, config.tag
 		)
 		return false
 	end
 
 	if not self.careful:dig() then
-		log:warn('{place} failed to dig for [name={}]',
+		log:warn('{place:place} failed to dig for [name={}]',
 			config.name
 		)
 	end
@@ -114,14 +115,14 @@ function script:placeUp(config, text)
 	local prev_slot = turtle.getSelectedSlot()
 	local slot = script:find_slot(config)
 	if slot == nil then
-		log:warn('{place} failed to find [name={}] object with [tag={}] or [slot={}]',
+		log:warn('{place:placeUp} failed to find [name={}] object with [tag={}] or [slot={}]',
 			config.name, config.tag, config.slot
 		)
 		return false
 	end
 
 	if not self.careful:digUp() then
-		log:warn('{place} failed to dig up for [name={}]',
+		log:warn('{place:placeUp} failed to dig up for [name={}]',
 			config.name
 		)
 	end
@@ -139,14 +140,14 @@ function script:placeDown(config, text)
 	local prev_slot = turtle.getSelectedSlot()
 	local slot = self:find_slot(config)
 	if slot == nil then
-		log:warn('{place} failed to find [name={}] object with [tag={}] or [slot={}]',
+		log:warn('{place:placeDown} failed to find [name={}] object with [tag={}] or [slot={}]',
 			config.name, config.tag, config.slot
 		)
 		return false
 	end
 
 	if not self.careful:digDown() then
-		log:warn('{place} failed to dig down for [name={}]',
+		log:warn('{place:placeDown} failed to dig down for [name={}]',
 			config.name
 		)
 	end

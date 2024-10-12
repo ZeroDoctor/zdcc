@@ -89,14 +89,14 @@ function script:is_okay(inspect)
 		local found, block = inspect()
 		if found then
 			if string.find(block.name, value) then
-				log:info('{dig} found block with [name={}]. avoiding...', block.name)
+				log:info('{dig:is_okay} found block with [name={}]. avoiding...', block.name)
 				return false
 			end
 
 			for key in pairs(block.tags) do -- iterate through current block tags
 				local result = string.find(key, value)
 				if result ~= nil then
-					log:info('{dig} found block with [tag={}]. avoiding...', key)
+					log:info('{dig:is_okay} found block with [tag={}]. avoiding...', key)
 					return false
 				end
 			end

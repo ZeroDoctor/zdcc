@@ -63,34 +63,10 @@ local function find_replace_word(lines, find, replace)
 	return result
 end
 
-local function regex_or(str)
-	if not str or #str == 0 then
-		return {}
-	end
-
-	local first = 2
-	local groups = split(str, '(')
-	if #groups <= 0 then
-		return {}
-	end
-
-	local regexor = {}
-	for i = first, #groups, 1 do
-		local end_index = string.find(groups[i], ')')
-		local grps = slice(groups[i], 1, end_index-1)
-
-		local elem = split(grps, '|')
-		table.insert(regexor, elem)
-	end
-
-	return regexor
-end
-
 return {
 	find_replace_word = find_replace_word,
 	slice = slice,
 	split = split,
 	trim = trim,
 	slice_tbl = slice_tbl,
-	regex_or  = regex_or,
 }

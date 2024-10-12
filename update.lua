@@ -76,7 +76,7 @@ local function download_file(path)
     }
 	)
 	if request == nil then
-		print('[ERROR] failed to download: '..path)
+		print('{update:ERROR} failed to download: '..path)
 		return
 	end
 

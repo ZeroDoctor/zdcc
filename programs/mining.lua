@@ -3,7 +3,7 @@ local turtle = require('test.turtle_test_api')
 -- #end
 
 local log = require('../log.logs')
-log:init(0)
+log:init(1)
 
 local loop = require('../lib.loop')
 local shape = require('../lib.make_shape')
@@ -14,7 +14,7 @@ local shape = require('../lib.make_shape')
 -- local inventory = require('lib.check_inventory')
 
 loop.init = function(self)
-	self.move.auto_place_after = 7
+	self.move.auto_place_after = 12
 
 	local fuel_regex = {'.*coal', '.*lava', '.*charcoal'}
 	local obj = self.inventory:search_name(fuel_regex, true)
@@ -28,16 +28,16 @@ loop.init = function(self)
 	shape:init(self.move, self.place)
 end
 
-log:info('set width, length, and height from relative origin of turtle:')
+print('set width, length, and height from relative origin of turtle:')
 
-log:info('enter width:')
+print('enter width:')
 local w = tonumber(io.read())
-log:info('enter length:')
+print('enter length:')
 local l = tonumber(io.read())
-log:info('enter height:')
+print('enter height:')
 local h = tonumber(io.read())
 
-log:debug('w={} l={} h={}', w, l, h)
+log:debug('{mining} w={} l={} h={}', w, l, h)
 
 loop.update = function(self)
 	shape:cuboid(w, l, h, "y")
