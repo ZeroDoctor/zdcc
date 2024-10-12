@@ -46,7 +46,7 @@ loop.update = function(self)
 end
 
 local config = {
-	avoid = {"minecraft:chest"},
+	avoid = { "minecraft:chest" },
 	put = {
 		{
 			name = "minecraft:torch",

@@ -3,11 +3,12 @@ local textutils = require('test.textutils_test')
 -- #end
 
 local levels = {
-	['DEBUG'] = 0,
-	['INFO'] = 1,
-	['WARN'] = 2,
-	['ERROR'] = 3,
-	['FATAL'] = 4,
+	['TRACE'] = 0,
+	['DEBUG'] = 1,
+	['INFO'] = 2,
+	['WARN'] = 3,
+	['ERROR'] = 4,
+	['FATAL'] = 5,
 }
 
 local script = {
@@ -51,6 +52,17 @@ local function log(self, str, ...)
 	else
 		print('[error] failed to write to nil file')
 	end
+end
+
+function script:trace(str, ...)
+	if self.level > levels['TRACE'] then
+		return
+	end
+
+	log(self, '[t:'..os.clock()..'] '
+		..str,
+		...
+	)
 end
 
 function script:debug(str, ...)
