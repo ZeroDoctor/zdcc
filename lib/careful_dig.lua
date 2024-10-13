@@ -4,12 +4,12 @@ local turtle = require("test.turtle_test_api")
 
 local log = require('../log.logs')
 
-local script = {
+local module = {
 	must_empty = true,
 	avoid = {},
 }
 
-function script:dig(side)
+function module:dig(side)
 	if not self.must_empty then
 		if turtle.detect() then
 			return turtle.dig(side)
@@ -34,7 +34,7 @@ function script:dig(side)
 	return true
 end
 
-function script:digUp(side)
+function module:digUp(side)
 	if not self.must_empty then
 		if turtle.detectUp() then
 			return turtle.digUp(side)
@@ -59,7 +59,7 @@ function script:digUp(side)
 	return true
 end
 
-function script:digDown(side)
+function module:digDown(side)
 	if not self.must_empty then
 		if turtle.detectDown() then
 			return turtle.digDown(side)
@@ -84,7 +84,7 @@ function script:digDown(side)
 	return true
 end
 
-function script:is_okay(inspect)
+function module:is_okay(inspect)
 	for _, value in ipairs(self.avoid) do -- iterate through blocks to avoid
 		local found, block = inspect()
 		if found then
@@ -106,5 +106,5 @@ function script:is_okay(inspect)
 	return true
 end
 
-return script
+return module
 

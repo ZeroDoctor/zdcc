@@ -14,7 +14,7 @@ local log = require('../log.logs')
 -- 	},
 -- }
 
-local script = {
+local module = {
 	patch = {}, -- occurs when no blocks exists
 	put = {}, -- occurs when blocks already exist
 	check = require('../lib.check_inventory'),
@@ -22,7 +22,7 @@ local script = {
 	force_place = false, -- TODO: if true then place block if solid block not found
 }
 
-function script:find_slot(config)
+function module:find_slot(config)
 	local slot = config.slot
 	local regex = true
 
@@ -41,7 +41,7 @@ function script:find_slot(config)
 	return slot
 end
 
-function script:turn_dir(config)
+function module:turn_dir(config)
 	if config.where == self:front() then
 		self:place(config)
 	elseif config.where == self:right() then
@@ -65,29 +65,29 @@ function script:turn_dir(config)
 	end
 end
 
-function script:init(check, careful, track)
+function module:init(check, careful, track)
 	self.check = check or self.check
 	self.careful = careful or self.careful
 	self.track = track or self.track
 end
 
-function script:auto()
+function module:auto()
 	for _, p in ipairs(self.patch) do
-		script:turn_dir(p)
+		module:turn_dir(p)
 	end
 
 	for _, p in ipairs(self.put) do
-		script:turn_dir(p)
+		module:turn_dir(p)
 	end
 end
 
-function script:place(config, text)
+function module:place(config, text)
 	if config == nil then
 		return turtle.place(text)
 	end
 
 	local prev_slot = turtle.getSelectedSlot()
-	local slot = script:find_slot(config)
+	local slot = module:find_slot(config)
 	if slot == nil then
 		log:warn('{place:place} failed to find [name={}] object with [tag={}]',
 			config.name, config.tag
@@ -106,13 +106,13 @@ function script:place(config, text)
 	turtle.select(prev_slot)
 end
 
-function script:placeUp(config, text)
+function module:placeUp(config, text)
 	if config == nil then
 		return turtle.placeUp(text)
 	end
 
 	local prev_slot = turtle.getSelectedSlot()
-	local slot = script:find_slot(config)
+	local slot = module:find_slot(config)
 	if slot == nil then
 		log:warn('{place:placeUp} failed to find [name={}] object with [tag={}] or [slot={}]',
 			config.name, config.tag, config.slot
@@ -131,7 +131,7 @@ function script:placeUp(config, text)
 	turtle.select(prev_slot)
 end
 
-function script:placeDown(config, text)
+function module:placeDown(config, text)
 	if config == nil then
 		return turtle.placeDown(text)
 	end
@@ -156,12 +156,12 @@ function script:placeDown(config, text)
 	turtle.select(prev_slot)
 end
 
-function script:front() return 0 end
-function script:right() return 1 end
-function script:back() return 2 end
-function script:left() return 3 end
-function script:top() return 4 end
-function script:bottom() return 5 end
+function module:front() return 0 end
+function module:right() return 1 end
+function module:back() return 2 end
+function module:left() return 3 end
+function module:top() return 4 end
+function module:bottom() return 5 end
 
-return script
+return module
 

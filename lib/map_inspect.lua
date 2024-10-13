@@ -1,21 +1,21 @@
 
 local track = require("../lib.track_move")
 
-local script = {}
+local module = {}
 
-function script:init(move)
+function module:init(move)
 	self.track = move or track
 end
 
-function script:inspect()
+function module:inspect()
 
 end
 
-function script:inspectUp()
+function module:inspectUp()
 
 end
 
-function script:inspectDown()
+function module:inspectDown()
 
 end
 
@@ -26,5 +26,5 @@ local function add_block(self, data)
 	}
 end
 
-return script
+return module
 

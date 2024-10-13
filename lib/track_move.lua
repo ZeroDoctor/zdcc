@@ -13,7 +13,7 @@ local right_face = 1
 local back_face = 2
 local left_face = 3
 
-local script = {
+local module = {
 	location = {
 		x = 0,
 		y = 0,
@@ -33,11 +33,11 @@ local script = {
 	auto_place_after = 0,
 }
 
-function script:init(p_careful, p_ensure, p_check)
+function module:init(p_careful, p_ensure, p_check)
 	careful = p_careful or careful
 	check = p_check or check
 	ensure = p_ensure
-	log = script.log or log
+	log = module.log or log
 end
 
 local function track_dir(num, location) -- determine direction
@@ -55,19 +55,19 @@ local function track_dir(num, location) -- determine direction
 	return location
 end
 
-function script:check_limit(num) -- check if refuel is needed
+function module:check_limit(num) -- check if refuel is needed
 	log:trace('{move:check_limit} checking additional fuel...')
-	script:check_additional_fuel()
+	module:check_additional_fuel()
 
 	return num
 end
 
-function script:forward(num, force)
+function module:forward(num, force)
 	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = script:check_limit(num)
+	num = module:check_limit(num)
 
 	-- start moving
 	local count = 0
@@ -95,25 +95,25 @@ function script:forward(num, force)
 
 		-- retrace steps if limit reached
 		if self.need_fuel then
-			script:retrace(self.hard_reset)
+			module:retrace(self.hard_reset)
 		end
 	end
 end
 
-function script:back(num, force)
+function module:back(num, force)
 	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = script:check_limit(num)
+	num = module:check_limit(num)
 
 	-- start moving
 	if force == 1 then
-		script:turnLeft(2)
+		module:turnLeft(2)
 
-		script:forward(num, force)
+		module:forward(num, force)
 
-		script:turnLeft(2)
+		module:turnLeft(2)
 
 		return -- movement already tracked in forward
 	end
@@ -139,17 +139,17 @@ function script:back(num, force)
 
 		-- retrace steps if limit reached
 		if self.need_fuel then
-			script:retrace(self.hard_reset)
+			module:retrace(self.hard_reset)
 		end
 	end
 end
 
-function script:up(num, force)
+function module:up(num, force)
 	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = script:check_limit(num)
+	num = module:check_limit(num)
 
 	-- start moving
 	local count = 0
@@ -178,17 +178,17 @@ function script:up(num, force)
 
 		-- retrace steps if limit reached
 		if self.need_fuel then
-			script:retrace(self.hard_reset)
+			module:retrace(self.hard_reset)
 		end
 	end
 end
 
-function script:down(num, force)
+function module:down(num, force)
 	force = force or 1
 	num = num or 1
 
 	-- ensure we have enough fuel
-	num = script:check_limit(num)
+	num = module:check_limit(num)
 
 	-- start moving
 	local count = 0
@@ -216,12 +216,12 @@ function script:down(num, force)
 
 		-- retrace steps if limit reached
 		if self.need_fuel then
-			script:retrace(self.hard_reset)
+			module:retrace(self.hard_reset)
 		end
 	end
 end
 
-function script:turnLeft(num)
+function module:turnLeft(num)
 	num = num or 1
 
 	local count = 0
@@ -235,7 +235,7 @@ function script:turnLeft(num)
 	self.location.dir = (self.location.dir-count) % 4
 end
 
-function script:turnRight(num)
+function module:turnRight(num)
 	num = num or 1
 
 	local count = 0
@@ -249,19 +249,19 @@ function script:turnRight(num)
 	self.location.dir = (self.location.dir+count) % 4
 end
 
-function script:turn(face)
+function module:turn(face)
 	face = face or self.location.dir
 
 	if self.location.dir - 1 == face then
-		script:turnLeft()
+		module:turnLeft()
 	end
 
 	while self.location.dir ~= face do
-		script:turnRight()
+		module:turnRight()
 	end
 end
 
-function script:while_to(x, y, z, force)
+function module:while_to(x, y, z, force)
 	x = x or 0
 	y = y or 0
 	z = z or 0
@@ -269,36 +269,36 @@ function script:while_to(x, y, z, force)
 
 	if x ~= 0 then
 		if x > 0 then
-			script:turn(forward_face)
+			module:turn(forward_face)
 		else
-			script:turn(back_face)
+			module:turn(back_face)
 		end
 
-		script:forward(x, force)
+		module:forward(x, force)
 	end
 
 	if z ~= 0 then
 		if z > 0 then
-			script:turn(right_face)
+			module:turn(right_face)
 		else
-			script:turn(left_face)
+			module:turn(left_face)
 		end
 
-		script:forward(z, force)
+		module:forward(z, force)
 	end
 
 	if y ~= 0 then
 		if y > 0 then
-			script:up(y, force)
+			module:up(y, force)
 			return
 		end
 
-		script:down(y, force)
+		module:down(y, force)
 	end
 end
 
 -- to method could be better
-function script:to(x, y, z, force)
+function module:to(x, y, z, force)
 	x = x or self.location.x
 	y = y or self.location.y
 	z = z or self.location.z
@@ -307,54 +307,54 @@ function script:to(x, y, z, force)
 	if self.location.dir % 2 == 0 then -- forward or back
 		local m = math.abs(x - self.location.x)
 		if self.location.x < x then
-			script:turn(forward_face)
-			script:forward(m, force)
+			module:turn(forward_face)
+			module:forward(m, force)
 		elseif self.location.x > x then
-			script:turn(back_face)
-			script:forward(m, force)
+			module:turn(back_face)
+			module:forward(m, force)
 		end
 
 		m = math.abs(z - self.location.z)
 		if self.location.z < z then
-			script:turn(right_face)
-			script:forward(m, force)
+			module:turn(right_face)
+			module:forward(m, force)
 		elseif self.location.z > z then
-			script:turn(left_face)
-			script:forward(m, force)
+			module:turn(left_face)
+			module:forward(m, force)
 		end
 	else -- left or right
 		local m = math.abs(z - self.location.z)
 		if self.location.z < z then
-			script:turn(right_face)
-			script:forward(m, force)
+			module:turn(right_face)
+			module:forward(m, force)
 		elseif self.location.z > z then
-			script:turn(left_face)
-			script:forward(m, force)
+			module:turn(left_face)
+			module:forward(m, force)
 		end
 
 		m = math.abs(x - self.location.x)
 		if self.location.x < x then
-			script:turn(forward_face)
-			script:forward(m, force)
+			module:turn(forward_face)
+			module:forward(m, force)
 		elseif self.location.x > x then
-			script:turn(back_face)
-			script:forward(m, force)
+			module:turn(back_face)
+			module:forward(m, force)
 		end
 	end
 
 	local m = math.abs(y - self.location.y)
 	if self.location.y < y then
-		script:up(m, force)
+		module:up(m, force)
 	elseif self.location.y > y then
-		script:down(m, force)
+		module:down(m, force)
 	end
 end
 
-function script:get_location()
+function module:get_location()
 	return self.location
 end
 
-function script:retrace(hard)
+function module:retrace(hard)
 	hard = hard or 0 -- always soft retrace to avoid breaking anything undesired
 
 	self.goback = true
@@ -362,36 +362,36 @@ function script:retrace(hard)
 
 	if hard == 1 then
 		while self.location.dir ~= forward_face do -- make sure its facing forward
-			script:turnLeft(1)
+			module:turnLeft(1)
 		end
 
 		if self.location.y > 0 then
-			script:down(self.location.y, hard)
+			module:down(self.location.y, hard)
 		elseif self.location.y < 0 then
-			script:up(self.location.y*-1, hard)
+			module:up(self.location.y*-1, hard)
 		end
 
 		if self.location.x > 0 then
-			script:back(self.location.x, hard)
+			module:back(self.location.x, hard)
 		elseif self.location.x < 0 then
-			script:forward(self.location.x*-1, hard)
+			module:forward(self.location.x*-1, hard)
 		end
 
 		while self.location.dir ~= right_face do -- make sure its facing right
-			script:turnLeft(1)
+			module:turnLeft(1)
 		end
 
 		if self.location.z > 0 then
-			script:back(self.location.z, hard)
+			module:back(self.location.z, hard)
 		elseif self.location.z < 0 then
-			script:forward(self.location.z*-1, hard)
+			module:forward(self.location.z*-1, hard)
 		end
 
 		while self.location.dir ~= forward_face do -- make sure its facing forward
-			script:turnLeft(1)
+			module:turnLeft(1)
 		end
 
-		script:reset_trace(self.hard_reset)
+		module:reset_trace(self.hard_reset)
 		return
 	end
 
@@ -401,25 +401,25 @@ function script:retrace(hard)
 		local trace = self.trace[i]
 
 		while self.location.dir ~= (trace.dir+2) % 4 do
-			script:turnLeft(1)
+			module:turnLeft(1)
 		end
 
-		script:_trace(trace)
+		module:_trace(trace)
 	end
 
 	while self.location.dir ~= forward_face do -- make sure its face forward
-		script:turnLeft(1)
+		module:turnLeft(1)
 	end
 
-	script:reset_trace(self.hard_reset)
+	module:reset_trace(self.hard_reset)
 end
 
-function script:_trace(trace)
+function module:_trace(trace)
 	if trace.y > 0 then
-		script:down(trace.y, 0)
+		module:down(trace.y, 0)
 		return
 	elseif trace.y < 0 then
-		script:up(trace.y*-1, 0)
+		module:up(trace.y*-1, 0)
 		return
 	end
 
@@ -443,7 +443,7 @@ function script:_trace(trace)
 			x = x * -1
 		end
 
-		script:forward(x, 0)
+		module:forward(x, 0)
 
 		return
 	end
@@ -453,10 +453,10 @@ function script:_trace(trace)
 		z = z * -1
 	end
 
-	script:forward(z, 0)
+	module:forward(z, 0)
 end
 
-function script:reset_trace(hard)
+function module:reset_trace(hard)
 	hard = hard or 0 -- doesn't reset origin if false
 
 	log:info('{move:reset_trace} reseting trace...')
@@ -474,10 +474,10 @@ function script:reset_trace(hard)
 		self.trace[k] = nil
 	end
 
-	script:check_additional_fuel()
+	module:check_additional_fuel()
 end
 
-function script:check_additional_fuel()
+function module:check_additional_fuel()
 	while turtle.getFuelLevel() == 0 and self.need_fuel do
 		log:info('{move:check_additional_fuel} additional pylons (fuel) required... (press enter when pylons added)')
 		local _ = io.read()
@@ -501,5 +501,5 @@ function script:check_additional_fuel()
 	self.need_fuel = false
 end
 
-return script
+return module
 

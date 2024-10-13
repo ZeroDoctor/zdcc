@@ -1,16 +1,16 @@
 local ensure = require("../lib.ensure_place")
 local track = require("../lib.track_move")
 
-local script = {
+local module = {
 	place = false,
 	force = 0, -- 0 = false and 1 = true
 	block = nil
 }
 
-function script:init(move, en, block)
+function module:init(move, en, block)
 	track = move or track
 	ensure = en or ensure
-	script.block = block
+	module.block = block
 end
 
 local function round(toRound, decimalPlace) -- Needed for Polygons
@@ -20,7 +20,7 @@ local function round(toRound, decimalPlace) -- Needed for Polygons
 end
 
 -- Shape Building functions
-function script:drawLine(endX, endY, startX, startY)
+function module:drawLine(endX, endY, startX, startY)
 	startX = startX or track.location.x
 	startY = startY or track.location.z
 	local deltaX = math.abs(endX - startX)
@@ -163,24 +163,24 @@ function script:drawLine(endX, endY, startX, startY)
 	end
 end
 
-function script:rectangle(width, depth, startX, startY)
+function module:rectangle(width, depth, startX, startY)
 	startX = startX or track.location.x
 	startY = startY or track.location.z
 	local endX = startX + width - 1
 	local endY = startY + depth - 1
-	script:drawLine(startX, endY, startX, startY)
-	script:drawLine(endX, endY, startX, endY)
-	script:drawLine(endX, startY, endX, endY)
-	script:drawLine(startX, startY, endX, startY)
+	module:drawLine(startX, endY, startX, startY)
+	module:drawLine(endX, endY, startX, endY)
+	module:drawLine(endX, startY, endX, endY)
+	module:drawLine(startX, startY, endX, startY)
 end
 
-function script:square(length, startX, startY)
+function module:square(length, startX, startY)
 	startX = startX or track.location.x
 	startY = startY or track.location.z
-	script:rectangle(length, length, startX, startY)
+	module:rectangle(length, length, startX, startY)
 end
 
-function script:wall(depth, height)
+function module:wall(depth, height)
 	for i = 1, depth do
 		for j = 1, height do
 			if self.place then
@@ -196,7 +196,7 @@ function script:wall(depth, height)
 	end
 end
 
-function script:platform(width, depth, startX, startY)
+function module:platform(width, depth, startX, startY)
 	startX = startX or track.location.x
 	startY = startY or track.location.z
 
@@ -223,35 +223,35 @@ function script:platform(width, depth, startX, startY)
 	end
 end
 
-function script:cuboid(width, depth, height, hollow, start_x, start_z)
+function module:cuboid(width, depth, height, hollow, start_x, start_z)
 	start_x = start_x or track.location.x
 	start_z = start_z or track.location.z
 	for i = 0, height - 1 do
 		track:to(track.location.x, i, track.location.z, self.force)
 		if hollow == "y" then
-			script:platform(depth, width, start_x, start_z)
+			module:platform(depth, width, start_x, start_z)
 		else
-			script:rectangle(depth, width, start_x, start_z)
+			module:rectangle(depth, width, start_x, start_z)
 		end
 	end
 end
 
-function script:pyramid(length, hollow)
+function module:pyramid(length, hollow)
 	-- local height = math.ceil(length / 2) - 1
 	local i = 0
 	while (length > 0) do
 		track:to(i, i, i, self.force)
 		if (hollow == "y") then
-			script:rectangle(length, length, i, i)
+			module:rectangle(length, length, i, i)
 		else
-			script:platform(length, length, i, i)
+			module:platform(length, length, i, i)
 		end
 		i = i + 1
 		length = length - 2
 	end
 end
 
-function script:stair(width, height, startX, startY) -- Last two might be able to be used to make a basic home-like shape later?
+function module:stair(width, height, startX, startY) -- Last two might be able to be used to make a basic home-like shape later?
 	startX = startX or track.location.x
 	startY = startY or track.location.z
 
@@ -304,7 +304,7 @@ local function isSphereBorder(offset, x, y, z, radiusSq)
 	return spot
 end
 
-function script:circle(diameter)
+function module:circle(diameter)
 	local odd = not (math.fmod(diameter, 2) == 0)
 	local radius = diameter / 2
 
@@ -390,7 +390,7 @@ function script:circle(diameter)
 		end
 end
 
-function script:dome(typus, diameter)
+function module:dome(typus, diameter)
 	-- Main dome and sphere building routine
 	local odd = not (math.fmod(diameter, 2) == 0)
 	local radius = diameter / 2
@@ -499,9 +499,9 @@ function script:dome(typus, diameter)
 	end
 end
 
-function script:cylinder(diameter, height)
+function module:cylinder(diameter, height)
 	for i = 1, height do
-		script:circle(diameter)
+		module:circle(diameter)
 		if i ~= height then
 			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
 		end
@@ -519,7 +519,7 @@ end
 local polygonCornerList = {} -- Public list of corner coords for n-gons, will be used for hexagons, octagons, and future polygons.
 -- It should be a nested list eg. {{x0,y0},{x1,y1},{x2,y2}...}
 
-function script:constructPolygonFromList() -- Uses polygonCornerList to draw sides between each point
+function module:constructPolygonFromList() -- Uses polygonCornerList to draw sides between each point
 	if #polygonCornerList == 0 then
 		return false
 	end
@@ -542,12 +542,12 @@ function script:constructPolygonFromList() -- Uses polygonCornerList to draw sid
 		end
 		local stopX = polygonCornerList[j][1]
 		local stopY = polygonCornerList[j][2]
-		script:drawLine(stopX, stopY, startX, startY)
+		module:drawLine(stopX, stopY, startX, startY)
 	end
 	return true
 end
 
-function script:circleLikePolygon(numSides, diameter, offsetAngle) -- works like the circle code, allows building a circle with the same diameter from the same start point to inscribe the polygon. offSetAngle is optional, defaults to 0.
+function module:circleLikePolygon(numSides, diameter, offsetAngle) -- works like the circle code, allows building a circle with the same diameter from the same start point to inscribe the polygon. offSetAngle is optional, defaults to 0.
 	local radius = diameter / 2
 	local startAngle = 0
 	if (numSides % 2 == 1) then -- if numSides is odd
@@ -566,12 +566,12 @@ function script:circleLikePolygon(numSides, diameter, offsetAngle) -- works like
 		polygonCornerList[i][2] = round(polygonCornerList[i][2] + radius + 1)
 	end
 
-	if not script:constructPolygonFromList() then
+	if not module:constructPolygonFromList() then
 		error("This error should never happen.")
 	end
 end
 
-function script:polygon(numSides, sideLength, offsetAngle) -- offSetAngle is optional, defaults to 0.
+function module:polygon(numSides, sideLength, offsetAngle) -- offSetAngle is optional, defaults to 0.
 	local currentAngle = 0 + (math.rad(offsetAngle or 0)) -- start at 0 or offset angle. offsetAngle will be in degrees
 	local addAngle = ((math.pi * 2) / numSides)
 	local pointerX, pointerY = 0, 0
@@ -601,46 +601,46 @@ function script:polygon(numSides, sideLength, offsetAngle) -- offSetAngle is opt
 		polygonCornerList[i][2] = round(polygonCornerList[i][2] + minY)
 	end
 
-	if not script:constructPolygonFromList() then
+	if not module:constructPolygonFromList() then
 		error("This error should never happen.")
 	end
 end
 
-function script:circleLikePolygonPrism(numSides, diameter, height, offsetAngle)
+function module:circleLikePolygonPrism(numSides, diameter, height, offsetAngle)
 	offsetAngle = offsetAngle or 0
 	for i = 1, height do
-		script:circleLikePolygon(numSides, diameter, offsetAngle)
+		module:circleLikePolygon(numSides, diameter, offsetAngle)
 		if i ~= height then
 			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
 		end
 	end
 end
 
-function script:polygonPrism(numSides, sideLength, height, offsetAngle)
+function module:polygonPrism(numSides, sideLength, height, offsetAngle)
 	offsetAngle = offsetAngle or 0
 	for i = 1, height do
-		script:polygon(numSides, sideLength, offsetAngle)
+		module:polygon(numSides, sideLength, offsetAngle)
 		if i ~= height then
 			track:to(track.location.x, track.location.y+1, track.location.z, self.force)
 		end
 	end
 end
 
-function script:hexagon(length) -- Deprecated, please use polygon(6, sideLength, 0). Fills out polygonCornerList with the points for a hexagon.
-	script:polygonPrism(6, length, 0)
+function module:hexagon(length) -- Deprecated, please use polygon(6, sideLength, 0). Fills out polygonCornerList with the points for a hexagon.
+	module:polygonPrism(6, length, 0)
 end
 
-function script:octagon(length) -- Deprecated, please use polygon(8, sideLength, 0). Fills out polygonCornerList with the points for an octagon
-	script:polygonPrism(8, length, 0)
+function module:octagon(length) -- Deprecated, please use polygon(8, sideLength, 0). Fills out polygonCornerList with the points for an octagon
+	module:polygonPrism(8, length, 0)
 end
 
-function script:hexagonPrism(length, height) -- Deprecated, please use polygonPrism(6, sideLength, height, 0).
-	script:polygonPrism(6, length, height, 0)
+function module:hexagonPrism(length, height) -- Deprecated, please use polygonPrism(6, sideLength, height, 0).
+	module:polygonPrism(6, length, height, 0)
 end
 
-function script:octagonPrism(length, height) -- Deprecated, please use polygonPrism(8, sideLength, height, 0).
-	script:polygonPrism(8, length, height, 0)
+function module:octagonPrism(length, height) -- Deprecated, please use polygonPrism(8, sideLength, height, 0).
+	module:polygonPrism(8, length, height, 0)
 end
 
-return script
+return module
 

@@ -22,15 +22,15 @@ local str = require('../util.str')
 -- 	},
 -- }
 
-local script = {
+local module = {
 	inventory = {},
 	map = {},
 	max_slots = 16,
 	enable_details = false,
 }
 
-function script:init()
-	log = script.log or log
+function module:init()
+	log = module.log or log
 end
 
 -- TODO: maybe add 'remove()' and 'add()' methods
@@ -50,7 +50,7 @@ local function find_items(map, list)
 	return found
 end
 
-function script:search_tag(tag)
+function module:search_tag(tag)
 	for _, inv in pairs(self.inventory) do
 		if inv.tags == nil then
 			return
@@ -66,7 +66,7 @@ function script:search_tag(tag)
 	end
 end
 
-function script:search_name(list, regex)
+function module:search_name(list, regex)
 	regex = regex or false
 
 	if regex then
@@ -89,7 +89,7 @@ function script:search_name(list, regex)
 	end
 end
 
-function script:update()
+function module:update()
 	local count = {}
 	self.inventory = {}
 
@@ -111,19 +111,19 @@ function script:update()
 	end
 end
 
-function script:flatten()
-	script:update()
+function module:flatten()
+	module:update()
 
 	for _, t in pairs(self.map) do -- iterate through slots
 		 if #t.location > 1 then -- only flatten if more than one location found
-		 	script:_flatten(t)
+		 	module:_flatten(t)
 		 end
 	end
 
-	script:update()
+	module:update()
 end
 
-function script:_flatten(t)
+function module:_flatten(t)
 	local free = {}
 
 	for _, loc in ipairs(t.location) do -- iterate through all same blocks location
@@ -147,5 +147,5 @@ function script:_flatten(t)
 	end
 end
 
-return script
+return module
 

@@ -4,7 +4,7 @@ local turtle = require("test.turtle_test_api")
 
 local log = require('../log.logs')
 
-local script = {
+local module = {
 	move = require("../lib.track_move"),
 	dig = require("../lib.careful_dig"),
 	place = require("../lib.ensure_place"),
@@ -34,7 +34,7 @@ local script = {
 -- 	enable_details = false,
 -- 	max_slots = 16, -- number to slots to check and keep track in check_inventory
 -- }```
-function script:start(config)
+function module:start(config)
 	config = config or {}
 	-- sane defaults
 	config.avoid = config.avoid or {}
@@ -73,7 +73,7 @@ function script:start(config)
 	log:debug('{loop:start} [config={}]', config)
 
 	-- setup loop
-	script:init()
+	module:init()
 
 	self.move.limit = turtle.getFuelLevel() / 2
 
@@ -83,16 +83,16 @@ function script:start(config)
 			self.move:retrace(config.hard_reset)
 		end
 
-		running = script:update() or false
+		running = module:update() or false
 	end
 end
 
-function script:front_dir() return 0 end
-function script:right_dir() return 1 end
-function script:back_dir() return 2 end
-function script:left_dir() return 3 end
-function script:top_dir() return 4 end
-function script:bottom_dir() return 5 end
+function module:front_dir() return 0 end
+function module:right_dir() return 1 end
+function module:back_dir() return 2 end
+function module:left_dir() return 3 end
+function module:top_dir() return 4 end
+function module:bottom_dir() return 5 end
 
-return script
+return module
 
