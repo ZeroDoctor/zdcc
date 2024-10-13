@@ -127,6 +127,7 @@ end
 
 local function to_test()
 	local script = require('../lib.track_move')
+	script.goback = false
 
 	script.limit = 100000
 	textutils.serialise(script)
@@ -151,6 +152,14 @@ local function to_test()
 	if want.z ~= script.location.z then
 		log:error('with z\n\t want {} \n\t got {}', tostring(want.z), tostring(script.location.z))
 	end
+
+
+	print('############')
+	log:info('{}', script:get_location())
+	print(script.location.x)
+	print(script.location.y)
+	print(script.location.z)
+	print('############')
 end
 
 return {

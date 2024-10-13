@@ -26,7 +26,7 @@ local script = {
 	inventory = {},
 	map = {},
 	max_slots = 16,
-	enable_tags = false,
+	enable_details = false,
 }
 
 function script:init()
@@ -94,7 +94,7 @@ function script:update()
 	self.inventory = {}
 
 	for i = 1, self.max_slots, 1 do
-		local item = turtle.getItemDetail(i, self.enable_tags)
+		local item = turtle.getItemDetail(i, self.enable_details)
 		if item ~= nil then
 			item.location = {i}
 			self.inventory[i] = item

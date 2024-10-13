@@ -22,27 +22,25 @@ local script = {
 	},
 
 	trace = {}, -- {x, y, z, dir} for soft retrace
-	before = {},
 	hard_reset = 0, -- 0 = false and 1 = true
 
 	cost = 0, -- current fuel cost
 	limit = -1, -- limit of fuel usage. if -1 then ignore limit
 
 	goback = false,
-	should_goback = false,
 	need_fuel = false,
 
 	auto_place_after = 0,
 }
 
-function script:init(care, en, ch)
-	careful = care or careful
-	check = ch or check
-	ensure = en
+function script:init(p_careful, p_ensure, p_check)
+	careful = p_careful or careful
+	check = p_check or check
+	ensure = p_ensure
 	log = script.log or log
 end
 
-local function det_dir(num, location) -- determine direction
+local function track_dir(num, location) -- determine direction
 
 	if location.dir == forward_face then
 		location.x = location.x + num
@@ -58,18 +56,8 @@ local function det_dir(num, location) -- determine direction
 end
 
 function script:check_limit(num) -- check if refuel is needed
-	if self.should_goback then
-		local next = self.cost + num
-
-		if next >= self.limit then
-			num = next - self.limit
-			self.limit = 0
-			self.need_fuel = true
-		end
-	else
-		log:debug('{move:check_limit} checking additional fuel...')
-		script:check_additional_fuel()
-	end
+	log:trace('{move:check_limit} checking additional fuel...')
+	script:check_additional_fuel()
 
 	return num
 end
@@ -100,13 +88,13 @@ function script:forward(num, force)
 	end
 
 	-- keep track of movement
-	det_dir(count, self.location)
+	track_dir(count, self.location)
 	self.cost = self.cost + count
 	if not self.goback then
-		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.location.dir}))
+		table.insert(self.trace, track_dir(count, {x=0, y=0, z=0, dir=self.location.dir}))
 
 		-- retrace steps if limit reached
-		if self.should_goback and self.need_fuel then
+		if self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -144,13 +132,13 @@ function script:back(num, force)
 	end
 
 	-- keep track of movement
-	det_dir(count, self.location)
+	track_dir(count, self.location)
 	self.cost = self.cost + count
 	if not self.goback then
-		table.insert(self.trace, det_dir(count, {x=0, y=0, z=0, dir=self.location.dir}))
+		table.insert(self.trace, track_dir(count, {x=0, y=0, z=0, dir=self.location.dir}))
 
 		-- retrace steps if limit reached
-		if self.should_goback and self.need_fuel then
+		if self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -189,7 +177,7 @@ function script:up(num, force)
 		table.insert(self.trace, {x=0, y=count, z=0, dir=self.location.dir})
 
 		-- retrace steps if limit reached
-		if self.should_goback and self.need_fuel then
+		if self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -227,7 +215,7 @@ function script:down(num, force)
 		table.insert(self.trace, {x=0, y=-count, z=0, dir=self.location.dir})
 
 		-- retrace steps if limit reached
-		if self.should_goback and self.need_fuel then
+		if self.need_fuel then
 			script:retrace(self.hard_reset)
 		end
 	end
@@ -362,21 +350,12 @@ function script:to(x, y, z, force)
 	end
 end
 
-function script:gobefore()
-	if self.before == nil then
-		log:warn('{move:gobefore} before is already nil')
-		return
-	end
-
-	script:to(self.before[1], self.before[2], self.before[3])
-	script:turn(self.before[4])
-	self.before = nil
+function script:get_location()
+	return self.location
 end
 
 function script:retrace(hard)
 	hard = hard or 0 -- always soft retrace to avoid breaking anything undesired
-
-	self.before = {self.location.x, self.location.y, self.location.z, self.location.dir}
 
 	self.goback = true
 	log:info('{move:retrace} retracing steps [hard={}]', hard)
@@ -482,7 +461,6 @@ function script:reset_trace(hard)
 
 	log:info('{move:reset_trace} reseting trace...')
 
-	self.should_goback = false -- its already back
 	self.cost = 0
 
 	if hard == 1 then
@@ -497,11 +475,6 @@ function script:reset_trace(hard)
 	end
 
 	script:check_additional_fuel()
-
-	if self.should_goback then
-		self.goback = false
-		script:gobefore()
-	end
 end
 
 function script:check_additional_fuel()

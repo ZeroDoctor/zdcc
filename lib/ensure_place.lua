@@ -20,7 +20,6 @@ local script = {
 	check = require('../lib.check_inventory'),
 	careful =  require('../lib.careful_dig'),
 	force_place = false, -- TODO: if true then place block if solid block not found
-	force_goback = false,
 }
 
 function script:find_slot(config)

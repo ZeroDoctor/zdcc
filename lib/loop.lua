@@ -31,9 +31,8 @@ local script = {
 -- 	refuel = true,
 -- 	hard_reset = 1,
 -- 	move_limit = turtle.getFuelLevel() / 2,
--- 	enable_tags = false,
--- 	max_slots = 16,
--- 	really_ensure_place = false,
+-- 	enable_details = false,
+-- 	max_slots = 16, -- number to slots to check and keep track in check_inventory
 -- }```
 function script:start(config)
 	config = config or {}
@@ -44,12 +43,11 @@ function script:start(config)
 	config.refuel = config.refuel or true
 	config.hard_reset = config.hard_reset or 0
 	config.move_limit = turtle.getFuelLevel() / 2
-	config.enable_tags = config.enable_tags or false
+	config.enable_details = config.enable_details or false
 	config.max_slots = config.max_slots or 16
-	config.really_ensure_place = config.really_ensure_place or false
 
 	-- setup modules
-	self.inventory.enable_tags = config.enable_tags
+	self.inventory.enable_details = config.enable_details
 	self.inventory.max_slots = config.max_slots
 	self.inventory:update()
 
@@ -57,7 +55,6 @@ function script:start(config)
 
 	self.place.patch = config.patch or {}
 	self.place.put = config.put or {}
-	self.place.force_goback = config.really_ensure_place
 	self.place:init(self.inventory, self.dig, self.move)
 
 	-- TODO: place does not have inventory module
@@ -82,7 +79,7 @@ function script:start(config)
 
   local running = true
 	while running do
-		if config.refuel and self.move.should_goback then
+		if config.refuel then
 			self.move:retrace(config.hard_reset)
 		end
 
