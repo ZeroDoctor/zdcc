@@ -8,11 +8,11 @@ log:init(1)
 local loop = require('../lib.loop'):new()
 loop:set_log(log)
 local shape = require('../lib.make_shape')
-shape = shape:new(loop.move, loop.place, {})
+shape = shape:new(loop.track, loop.ensure, {})
 
 loop.init = function(self)
 	local fuel_regex = {'.*coal', '.*lava', '.*charcoal'}
-	local obj = self.inventory:search_name(fuel_regex, true)
+	local obj = self.check:search_name(fuel_regex, true)
 	if obj ~= nil then
 		turtle.select(obj.location[1])
 		turtle.refuel()
@@ -22,7 +22,7 @@ loop.init = function(self)
 	shape.block = {
 		name = ".*minecraft.*",
 	}
-	shape:init(self.move, self.place)
+	shape:init(self.track, self.ensure)
 end
 
 print('set width, length, and height from relative origin of turtle:')
@@ -38,7 +38,7 @@ log:debug('{building} w={} l={} h={}', w, l, h)
 
 loop.update = function(self)
 	shape:cuboid(w, l, h, "n")
-	self.move:retrace(false)
+	self.track:retrace(false)
 	return false
 end
 

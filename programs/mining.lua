@@ -8,7 +8,7 @@ log:init(1)
 local loop = require('../lib.loop'):new()
 loop:set_log(log)
 local shape = require('../lib.make_shape')
-shape = shape:new(loop.move, loop.place)
+shape = shape:new(loop.track, loop.ensure)
 
 -- local move = require('lib.track_move')
 -- local dig = require('lib.careful_dig')
@@ -16,10 +16,10 @@ shape = shape:new(loop.move, loop.place)
 -- local inventory = require('lib.check_inventory')
 
 loop.init = function(self)
-	self.move.auto_place_after = 12
+	self.track.auto_place_after = 12
 
 	local fuel_regex = {'.*coal', '.*lava', '.*charcoal'}
-	local obj = self.inventory:search_name(fuel_regex, true)
+	local obj = self.check:search_name(fuel_regex, true)
 	if obj ~= nil then
 		turtle.select(obj.location[1])
 		turtle.refuel()
@@ -27,7 +27,7 @@ loop.init = function(self)
 
 	shape.will_place = false
 	shape.force = 1
-	shape:init(self.move, self.place)
+	shape:init(self.track, self.ensure)
 end
 
 print('set width, length, and height from relative origin of turtle:')
@@ -43,7 +43,7 @@ log:debug('{mining} w={} l={} h={}', w, l, h)
 
 loop.update = function(self)
 	shape:cuboid(w, l, h, "y")
-	self.move:retrace(1)
+	self.track:retrace(1)
 	return false
 end
 
