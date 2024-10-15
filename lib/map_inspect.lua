@@ -7,6 +7,12 @@ function module:init(move)
 	self.track = move or track
 end
 
+function module:new()
+	local class = setmetatable({}, self)
+	self.__index = self
+	return class
+end
+
 function module:inspect()
 
 end

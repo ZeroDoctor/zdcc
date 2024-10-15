@@ -5,8 +5,10 @@ local turtle = require('test.turtle_test_api')
 local log = require('../log.logs')
 log:init(1)
 
-local loop = require('../lib.loop')
+local loop = require('../lib.loop'):new()
+loop:set_log(log)
 local shape = require('../lib.make_shape')
+shape = shape:new(loop.move, loop.place)
 
 -- local move = require('lib.track_move')
 -- local dig = require('lib.careful_dig')
@@ -23,7 +25,7 @@ loop.init = function(self)
 		turtle.refuel()
 	end
 
-	shape.place = false
+	shape.will_place = false
 	shape.force = 1
 	shape:init(self.move, self.place)
 end

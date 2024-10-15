@@ -14,6 +14,20 @@ local module = {
 	update = function() return false end,
 }
 
+function module:new(move, dig, place, inventory)
+	local class = setmetatable({}, self)
+	self.__index = self
+
+	self.inventory = inventory or self.inventory:new()
+	self.dig = dig or self.dig:new()
+	self.place = place or self.place:new(inventory, dig)
+	self.move = move or self.move:new(dig, place, inventory)
+
+	return class
+end
+
+function module:set_log(p_log) log = p_log end
+
 -- start initialize modules, prepares loop
 -- and starts "game" loop which is the heart of
 -- the turtle.
@@ -47,15 +61,20 @@ function module:start(config)
 	config.max_slots = config.max_slots or 16
 
 	-- setup modules
+	self.inventory = self.inventory or self.inventory:new()
+	self.inventory:set_log(log)
 	self.inventory.enable_details = config.enable_details
 	self.inventory.max_slots = config.max_slots
 	self.inventory:update()
 
+	self.dig = self.dig or self.dig:new()
+	self.dig:set_log(log)
 	self.dig.avoid = config.avoid
 
+	self.place = self.place or self.place:new(self.inventory, self.dig)
+	self.place:set_log(log)
 	self.place.patch = config.patch or {}
 	self.place.put = config.put or {}
-	self.place:init(self.inventory, self.dig, self.move)
 
 	-- TODO: place does not have inventory module
 
@@ -65,15 +84,13 @@ function module:start(config)
 	end
 
 	if config.patch == nil and config.put == nil then
-		self.move:init(self.dig, nil)
+		self.move = self.move or self.move:new(self.dig, nil)
 	else
-		self.move:init(self.dig, self.place)
+		self.move = self.move or self.move:new(self.dig, self.place)
 	end
+	self.move:set_log(log)
 
 	log:debug('{loop:start} [config={}]', config)
-
-	-- setup loop
-	module:init()
 
 	self.move.limit = turtle.getFuelLevel() / 2
 

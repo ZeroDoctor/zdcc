@@ -4,7 +4,6 @@ local turtle = require("test.turtle_test_api")
 
 local log = require('../log.logs')
 local tbl = require('../util.tbl')
-local str = require('../util.str')
 
 -- inventory = {
 -- 	{
@@ -29,9 +28,13 @@ local module = {
 	enable_details = false,
 }
 
-function module:init()
-	log = module.log or log
+function module:new()
+	local class = setmetatable({}, self)
+	self.__index = self
+	return class
 end
+
+function module:set_log(p_log) log = p_log end
 
 -- TODO: maybe add 'remove()' and 'add()' methods
 -- to reduce update() usage

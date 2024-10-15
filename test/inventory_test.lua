@@ -1,13 +1,12 @@
 local turtle = require('test.turtle_test_api')
-local textutils = require('test.textutils_test')
 
 local check = require('../lib.check_inventory')
 local log = require('../log.logs')
 
 local function init(l)
-	log = l or log
-	check.log = log
-	check:init()
+	check = check:new()
+	check:set_log(l)
+	log = l
 end
 
 local function test_searchname()

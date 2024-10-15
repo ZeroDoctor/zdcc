@@ -1,16 +1,22 @@
-local ensure = require("../lib.ensure_place")
-local track = require("../lib.track_move")
 
 local module = {
-	place = false,
+	will_place = false,
 	force = 0, -- 0 = false and 1 = true
-	block = nil
+	block = nil,
+
+	ensure = require("../lib.ensure_place"),
+	track = require("../lib.track_move")
 }
 
-function module:init(move, en, block)
-	track = move or track
-	ensure = en or ensure
-	module.block = block
+function module:new(track, ensure, block)
+	local class = setmetatable({}, self)
+	self.__index = self
+
+	self.track = track or self.track
+	self.ensure = ensure or self.ensure
+	self.block = block
+
+	return class
 end
 
 local function round(toRound, decimalPlace) -- Needed for Polygons
@@ -21,8 +27,8 @@ end
 
 -- Shape Building functions
 function module:drawLine(endX, endY, startX, startY)
-	startX = startX or track.location.x
-	startY = startY or track.location.z
+	startX = startX or self.track.location.x
+	startY = startY or self.track.location.z
 	local deltaX = math.abs(endX - startX)
 	local deltaY = math.abs(endY - startY)
 	local errorVar = 0
@@ -32,11 +38,11 @@ function module:drawLine(endX, endY, startX, startY)
 			if startY < endY then
 				local counterY = startY
 				for counterX = startX, endX do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -47,11 +53,11 @@ function module:drawLine(endX, endY, startX, startY)
 			else
 				local counterY = startY
 				for counterX = startX, endX do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -64,11 +70,11 @@ function module:drawLine(endX, endY, startX, startY)
 			if startY < endY then
 				local counterY = startY
 				for counterX = startX, endX, -1 do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -79,11 +85,11 @@ function module:drawLine(endX, endY, startX, startY)
 			else
 				local counterY = startY
 				for counterX = startX, endX, -1 do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -99,11 +105,11 @@ function module:drawLine(endX, endY, startX, startY)
 			if startX < endX then
 				local counterX = startX
 				for counterY = startY, endY do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -114,11 +120,11 @@ function module:drawLine(endX, endY, startX, startY)
 			else
 				local counterX = startX
 				for counterY = startY, endY do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -131,11 +137,11 @@ function module:drawLine(endX, endY, startX, startY)
 			if startX < endX then
 				local counterX = startX
 				for counterY = startY, endY, -1 do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -146,11 +152,11 @@ function module:drawLine(endX, endY, startX, startY)
 			else
 				local counterX = startX
 				for counterY = startY, endY, -1 do
-					track:to(counterX, track.location.y, counterY, self.force)
-					if self.place then
-						track:turnLeft(2)
-						ensure:place(self.block)
-						track:turnLeft(2)
+					self.track:to(counterX, self.track.location.y, counterY, self.force)
+					if self.will_place then
+						self.track:turnLeft(2)
+						self.ensure:place(self.block)
+						self.track:turnLeft(2)
 					end
 					errorVar = errorVar + deltaErr
 					if errorVar >= 0.5 then
@@ -164,8 +170,8 @@ function module:drawLine(endX, endY, startX, startY)
 end
 
 function module:rectangle(width, depth, startX, startY)
-	startX = startX or track.location.x
-	startY = startY or track.location.z
+	startX = startX or self.track.location.x
+	startY = startY or self.track.location.z
 	local endX = startX + width - 1
 	local endY = startY + depth - 1
 	module:drawLine(startX, endY, startX, startY)
@@ -175,30 +181,30 @@ function module:rectangle(width, depth, startX, startY)
 end
 
 function module:square(length, startX, startY)
-	startX = startX or track.location.x
-	startY = startY or track.location.z
+	startX = startX or self.track.location.x
+	startY = startY or self.track.location.z
 	module:rectangle(length, length, startX, startY)
 end
 
 function module:wall(depth, height)
 	for i = 1, depth do
 		for j = 1, height do
-			if self.place then
-				ensure:place()
+			if self.will_place then
+				self.ensure:place()
 			end
 			if j < height then
-				track:to(track.location.x, track.location.y+1, track.location.z, self.force)
+				self.track:to(self.track.location.x, self.track.location.y+1, self.track.location.z, self.force)
 			end
 		end
 		if (i ~= depth) then
-			track:to(track.location.x, track.location.y, track.location.z + 1, self.force)
+			self.track:to(self.track.location.x, self.track.location.y, self.track.location.z + 1, self.force)
 		end
 	end
 end
 
 function module:platform(width, depth, startX, startY)
-	startX = startX or track.location.x
-	startY = startY or track.location.z
+	startX = startX or self.track.location.x
+	startY = startY or self.track.location.z
 
 	local endX = startX + width - 1
 	local endY = startY + depth - 1
@@ -206,16 +212,16 @@ function module:platform(width, depth, startX, startY)
 	for counterY = startY, endY do
 		if forward then
 			for counterX = startX, endX do
-				track:to(counterX, track.location.y, counterY, self.force)
-				if self.place then
-					ensure:place()
+				self.track:to(counterX, self.track.location.y, counterY, self.force)
+				if self.will_place then
+					self.ensure:place()
 				end
 			end
 		else
 			for counterX = endX, startX, -1 do
-				track:to(counterX, track.location.y, counterY, self.force)
-				if self.place then
-					ensure:place()
+				self.track:to(counterX, self.track.location.y, counterY, self.force)
+				if self.will_place then
+					self.ensure:place()
 				end
 			end
 		end
@@ -224,10 +230,10 @@ function module:platform(width, depth, startX, startY)
 end
 
 function module:cuboid(width, depth, height, hollow, start_x, start_z)
-	start_x = start_x or track.location.x
-	start_z = start_z or track.location.z
+	start_x = start_x or self.track.location.x
+	start_z = start_z or self.track.location.z
 	for i = 0, height - 1 do
-		track:to(track.location.x, i, track.location.z, self.force)
+		self.track:to(self.track.location.x, i, self.track.location.z, self.force)
 		if hollow == "y" then
 			module:platform(depth, width, start_x, start_z)
 		else
@@ -240,7 +246,7 @@ function module:pyramid(length, hollow)
 	-- local height = math.ceil(length / 2) - 1
 	local i = 0
 	while (length > 0) do
-		track:to(i, i, i, self.force)
+		self.track:to(i, i, i, self.force)
 		if (hollow == "y") then
 			module:rectangle(length, length, i, i)
 		else
@@ -252,8 +258,8 @@ function module:pyramid(length, hollow)
 end
 
 function module:stair(width, height, startX, startY) -- Last two might be able to be used to make a basic home-like shape later?
-	startX = startX or track.location.x
-	startY = startY or track.location.z
+	startX = startX or self.track.location.x
+	startY = startY or self.track.location.z
 
 	local endX = startX + width - 1
 	local endY = startY + height - 1
@@ -261,21 +267,21 @@ function module:stair(width, height, startX, startY) -- Last two might be able t
 	for counterY = startY, endY do
 		if forward then
 			for counterX = startX, endX do
-				track:to(counterX, track.location.y, counterY, self.force)
-				if self.place then
-					ensure:place()
+				self.track:to(counterX, self.track.location.y, counterY, self.force)
+				if self.will_place then
+					self.ensure:place()
 				end
 			end
 		else
 			for counterX = endX, startX, -1 do
-				track:to(counterX, track.location.y, counterY, self.force)
-				if self.place then
-					ensure:place()
+				self.track:to(counterX, self.track.location.y, counterY, self.force)
+				if self.will_place then
+					self.ensure:place()
 				end
 			end
 		end
 		if counterY ~= endY then
-			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
+			self.track:to(self.track.location.x, self.track.location.y + 1, self.track.location.z, self.force)
 			forward = not forward
 		end
 	end
@@ -379,9 +385,9 @@ function module:circle(diameter)
 					for x = xStart,xEnd,xStep do
 						-- Only blocks within the radius but still within 1 3d-diagonal block of the edge are eligible
 						if isSphereBorder(offset, x, y, z, radius2) then
-							track:to(x, track.location.y, y, self.force)
-							if self.place then
-								ensure:place()
+							self.track:to(x, self.track.location.y, y, self.force)
+							if self.will_place then
+								self.ensure:place()
 							end
 						end
 					end
@@ -431,7 +437,7 @@ function module:dome(typus, diameter)
 	-- This loop is for each vertical layer through the sphere or dome.
 	for z = zstart,zend do
 		if z ~= zstart then
-			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
+			self.track:to(self.track.location.x, self.track.location.y + 1, self.track.location.z, self.force)
 		end
 		--writeOut("Layer " .. z)
 		local cz2 = (radius - z) ^ 2
@@ -487,9 +493,9 @@ function module:dome(typus, diameter)
 					for x = xStart,xEnd,xStep do
 						-- Only blocks within the radius but still within 1 3d-diagonal block of the edge are eligible
 						if isSphereBorder(offset, x, y, z, radius2) then
-							track:to(x, z, y, self.force)
-							if self.place then
-								ensure:place()
+							self.track:to(x, z, y, self.force)
+							if self.will_place then
+								self.ensure:place()
 							end
 						end
 					end
@@ -503,7 +509,7 @@ function module:cylinder(diameter, height)
 	for i = 1, height do
 		module:circle(diameter)
 		if i ~= height then
-			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
+			self.track:to(self.track.location.x, self.track.location.y + 1, self.track.location.z, self.force)
 		end
 	end
 end
@@ -611,7 +617,7 @@ function module:circleLikePolygonPrism(numSides, diameter, height, offsetAngle)
 	for i = 1, height do
 		module:circleLikePolygon(numSides, diameter, offsetAngle)
 		if i ~= height then
-			track:to(track.location.x, track.location.y + 1, track.location.z, self.force)
+			self.track:to(self.track.location.x, self.track.location.y + 1, self.track.location.z, self.force)
 		end
 	end
 end
@@ -621,7 +627,7 @@ function module:polygonPrism(numSides, sideLength, height, offsetAngle)
 	for i = 1, height do
 		module:polygon(numSides, sideLength, offsetAngle)
 		if i ~= height then
-			track:to(track.location.x, track.location.y+1, track.location.z, self.force)
+			self.track:to(self.track.location.x, self.track.location.y+1, self.track.location.z, self.force)
 		end
 	end
 end

@@ -18,6 +18,7 @@ local script = {
 }
 
 function script:init(level, log_path)
+	print('[init] logs starting...')
 	self.log_path = log_path or self.log_path
 	self.file = io.open(self.log_path, "a")
 	self.level = level or self.level

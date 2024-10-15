@@ -1,5 +1,5 @@
 local tbl = require('../util.tbl')
-local log = require('../log/logs')
+local log = require('../log.logs')
 
 local blocks = {
 	{

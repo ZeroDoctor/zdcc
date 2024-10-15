@@ -2,10 +2,6 @@
 local turtle = require("test.turtle_test_api")
 -- #end
 
-local careful = require("../lib.careful_dig")
-local ensure = require("../lib.ensure_place")
-local check = require("../lib.check_inventory")
-
 local log = require("../log.logs")
 
 local forward_face = 0
@@ -30,15 +26,25 @@ local module = {
 	goback = false,
 	need_fuel = false,
 
+	careful = require("../lib.careful_dig"),
+	ensure = require("../lib.ensure_place"),
+	check = require("../lib.check_inventory"),
+
 	auto_place_after = 0,
 }
 
-function module:init(p_careful, p_ensure, p_check)
-	careful = p_careful or careful
-	check = p_check or check
-	ensure = p_ensure
-	log = module.log or log
+function module:new(careful, ensure, check)
+	local class = setmetatable({}, self)
+	self.__index = self
+
+	self.careful = careful or self.careful
+	self.ensure = ensure or self.ensure
+	self.check = check or self.check
+
+	return class
 end
+
+function module:set_log(p_log) log = p_log end
 
 local function track_dir(num, location) -- determine direction
 
@@ -73,17 +79,17 @@ function module:forward(num, force)
 	local count = 0
 	for _ = 1, num, 1 do
 		if force == 1 then
-			careful:dig()
+			self.careful:dig()
 		end
 
 		if turtle.forward() then
 			count = count + 1
 		end
 
-		if ensure ~= nil and
+		if self.ensure ~= nil and
 			self.auto_place_after ~= 0 and
 			(self.cost + count) % self.auto_place_after == 0 then
-			ensure:auto()
+			self.ensure:auto()
 		end
 	end
 
@@ -124,10 +130,10 @@ function module:back(num, force)
 			count = count + 1
 		end
 
-		if ensure ~= nil and
+		if self.ensure ~= nil and
 			self.auto_place_after ~= 0 and
 			(self.cost + count) % self.auto_place_after == 0 then
-			ensure:auto()
+			self.ensure:auto()
 		end
 	end
 
@@ -155,17 +161,17 @@ function module:up(num, force)
 	local count = 0
 	for i = 1, num, 1 do
 		if force == 1 then
-			careful:digUp()
+			self.careful:digUp()
 		end
 
 		if turtle.up() then
 			count = count + 1
 		end
 
-		if ensure ~= nil and
+		if self.ensure ~= nil and
 			self.auto_place_after ~= 0 and
 			(math.abs(self.location.y) + i) % self.auto_place_after == 0 then
-			ensure:auto()
+			self.ensure:auto()
 		end
 	end
 
@@ -194,17 +200,17 @@ function module:down(num, force)
 	local count = 0
 	for i = 1, num, 1 do
 		if force == 1 then
-			careful:digDown()
+			self.careful:digDown()
 		end
 
 		if turtle.down() then
 			count = count + 1
 		end
 
-		if ensure ~= nil and
+		if self.ensure ~= nil and
 			self.auto_place_after ~= 0 and
 			(math.abs(self.location.y) + i) % self.auto_place_after == 0 then
-			ensure:auto()
+			self.ensure:auto()
 		end
 	end
 
@@ -444,7 +450,6 @@ function module:_trace(trace)
 		end
 
 		module:forward(x, 0)
-
 		return
 	end
 
@@ -482,12 +487,12 @@ function module:check_additional_fuel()
 		log:info('{move:check_additional_fuel} additional pylons (fuel) required... (press enter when pylons added)')
 		local _ = io.read()
 
-		check:update()
-		local inv = check:search_name({'*.coal'}, true)
+		self.check:update()
+		local inv = self.check:search_name({'*.coal'}, true)
 		if inv == nil or inv.location[1] == nil then
-			inv = check:search_name({'*.lava'}, true)
+			inv = self.check:search_name({'*.lava'}, true)
 		elseif inv == nil or inv.location[1] == nil then
-			inv = check:search_name({'*.charcoal'}, true)
+			inv = self.check:search_name({'*.charcoal'}, true)
 		end
 
 		if inv ~= nil and inv.location[1] ~= nil then

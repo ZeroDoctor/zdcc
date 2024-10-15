@@ -22,6 +22,18 @@ local module = {
 	force_place = false, -- TODO: if true then place block if solid block not found
 }
 
+function module:new(check, careful)
+	local class = setmetatable({}, self)
+	self.__index = self
+
+	self.check = check or self.check
+	self.careful = careful or self.careful
+
+	return class
+end
+
+function module:set_log(p_log) log = p_log end
+
 function module:find_slot(config)
 	local slot = config.slot
 	local regex = true
@@ -63,12 +75,6 @@ function module:turn_dir(config)
 	elseif config.where == self:bottom() then
 		self:placeDown(config)
 	end
-end
-
-function module:init(check, careful, track)
-	self.check = check or self.check
-	self.careful = careful or self.careful
-	self.track = track or self.track
 end
 
 function module:auto()

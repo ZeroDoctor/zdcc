@@ -5,8 +5,10 @@ local turtle = require('test.turtle_test_api')
 local log = require('../log.logs')
 log:init(1)
 
-local loop = require('../lib.loop')
+local loop = require('../lib.loop'):new()
+loop:set_log(log)
 local shape = require('../lib.make_shape')
+shape = shape:new(loop.move, loop.place, {})
 
 loop.init = function(self)
 	local fuel_regex = {'.*coal', '.*lava', '.*charcoal'}
@@ -16,7 +18,7 @@ loop.init = function(self)
 		turtle.refuel()
 	end
 
-	shape.place = true
+	shape.will_place = true
 	shape.block = {
 		name = ".*minecraft.*",
 	}

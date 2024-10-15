@@ -9,6 +9,14 @@ local module = {
 	avoid = {},
 }
 
+function module:new()
+	local class = setmetatable({}, self)
+	self.__index = self
+	return class
+end
+
+function module:set_log(p_log) log = p_log end
+
 function module:dig(side)
 	if not self.must_empty then
 		if turtle.detect() then
