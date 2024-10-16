@@ -30,13 +30,15 @@ function script:init(level, log_path)
 end
 
 local function log(self, str, ...)
-	local args = {...}
+	local args = table.pack(...)
 
-	for i = 1, #args, 1 do
+	for i = 1, args.n, 1 do
 		local _start, _end = string.find(str, '{}')
 		if _start ~= nil and _end ~= nil then
 			local out = args[i]
-			if type(args[i]) == 'table' then
+			if not args[i] then
+				out = 'nil'
+			elseif type(args[i]) == 'table' then
 				out = textutils.serialise(args[i])
 			end
 			str = str:sub(1, _start-1)..tostring(out)..str:sub(_end+1, #str)

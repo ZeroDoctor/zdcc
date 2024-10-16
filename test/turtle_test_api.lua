@@ -65,6 +65,7 @@ local module = {
 function module.init(self, config)
 	self.current_slot = config.current_slot or 1
 	self.inventory = config.inventory or inventory
+	log = config.log or log
 
 	log:debug('[world] creating new world...')
 	local current_block = tbl.copy(blocks[3]) -- stone
@@ -75,7 +76,7 @@ function module.init(self, config)
 		for y = 1, max_size, 1 do
 			self.world[x][y] = {}
 
-			if y > max_size/2 then
+			if y > max_size/2 and y <= max_size/2.33 then
 				current_block = tbl.copy(blocks[1]) -- air
 			elseif y > max_size/2.33 then
 				current_block = tbl.copy(blocks[2]) -- dirt
@@ -89,8 +90,7 @@ function module.init(self, config)
 		end
 	end
 
-	self.turtle_location = {0, max_size/2+1, 0}
-	log = config.log or log
+	self.turtle_location = {x = 1, y = math.floor(max_size/(2.32)), z = 1}
 end
 
 function module.dig(side) return true end

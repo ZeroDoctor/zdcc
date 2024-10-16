@@ -115,11 +115,11 @@ function module:back(num, force)
 
 	-- start moving
 	if force == 1 then
-		module:turnLeft(2)
+		module:turn_left(2)
 
 		module:forward(num, force)
 
-		module:turnLeft(2)
+		module:turn_left(2)
 
 		return -- movement already tracked in forward
 	end
@@ -227,7 +227,7 @@ function module:down(num, force)
 	end
 end
 
-function module:turnLeft(num)
+function module:turn_left(num)
 	num = num or 1
 
 	local count = 0
@@ -241,7 +241,7 @@ function module:turnLeft(num)
 	self.location.dir = (self.location.dir-count) % 4
 end
 
-function module:turnRight(num)
+function module:turn_right(num)
 	num = num or 1
 
 	local count = 0
@@ -259,11 +259,11 @@ function module:turn(face)
 	face = face or self.location.dir
 
 	if self.location.dir - 1 == face then
-		module:turnLeft()
+		module:turn_left()
 	end
 
 	while self.location.dir ~= face do
-		module:turnRight()
+		module:turn_right()
 	end
 end
 
@@ -368,7 +368,7 @@ function module:retrace(hard)
 
 	if hard == 1 then
 		while self.location.dir ~= forward_face do -- make sure its facing forward
-			module:turnLeft(1)
+			module:turn_left(1)
 		end
 
 		if self.location.y > 0 then
@@ -384,7 +384,7 @@ function module:retrace(hard)
 		end
 
 		while self.location.dir ~= right_face do -- make sure its facing right
-			module:turnLeft(1)
+			module:turn_left(1)
 		end
 
 		if self.location.z > 0 then
@@ -394,7 +394,7 @@ function module:retrace(hard)
 		end
 
 		while self.location.dir ~= forward_face do -- make sure its facing forward
-			module:turnLeft(1)
+			module:turn_left(1)
 		end
 
 		module:reset_trace(self.hard_reset)
@@ -406,14 +406,14 @@ function module:retrace(hard)
 		local trace = self.trace[i]
 
 		while self.location.dir ~= (trace.dir+2) % 4 do
-			module:turnLeft(1)
+			module:turn_left(1)
 		end
 
 		module:_trace(trace)
 	end
 
 	while self.location.dir ~= forward_face do -- make sure its face forward
-		module:turnLeft(1)
+		module:turn_left(1)
 	end
 
 	module:reset_trace(self.hard_reset)

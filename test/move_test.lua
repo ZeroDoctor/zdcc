@@ -11,14 +11,14 @@ local function movement_test()
 	track = track:new()
 	track:set_log(log)
 
-	track:forward(5) track:turnLeft(3)
-	track:forward(4) track:turnLeft(2)
-	track:forward(7) track:turnLeft(5)
+	track:forward(5) track:turn_left(3)
+	track:forward(4) track:turn_left(2)
+	track:forward(7) track:turn_left(5)
 	track:forward(1)
 	track:back(3)
 	track:forward(1)
-	track:up(4)      track:turnRight(1)
-	track:forward(9) track:turnRight(1)
+	track:up(4)      track:turn_right(1)
+	track:forward(9) track:turn_right(1)
 	track:back(3)
 	track:forward(2)
 	track:down(3)
@@ -52,21 +52,21 @@ local function retrace_test()
 	track = track:new()
 	track:set_log(log)
 
-	track:forward(5) track:turnLeft(3)
-	track:forward(4) track:turnLeft(2)
-	track:forward(8) track:turnLeft(5)
-	track:forward(8) track:turnLeft(5)
+	track:forward(5) track:turn_left(3)
+	track:forward(4) track:turn_left(2)
+	track:forward(8) track:turn_left(5)
+	track:forward(8) track:turn_left(5)
 	track:forward(1)
 	track:back(3)
 	track:forward(1)
-	track:up(4)      track:turnRight(1)
-	track:up(4)      track:turnRight(1)
-	track:forward(9) track:turnRight(7)
+	track:up(4)      track:turn_right(1)
+	track:up(4)      track:turn_right(1)
+	track:forward(9) track:turn_right(7)
 	track:back(3)
 	track:forward(2)
 	track:down(4)
-	track:forward(9) track:turnRight(2)
-	track:forward(7) track:turnRight(1)
+	track:forward(9) track:turn_right(2)
+	track:forward(7) track:turn_right(1)
 
 	track:retrace(0)
 
@@ -96,19 +96,19 @@ local function retrace_test()
 	log:info('testing hard retace test...')
 
 	track:forward(5) -- 5 0 0
-	track:turnLeft(3) track:forward(4) -- 5 0 4
-	track:turnLeft(2) track:forward(8) -- 5 0 -4
-	track:turnLeft(5) track:forward(2) -- 3 0 -4
-	track:turnLeft(1) track:forward(3) -- 3 0 -1
-	track:turnLeft(6) track:forward(1) -- 3 0 -2
+	track:turn_left(3) track:forward(4) -- 5 0 4
+	track:turn_left(2) track:forward(8) -- 5 0 -4
+	track:turn_left(5) track:forward(2) -- 3 0 -4
+	track:turn_left(1) track:forward(3) -- 3 0 -1
+	track:turn_left(6) track:forward(1) -- 3 0 -2
 	track:back(3) -- 3 0 1 
 	track:forward(1) -- 3 0 0
 	track:up(4) -- 3 4 0
-	track:turnRight(1) track:up(4) -- 3 8 0
-	track:turnRight(1) track:forward(9) -- 3 8 9
-	track:turnRight(7) track:forward(2) -- 5 8 9
+	track:turn_right(1) track:up(4) -- 3 8 0
+	track:turn_right(1) track:forward(9) -- 3 8 9
+	track:turn_right(7) track:forward(2) -- 5 8 9
 	track:down(4) -- 1 4 9
-	track:turnRight(1) track:forward(7) -- 5 4 16
+	track:turn_right(1) track:forward(7) -- 5 4 16
 	track:back(3) -- 5 4 13
 
 	track:retrace(1)

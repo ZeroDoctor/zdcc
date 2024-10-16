@@ -1,5 +1,5 @@
 local log = require('log.logs')
-log:init(0)
+log:init(1)
 
 local move_test = require("test.move_test")
 local inv_test = require("test.inventory_test")
@@ -52,4 +52,3 @@ map_test.test_getblock()
 log:info('---- end map testing ----')
 
 ------------------
-
