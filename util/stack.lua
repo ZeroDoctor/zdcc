@@ -9,7 +9,7 @@ function stack.new()
 end
 
 -- Check if the stack is empty
-function stack:isEmpty()
+function stack:is_empty()
 	return #self._stack == 0
 end
 
@@ -20,7 +20,7 @@ end
 
 -- Take a value off the stack
 function stack:pop()
-	if self:isEmpty() then
+	if self:is_empty() then
 		return nil
 	end
 

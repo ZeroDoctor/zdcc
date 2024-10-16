@@ -54,7 +54,7 @@ local right_face = 1
 local back_face =  2
 local left_face =  3
 
-local script = {
+local module = {
 	current_slot = 1,
 	inventory = inventory or {},
 	world = {},
@@ -62,12 +62,13 @@ local script = {
 	turtle_direction = front_face,
 }
 
-function script.init(self, config)
+function module.init(self, config)
 	self.current_slot = config.current_slot or 1
-	self.inventory = config.inventory or {}
+	self.inventory = config.inventory or inventory
 
-	local current_block = blocks[3] -- stone
-	local max_size = 500
+	log:debug('[world] creating new world...')
+	local current_block = tbl.copy(blocks[3]) -- stone
+	local max_size = 50
 
 	for x = 1, max_size, 1 do
 		self.world[x] = {}
@@ -75,13 +76,13 @@ function script.init(self, config)
 			self.world[x][y] = {}
 
 			if y > max_size/2 then
-				current_block = blocks[1] -- air
+				current_block = tbl.copy(blocks[1]) -- air
 			elseif y > max_size/2.33 then
-				current_block = blocks[2] -- dirt
+				current_block = tbl.copy(blocks[2]) -- dirt
 			end
 
 			for z = 1, max_size, 1 do
-				local b = current_block
+				local b = tbl.copy(current_block)
 				b.vec = {x = x, y = y, z = z}
 				self.world[x][y][z] = b
 			end
@@ -92,52 +93,52 @@ function script.init(self, config)
 	log = config.log or log
 end
 
-function script.dig(side) return true end
-function script.digUp(side) return true end
-function script.digDown(side) return true end
+function module.dig(side) return true end
+function module.digUp(side) return true end
+function module.digDown(side) return true end
 
-function script.detect() return false end
-function script.detectUp() return false end
-function script.detectDown() return false end
+function module.detect() return false end
+function module.detectUp() return false end
+function module.detectDown() return false end
 
-function script.forward() return true, nil end
-function script.back() return true, nil end
-function script.up() return true, nil end
-function script.down() return true, nil end
-function script.turnLeft() return true, nil end
-function script.turnRight() return true, nil end
+function module.forward() return true, nil end
+function module.back() return true, nil end
+function module.up() return true, nil end
+function module.down() return true, nil end
+function module.turnLeft() return true, nil end
+function module.turnRight() return true, nil end
 
-function script.place(text) end
-function script.placeUp(text) end
-function script.placeDown(text) end
+function module.place(text) end
+function module.placeUp(text) end
+function module.placeDown(text) end
 
-function script.drop(count) end
-function script.dropUp(count) end
-function script.dropDown(count) end
+function module.drop(count) end
+function module.dropUp(count) end
+function module.dropDown(count) end
 
-function script.compare() end
-function script.compareUp() end
-function script.compareDown() end
+function module.compare() end
+function module.compareUp() end
+function module.compareDown() end
 
-function script.attack(side) end
-function script.attackUp(side) end
-function script.attackDown(side) end
+function module.attack(side) end
+function module.attackUp(side) end
+function module.attackDown(side) end
 
-function script.suck(count) end
-function script.suckUp(count) end
-function script.suckDown(count) end
+function module.suck(count) end
+function module.suckUp(count) end
+function module.suckDown(count) end
 
-function script.getFuelLevel() return 80 end
-function script.getFuelLimit() end
-function script.refuel(count) end
+function module.getFuelLevel() return 80 end
+function module.getFuelLimit() end
+function module.refuel(count) end
 
-function script.compareTo(slot) end
-function script.transferTo(slot, count)
-	local selected_item = script.getItemDetail(script.current_slot)
-	local slot_item = script.getItemDetail(slot)
+function module.compareTo(slot) end
+function module.transferTo(slot, count)
+	local selected_item = module.getItemDetail(module.current_slot)
+	local slot_item = module.getItemDetail(slot)
 
 	if not selected_item then
-		log:error('[transferTo] no item at selection {}', script.current_slot)
+		log:error('[transferTo] no item at selection {}', module.current_slot)
 		return false
 	end
 
@@ -151,25 +152,25 @@ function script.transferTo(slot, count)
 		end
 
 		slot_item.count = slot_item.count + count
-		script.inventory[slot_item.index] = slot_item
+		module.inventory[slot_item.index] = slot_item
 
 	else
-		local tmp = tbl.copy(script.inventory[script.current_slot])
-		table.insert(script.inventory, tmp)
+		local tmp = tbl.copy(module.inventory[module.current_slot])
+		table.insert(module.inventory, tmp)
 	end
 
-	table.remove(script.inventory, selected_item.index)
+	table.remove(module.inventory, selected_item.index)
 	return true
 end
 
-function script.select(slot)
-	script.current_slot = slot
+function module.select(slot)
+	module.current_slot = slot
 end
 
-function script.getItemCount(slot)
-	slot = slot or script.current_slot
+function module.getItemCount(slot)
+	slot = slot or module.current_slot
 
-	for _, inv in ipairs(script.inventory) do
+	for _, inv in ipairs(module.inventory) do
 		for _, loc in ipairs(inv.location) do
 			if loc == slot then
 				return inv.count
@@ -180,20 +181,20 @@ function script.getItemCount(slot)
 	return 0
 end
 
-function script.getItemSpace(slot)
-	slot = slot or script.current_slot
+function module.getItemSpace(slot)
+	slot = slot or module.current_slot
 	if slot ~= 1 then return 64 end
 	return 53
 end
 
-function script.getSelectedSlot()
+function module.getSelectedSlot()
 	return 1
 end
 
-function script.getItemDetail(slot, detail)
+function module.getItemDetail(slot, detail)
 	detail = detail or false
 
-	for i, v in ipairs(script.inventory) do
+	for i, v in ipairs(module.inventory) do
 		for _, value in ipairs(v.location) do
 			if value == slot then
 				v.index = i
@@ -205,22 +206,22 @@ function script.getItemDetail(slot, detail)
 	return nil
 end
 
-function script.inspect()
+function module.inspect()
 	local x_dir = 1
 	local z_dir = 0
 
-	if script.turtle_direction == right_face
-		or script.turtle_direction == left_face then
+	if module.turtle_direction == right_face
+		or module.turtle_direction == left_face then
 
 		x_dir = 0
 		z_dir = 1
 	end
 
-	local x = script.turtle_location.x
-	local y = script.turtle_location.y
-	local z = script.turtle_location.z
+	local x = module.turtle_location.x
+	local y = module.turtle_location.y
+	local z = module.turtle_location.z
 
-	local b = script.world[x+x_dir][y][z+z_dir]
+	local b = module.world[x+x_dir][y][z+z_dir]
 	if b == nil or b.solid == nil then
 		b = blocks[1]
 	end
@@ -228,12 +229,12 @@ function script.inspect()
 	return b.solid, b
 end
 
-function script.inspectUp()
-	local x = script.turtle_location.x
-	local y = script.turtle_location.y
-	local z = script.turtle_location.z
+function module.inspectUp()
+	local x = module.turtle_location.x
+	local y = module.turtle_location.y
+	local z = module.turtle_location.z
 
-	local b = script.world[x][y+1][z]
+	local b = module.world[x][y+1][z]
 	if b == nil or b.solid == nil then
 		b = blocks[1]
 	end
@@ -241,12 +242,12 @@ function script.inspectUp()
 
 	return b.solid, b
 end
-function script.inspectDown()
-	local x = script.turtle_location.x
-	local y = script.turtle_location.y
-	local z = script.turtle_location.z
+function module.inspectDown()
+	local x = module.turtle_location.x
+	local y = module.turtle_location.y
+	local z = module.turtle_location.z
 
-	local b = script.world[x][y-1][z]
+	local b = module.world[x][y-1][z]
 	if b == nil or b.solid == nil then
 		b = blocks[1]
 	end
@@ -255,5 +256,5 @@ function script.inspectDown()
 	return b.solid, b
 end
 
-return script
+return module
 

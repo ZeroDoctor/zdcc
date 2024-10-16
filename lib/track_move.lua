@@ -402,7 +402,6 @@ function module:retrace(hard)
 	end
 
 	-- start of soft retrace
-
 	for i = #self.trace, 1, -1 do
 		local trace = self.trace[i]
 
@@ -488,13 +487,7 @@ function module:check_additional_fuel()
 		local _ = io.read()
 
 		self.check:update()
-		local inv = self.check:search_name({'*.coal'}, true)
-		if inv == nil or inv.location[1] == nil then
-			inv = self.check:search_name({'*.lava'}, true)
-		elseif inv == nil or inv.location[1] == nil then
-			inv = self.check:search_name({'*.charcoal'}, true)
-		end
-
+		local inv = self.check:search_name({'*.coal', '*.lava', '*.charcoal'}, true)
 		if inv ~= nil and inv.location[1] ~= nil then
 			turtle.select(inv.location[1])
 			turtle.refuel()

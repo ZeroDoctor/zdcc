@@ -3,9 +3,11 @@ log:init(0)
 
 local move_test = require("test.move_test")
 local inv_test = require("test.inventory_test")
+local map_test = require("test.inspect_test")
 
 move_test.init(log)
 inv_test.init(log)
+map_test.init(log)
 
 ------------------
 
@@ -42,4 +44,12 @@ log:info('---- end inventory testing ----')
 
 ------------------
 
+log:info('---- start map testing ----')
+
+log:info('---- get block test')
+map_test.test_getblock()
+
+log:info('---- end map testing ----')
+
+------------------
 
