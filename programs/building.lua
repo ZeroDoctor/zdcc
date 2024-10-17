@@ -25,7 +25,7 @@ loop.init = function(self)
 	shape:init(self.track, self.ensure)
 end
 
-print('set width, length, and height from relative origin of turtle:')
+print('set width, length, and height relative to turtle\'s origin:')
 
 print('enter width:')
 local w = tonumber(io.read())

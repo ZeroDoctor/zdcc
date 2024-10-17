@@ -1,0 +1,4 @@
+---@alias tags table<string,boolean>
+---@alias location {x: integer, y: integer, z: integer}
+---@alias block_data {name: string, tags: tags, vec: location, solid: boolean}
+---@alias block {x: integer, y: integer, z: integer, dir: integer, data: block_data}

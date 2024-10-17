@@ -5,12 +5,8 @@ local turtle = require("test.turtle_test_api")
 local tbl = require("../util.tbl")
 local log = require("../log.logs")
 
+---@class map_inspect
 local module = {
-	---@alias block_data
-	---| {name: string, tags: table, vec: table, solid: boolean}
-	---@alias location {x: integer, y: integer, z: integer}
-	---@alias block {x: integer, y: integer, z: integer, data: block_data}
-
 	---@type block[][][]
 	map = {},
 	---@type table<string, location[]>
@@ -18,6 +14,8 @@ local module = {
 	track = require("../lib.track_move")
 }
 
+---@param track any
+---@return map_inspect
 function module:new(track)
 	local class = setmetatable({}, self)
 	self.__index = self
@@ -27,6 +25,7 @@ function module:new(track)
 	return class
 end
 
+---@param p_log any
 function module:set_log(p_log) log = p_log end
 
 function module:inspect()
@@ -55,10 +54,11 @@ function module:add_block(block_data)
 	local x = self.track.location.x
 	local y = self.track.location.y
 	local z = self.track.location.z
+	local dir = self.track.location.dir
 
 	self.map[x] = {}
 	self.map[x][y] = {}
-	self.map[x][y][z] = { x = x, y = y, z = z, data = block_data }
+	self.map[x][y][z] = { x = x, y = y, z = z, dir = dir, data = block_data }
 	if not self.blocks[block_data.name] then
 		self.blocks[block_data.name] = {}
 	end

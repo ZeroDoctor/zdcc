@@ -11,13 +11,17 @@ local levels = {
 	['FATAL'] = 5,
 }
 
-local script = {
+---@class logs
+local module = {
+	---@type file*|nil
 	file = nil,
 	log_path = 'out.log',
 	level = 0
 }
 
-function script:init(level, log_path)
+---@param level integer
+---@param log_path string|nil
+function module:init(level, log_path)
 	print('[init] logs starting...')
 	self.log_path = log_path or self.log_path
 	self.file = io.open(self.log_path, "a")
@@ -29,6 +33,9 @@ function script:init(level, log_path)
 	end
 end
 
+---@param self logs
+---@param str string
+---@param ... any
 local function log(self, str, ...)
 	local args = table.pack(...)
 
@@ -57,7 +64,9 @@ local function log(self, str, ...)
 	end
 end
 
-function script:trace(str, ...)
+---@param str string 
+---@param ... any
+function module:trace(str, ...)
 	if self.level > levels['TRACE'] then
 		return
 	end
@@ -68,7 +77,9 @@ function script:trace(str, ...)
 	)
 end
 
-function script:debug(str, ...)
+---@param str string 
+---@param ... any
+function module:debug(str, ...)
 	if self.level > levels['DEBUG'] then
 		return
 	end
@@ -79,7 +90,9 @@ function script:debug(str, ...)
 	)
 end
 
-function script:info(str, ...)
+---@param str string 
+---@param ... any
+function module:info(str, ...)
 	if self.level > levels['INFO'] then
 		return
 	end
@@ -90,7 +103,9 @@ function script:info(str, ...)
 	)
 end
 
-function script:warn(str, ...)
+---@param str string 
+---@param ... any
+function module:warn(str, ...)
 	if self.level > levels['WARN'] then
 		return
 	end
@@ -101,7 +116,9 @@ function script:warn(str, ...)
 	)
 end
 
-function script:error(str, ...)
+---@param str string 
+---@param ... any
+function module:error(str, ...)
 	if self.level > levels['ERROR'] then
 		return
 	end
@@ -113,7 +130,9 @@ function script:error(str, ...)
 	)
 end
 
-function script:fatal(str, ...)
+---@param str string 
+---@param ... any
+function module:fatal(str, ...)
 	if self.level > levels['FATAL'] then
 		return
 	end
@@ -127,7 +146,7 @@ function script:fatal(str, ...)
 	os.exit(1)
 end
 
-function script:cleanup()
+function module:cleanup()
 	if self.file == nil then
 		print('[error] failed to close nil file')
 		return
@@ -136,5 +155,4 @@ function script:cleanup()
 	self.file:close()
 end
 
-return script
-
+return module

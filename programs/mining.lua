@@ -3,17 +3,16 @@ local turtle = require('test.turtle_test_api')
 -- #end
 
 local log = require('../log.logs')
-log:init(1)
-
-local loop = require('../lib.loop'):new()
-loop:set_log(log)
+local loop = require('../lib.loop')
 local shape = require('../lib.make_shape')
-shape = shape:new(loop.track, loop.ensure)
+local map = require('../lib.map_inspect')
 
--- local move = require('lib.track_move')
--- local dig = require('lib.careful_dig')
--- local place = require('lib.ensure_place')
--- local inventory = require('lib.check_inventory')
+log:init(1)
+loop = loop:new()
+loop:set_log(log)
+shape = shape:new(loop.track, loop.ensure)
+map = map:new(loop.track)
+map:set_log(log)
 
 loop.init = function(self)
 	self.track.auto_place_after = 12
@@ -30,7 +29,7 @@ loop.init = function(self)
 	shape:init(self.track, self.ensure)
 end
 
-print('set width, length, and height from relative origin of turtle:')
+print('set width, length, and height relative to turtle\'s origin:')
 
 print('enter width:')
 local w = tonumber(io.read())
