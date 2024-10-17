@@ -1,6 +1,6 @@
 # ZD CC
 
-copy below into computer/turtle in minecraft, run the file and it should download the other files
+copy below into computer/turtle in minecraft, run the file then run `update` and it should download the other files
 
 ```lua
 
