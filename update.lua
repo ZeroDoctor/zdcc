@@ -10,6 +10,7 @@ local files = {
 	'/lib/careful_dig.lua',
 	'/lib/check_inventory.lua',
 	'/lib/ensure_place.lua',
+	'/lib/event_handler.lua',
 	'/lib/loop.lua',
 	'/lib/make_shape.lua',
 	'/lib/map_inspect.lua',
