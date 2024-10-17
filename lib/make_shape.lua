@@ -30,137 +30,137 @@ function module:draw_line(end_x, end_y, start_x, start_y)
 	start_y = start_y or self.track.location.z
 	local delta_x = math.abs(end_x - start_x)
 	local delta_y = math.abs(end_y - start_y)
-	local errorVar = 0
+	local error_var = 0
 	if delta_x >= delta_y then
 		local delta_err = math.abs(delta_y / delta_x)
 		if start_x < end_x then
 			if start_y < end_y then
-				local counterY = start_y
-				for counterX = start_x, end_x do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_y = start_y
+				for counter_x = start_x, end_x do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + delta_err
-					if errorVar >= 0.5 then
-						counterY = counterY + 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_y = counter_y + 1
+						error_var = error_var - 1
 					end
 				end
 			else
-				local counterY = start_y
-				for counterX = start_x, end_x do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_y = start_y
+				for counter_x = start_x, end_x do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + delta_err
-					if errorVar >= 0.5 then
-						counterY = counterY - 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_y = counter_y - 1
+						error_var = error_var - 1
 					end
 				end
 			end
 		else
 			if start_y < end_y then
-				local counterY = start_y
-				for counterX = start_x, end_x, -1 do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_y = start_y
+				for counter_x = start_x, end_x, -1 do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + delta_err
-					if errorVar >= 0.5 then
-						counterY = counterY + 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_y = counter_y + 1
+						error_var = error_var - 1
 					end
 				end
 			else
-				local counterY = start_y
-				for counterX = start_x, end_x, -1 do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_y = start_y
+				for counter_x = start_x, end_x, -1 do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + delta_err
-					if errorVar >= 0.5 then
-						counterY = counterY - 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_y = counter_y - 1
+						error_var = error_var - 1
 					end
 				end
 			end
 		end
 	else
-		local deltaErr = math.abs(delta_x / delta_y)
+		local delta_err = math.abs(delta_x / delta_y)
 		if start_y < end_y then
 			if start_x < end_x then
-				local counterX = start_x
-				for counterY = start_y, end_y do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_x = start_x
+				for counter_y = start_y, end_y do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + deltaErr
-					if errorVar >= 0.5 then
-						counterX = counterX + 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_x = counter_x + 1
+						error_var = error_var - 1
 					end
 				end
 			else
-				local counterX = start_x
-				for counterY = start_y, end_y do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_x = start_x
+				for counter_y = start_y, end_y do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + deltaErr
-					if errorVar >= 0.5 then
-						counterX = counterX - 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_x = counter_x - 1
+						error_var = error_var - 1
 					end
 				end
 			end
 		else
 			if start_x < end_x then
-				local counterX = start_x
-				for counterY = start_y, end_y, -1 do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_x = start_x
+				for counter_y = start_y, end_y, -1 do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + deltaErr
-					if errorVar >= 0.5 then
-						counterX = counterX + 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_x = counter_x + 1
+						error_var = error_var - 1
 					end
 				end
 			else
-				local counterX = start_x
-				for counterY = start_y, end_y, -1 do
-					self.track:to(counterX, self.track.location.y, counterY, self.force)
+				local counter_x = start_x
+				for counter_y = start_y, end_y, -1 do
+					self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 					if self.will_place then
 						self.track:turn_left(2)
 						self.ensure:place(self.block)
 						self.track:turn_left(2)
 					end
-					errorVar = errorVar + deltaErr
-					if errorVar >= 0.5 then
-						counterX = counterX - 1
-						errorVar = errorVar - 1
+					error_var = error_var + delta_err
+					if error_var >= 0.5 then
+						counter_x = counter_x - 1
+						error_var = error_var - 1
 					end
 				end
 			end
@@ -168,21 +168,21 @@ function module:draw_line(end_x, end_y, start_x, start_y)
 	end
 end
 
-function module:rectangle(width, depth, startX, startY)
-	startX = startX or self.track.location.x
-	startY = startY or self.track.location.z
-	local endX = startX + width - 1
-	local endY = startY + depth - 1
-	module:draw_line(startX, endY, startX, startY)
-	module:draw_line(endX, endY, startX, endY)
-	module:draw_line(endX, startY, endX, endY)
-	module:draw_line(startX, startY, endX, startY)
+function module:rectangle(width, depth, start_x, start_y)
+	start_x = start_x or self.track.location.x
+	start_y = start_y or self.track.location.z
+	local end_x = start_x + width - 1
+	local end_y = start_y + depth - 1
+	module:draw_line(start_x, end_y, start_x, start_y)
+	module:draw_line(end_x, end_y, start_x, end_y)
+	module:draw_line(end_x, start_y, end_x, end_y)
+	module:draw_line(start_x, start_y, end_x, start_y)
 end
 
-function module:square(length, startX, startY)
-	startX = startX or self.track.location.x
-	startY = startY or self.track.location.z
-	module:rectangle(length, length, startX, startY)
+function module:square(length, start_x, start_y)
+	start_x = start_x or self.track.location.x
+	start_y = start_y or self.track.location.z
+	module:rectangle(length, length, start_x, start_y)
 end
 
 function module:wall(depth, height)
@@ -201,24 +201,24 @@ function module:wall(depth, height)
 	end
 end
 
-function module:platform(width, depth, startX, startY)
-	startX = startX or self.track.location.x
-	startY = startY or self.track.location.z
+function module:platform(width, depth, start_x, start_y)
+	start_x = start_x or self.track.location.x
+	start_y = start_y or self.track.location.z
 
-	local endX = startX + width - 1
-	local endY = startY + depth - 1
+	local end_x = start_x + width - 1
+	local end_y = start_y + depth - 1
 	local forward = true
-	for counterY = startY, endY do
+	for counter_y = start_y, end_y do
 		if forward then
-			for counterX = startX, endX do
-				self.track:to(counterX, self.track.location.y, counterY, self.force)
+			for counter_x = start_x, end_x do
+				self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 				if self.will_place then
 					self.ensure:place()
 				end
 			end
 		else
-			for counterX = endX, startX, -1 do
-				self.track:to(counterX, self.track.location.y, counterY, self.force)
+			for counter_x = end_x, start_x, -1 do
+				self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 				if self.will_place then
 					self.ensure:place()
 				end
@@ -256,55 +256,55 @@ function module:pyramid(length, hollow)
 	end
 end
 
-function module:stair(width, height, startX, startY) -- Last two might be able to be used to make a basic home-like shape later?
-	startX = startX or self.track.location.x
-	startY = startY or self.track.location.z
+function module:stair(width, height, start_x, start_y) -- Last two might be able to be used to make a basic home-like shape later?
+	start_x = start_x or self.track.location.x
+	start_y = start_y or self.track.location.z
 
-	local endX = startX + width - 1
-	local endY = startY + height - 1
+	local endX = start_x + width - 1
+	local endY = start_y + height - 1
 	local forward = true
-	for counterY = startY, endY do
+	for counter_y = start_y, endY do
 		if forward then
-			for counterX = startX, endX do
-				self.track:to(counterX, self.track.location.y, counterY, self.force)
+			for counter_x = start_x, endX do
+				self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 				if self.will_place then
 					self.ensure:place()
 				end
 			end
 		else
-			for counterX = endX, startX, -1 do
-				self.track:to(counterX, self.track.location.y, counterY, self.force)
+			for counter_x = endX, start_x, -1 do
+				self.track:to(counter_x, self.track.location.y, counter_y, self.force)
 				if self.will_place then
 					self.ensure:place()
 				end
 			end
 		end
-		if counterY ~= endY then
+		if counter_y ~= endY then
 			self.track:to(self.track.location.x, self.track.location.y + 1, self.track.location.z, self.force)
 			forward = not forward
 		end
 	end
 end
 
-local function block_in_sphere_is_full(offset, x, y, z, radiusSq)
+local function block_in_sphere_is_full(offset, x, y, z, radius_sq)
 	x = x - offset
 	y = y - offset
 	z = z - offset
 	x = x ^ 2
 	y = y ^ 2
 	z = z ^ 2
-	return x + y + z <= radiusSq
+	return x + y + z <= radius_sq
 end
 
-local function is_sphere_border(offset, x, y, z, radiusSq)
-	local spot = block_in_sphere_is_full(offset, x, y, z, radiusSq)
+local function is_sphere_border(offset, x, y, z, radius_sq)
+	local spot = block_in_sphere_is_full(offset, x, y, z, radius_sq)
 	if spot then
-		spot = not block_in_sphere_is_full(offset, x, y - 1, z, radiusSq) or
-			not block_in_sphere_is_full(offset, x, y + 1, z, radiusSq) or
-			not block_in_sphere_is_full(offset, x - 1, y, z, radiusSq) or
-			not block_in_sphere_is_full(offset, x + 1, y, z, radiusSq) or
-			not block_in_sphere_is_full(offset, x, y, z - 1, radiusSq) or
-			not block_in_sphere_is_full(offset, x, y, z + 1, radiusSq)
+		spot = not block_in_sphere_is_full(offset, x, y - 1, z, radius_sq) or
+			not block_in_sphere_is_full(offset, x, y + 1, z, radius_sq) or
+			not block_in_sphere_is_full(offset, x - 1, y, z, radius_sq) or
+			not block_in_sphere_is_full(offset, x + 1, y, z, radius_sq) or
+			not block_in_sphere_is_full(offset, x, y, z - 1, radius_sq) or
+			not block_in_sphere_is_full(offset, x, y, z + 1, radius_sq)
 	end
 	return spot
 end
@@ -326,62 +326,62 @@ function module:circle(diameter)
 
 	--diameter --radius * 2 + 1
 	-- local sqrt3 = 3 ^ 0.5
-	local boundaryRadius = radius + 1.0
-	local boundary2 = boundaryRadius ^ 2
+	local boundary_radius = radius + 1.0
+	local boundary2 = boundary_radius ^ 2
 	local radius2 = radius ^ 2
 	local z = math.floor(radius)
 	local cz2 = (radius - z) ^ 2
-	local limitOffsetY = (boundary2 - cz2) ^ 0.5
-	local maxOffsetY = math.ceil(limitOffsetY)
+	local limit_offset_y = (boundary2 - cz2) ^ 0.5
+	local max_offset_y = math.ceil(limit_offset_y)
 
-	local yStart = 0
-	local yEnd = 0
-	local yStep = 0
+	local y_start = 0
+	local y_end = 0
+	local y_step = 0
 
-	local xStart = 0
-	local xEnd = 0
-	local xStep = 0
+	local x_start = 0
+	local x_end = 0
+	local x_step = 0
 
 	-- We do first the +x side, then the -x side to make movement efficient
 	for side = 0, 1 do
 		-- On the right we go from small y to large y, on the left reversed
 		-- This makes us travel clockwise (from below) around each layer
 		if (side == 0) then
-			yStart = math.floor(radius) - maxOffsetY
-			yEnd = math.floor(radius) + maxOffsetY
-			yStep = 1
+			y_start = math.floor(radius) - max_offset_y
+			y_end = math.floor(radius) + max_offset_y
+			y_step = 1
 		else
-			yStart = math.floor(radius) + maxOffsetY
-			yEnd = math.floor(radius) - maxOffsetY
-			yStep = -1
+			y_start = math.floor(radius) + max_offset_y
+			y_end = math.floor(radius) - max_offset_y
+			y_step = -1
 		end
-		for y = yStart, yEnd, yStep do
+		for y = y_start, y_end, y_step do
 			local cy2 = (radius - y) ^ 2
 			local remainder2 = (boundary2 - cz2 - cy2)
 			if remainder2 >= 0 then
 				-- This is the maximum difference in x from the centre we can be without definitely being outside the radius
-				local maxOffsetX = math.ceil((boundary2 - cz2 - cy2) ^ 0.5)
+				local max_offset_x = math.ceil((boundary2 - cz2 - cy2) ^ 0.5)
 				-- Only do either the +x or -x side
 				if (side == 0) then
 					-- +x side
-					xStart = math.floor(radius)
-					xEnd = math.floor(radius) + maxOffsetX
+					x_start = math.floor(radius)
+					x_end = math.floor(radius) + max_offset_x
 				else
 					-- -x side
-					xStart = math.floor(radius) - maxOffsetX
-					xEnd = math.floor(radius) - 1
+					x_start = math.floor(radius) - max_offset_x
+					x_end = math.floor(radius) - 1
 				end
 				-- Reverse direction we traverse xs when in -y side
 				if y > math.floor(radius) then
-					local temp = xStart
-					xStart = xEnd
-					xEnd = temp
-					xStep = -1
+					local temp = x_start
+					x_start = x_end
+					x_end = temp
+					x_step = -1
 				else
-					xStep = 1
+					x_step = 1
 				end
 
-				for x = xStart, xEnd, xStep do
+				for x = x_start, x_end, x_step do
 					-- Only blocks within the radius but still within 1 3d-diagonal block of the edge are eligible
 					if is_sphere_border(offset, x, y, z, radius2) then
 						self.track:to(x, self.track.location.y, y, self.force)
@@ -413,8 +413,8 @@ function module:dome(typus, diameter)
 
 	--diameter --radius * 2 + 1
 	-- local sqrt3 = 3 ^ 0.5
-	local boundaryRadius = radius + 1.0
-	local boundary2 = boundaryRadius ^ 2
+	local boundary_radius = radius + 1.0
+	local boundary2 = boundary_radius ^ 2
 	local radius2 = radius ^ 2
 
 	local zstart = 0
@@ -440,56 +440,56 @@ function module:dome(typus, diameter)
 		end
 		--writeOut("Layer " .. z)
 		local cz2 = (radius - z) ^ 2
-		local limitOffsetY = (boundary2 - cz2) ^ 0.5
-		local maxOffsetY = math.ceil(limitOffsetY)
+		local limit_offset_y = (boundary2 - cz2) ^ 0.5
+		local max_offset_y = math.ceil(limit_offset_y)
 		-- We do first the +x side, then the -x side to make movement efficient
 		for side = 0, 1 do
 			-- On the right we go from small y to large y, on the left reversed
 			-- This makes us travel clockwise (from below) around each layer
-			local yStart = 0
-			local yEnd = 0
-			local yStep = 0
+			local ystart = 0
+			local yend = 0
+			local ystep = 0
 
-			local xStart = 0
-			local xEnd = 0
-			local xStep = 0
+			local xstart = 0
+			local xend = 0
+			local xstep = 0
 
 			if (side == 0) then
-				yStart = math.floor(radius) - maxOffsetY
-				yEnd = math.floor(radius) + maxOffsetY
-				yStep = 1
+				ystart = math.floor(radius) - max_offset_y
+				yend = math.floor(radius) + max_offset_y
+				ystep = 1
 			else
-				yStart = math.floor(radius) + maxOffsetY
-				yEnd = math.floor(radius) - maxOffsetY
-				yStep = -1
+				ystart = math.floor(radius) + max_offset_y
+				yend = math.floor(radius) - max_offset_y
+				ystep = -1
 			end
-			for y = yStart, yEnd, yStep do
+			for y = ystart, yend, ystep do
 				local cy2 = (radius - y) ^ 2
 				local remainder2 = (boundary2 - cz2 - cy2)
 				if remainder2 >= 0 then
 					-- This is the maximum difference in x from the centre we can be without definitely being outside the radius
-					local maxOffsetX = math.ceil((boundary2 - cz2 - cy2) ^ 0.5)
+					local max_offset_x = math.ceil((boundary2 - cz2 - cy2) ^ 0.5)
 					-- Only do either the +x or -x side
 					if (side == 0) then
 						-- +x side
-						xStart = math.floor(radius)
-						xEnd = math.floor(radius) + maxOffsetX
+						xstart = math.floor(radius)
+						xend = math.floor(radius) + max_offset_x
 					else
 						-- -x side
-						xStart = math.floor(radius) - maxOffsetX
-						xEnd = math.floor(radius) - 1
+						xstart = math.floor(radius) - max_offset_x
+						xend = math.floor(radius) - 1
 					end
 					-- Reverse direction we traverse xs when in -y side
 					if y > math.floor(radius) then
-						local temp = xStart
-						xStart = xEnd
-						xEnd = temp
-						xStep = -1
+						local temp = xstart
+						xstart = xend
+						xend = temp
+						xstep = -1
 					else
-						xStep = 1
+						xstep = 1
 					end
 
-					for x = xStart, xEnd, xStep do
+					for x = xstart, xend, xstep do
 						-- Only blocks within the radius but still within 1 3d-diagonal block of the edge are eligible
 						if is_sphere_border(offset, x, y, z, radius2) then
 							self.track:to(x, z, y, self.force)
@@ -521,92 +521,57 @@ local function isNAN(value)
 	return value ~= value
 end
 
-local polygonCornerList = {} -- Public list of corner coords for n-gons, will be used for hexagons, octagons, and future polygons.
+local polygon_corner_list = {} -- Public list of corner coords for n-gons, will be used for hexagons, octagons, and future polygons.
 -- It should be a nested list eg. {{x0,y0},{x1,y1},{x2,y2}...}
 
-function module:construct_polygon_from_list() -- Uses polygonCornerList to draw sides between each point
-	if #polygonCornerList == 0 then
+function module:construct_polygon_from_list() -- Uses polygon_corner_list to draw sides between each point
+	if #polygon_corner_list == 0 then
 		return false
 	end
-	for i = 1, #polygonCornerList do
-		if (isINF(polygonCornerList[i][1]) or isNAN(polygonCornerList[i][1])) then
-			polygonCornerList[i][1] = 0
+	for i = 1, #polygon_corner_list do
+		if (isINF(polygon_corner_list[i][1]) or isNAN(polygon_corner_list[i][1])) then
+			polygon_corner_list[i][1] = 0
 		end
-		if (isINF(polygonCornerList[i][2]) or isNAN(polygonCornerList[i][2])) then
-			polygonCornerList[i][2] = 0
+		if (isINF(polygon_corner_list[i][2]) or isNAN(polygon_corner_list[i][2])) then
+			polygon_corner_list[i][2] = 0
 		end
 	end
 	local j = 0
-	for i = 1, #polygonCornerList do
-		local startX = polygonCornerList[i][1]
-		local startY = polygonCornerList[i][2]
-		if i == #polygonCornerList then
+	for i = 1, #polygon_corner_list do
+		local start_x = polygon_corner_list[i][1]
+		local start_y = polygon_corner_list[i][2]
+		if i == #polygon_corner_list then
 			j = 1
 		else
 			j = i + 1
 		end
-		local stopX = polygonCornerList[j][1]
-		local stopY = polygonCornerList[j][2]
-		module:draw_line(stopX, stopY, startX, startY)
+		local stop_x = polygon_corner_list[j][1]
+		local stop_y = polygon_corner_list[j][2]
+		module:draw_line(stop_x, stop_y, start_x, start_y)
 	end
 	return true
 end
 
-function module:circle_like_polygon(numSides, diameter, offsetAngle) -- works like the circle code, allows building a circle with the same diameter from the same start point to inscribe the polygon. offSetAngle is optional, defaults to 0.
+function module:circle_like_polygon(num_sides, diameter, offset_angle) -- works like the circle code, allows building a circle with the same diameter from the same start point to inscribe the polygon. offset_angle is optional, defaults to 0.
 	local radius = diameter / 2
-	local startAngle = 0
-	if (numSides % 2 == 1) then                         -- if numSides is odd
-		startAngle = math.pi /
-		2                                               -- always have a vertex at 90 deg (+y) and at least one grid aligned edge. Before offSetAngle
-	else                                                -- if numSides is even
-		startAngle = (math.pi / 2) +
-		(math.pi / numSides)                            -- always have at least two grid aligned edges. Before offSetAngle
+	local start_angle = 0
+	if (num_sides % 2 == 1) then                         -- if num_sides is odd
+		start_angle = math.pi /
+		2                                               -- always have a vertex at 90 deg (+y) and at least one grid aligned edge. Before offset_angle
+	else                                                -- if num_sides is even
+		start_angle = (math.pi / 2) +
+		(math.pi / num_sides)                            -- always have at least two grid aligned edges. Before offset_angle
 	end
-	startAngle = startAngle + (math.rad(offsetAngle or 0)) -- offsetAngle will be in degrees
+	start_angle = start_angle + (math.rad(offset_angle or 0)) -- offset_angle will be in degrees
 
-	for i = 1, numSides do
-		polygonCornerList[i] = { radius * math.cos(startAngle + ((i - 1) * ((math.pi * 2) / numSides))), radius *
-		math.sin(startAngle + ((i - 1) * ((math.pi * 2) / numSides))) }
-	end
-
-	for i = 1, #polygonCornerList do
-		polygonCornerList[i][1] = round(polygonCornerList[i][1] + radius + 1)
-		polygonCornerList[i][2] = round(polygonCornerList[i][2] + radius + 1)
+	for i = 1, num_sides do
+		polygon_corner_list[i] = { radius * math.cos(start_angle + ((i - 1) * ((math.pi * 2) / num_sides))), radius *
+		math.sin(start_angle + ((i - 1) * ((math.pi * 2) / num_sides))) }
 	end
 
-	if not module:construct_polygon_from_list() then
-		error("This error should never happen.")
-	end
-end
-
-function module:polygon(numSides, sideLength, offsetAngle) -- offSetAngle is optional, defaults to 0.
-	local currentAngle = 0 + (math.rad(offsetAngle or 0))  -- start at 0 or offset angle. offsetAngle will be in degrees
-	local addAngle = ((math.pi * 2) / numSides)
-	local pointerX, pointerY = 0, 0
-	sideLength = sideLength - 1
-
-	for i = 1, numSides do
-		polygonCornerList[i] = { pointerX, pointerY }
-		pointerX = sideLength * math.cos(currentAngle) + pointerX
-		pointerY = sideLength * math.sin(currentAngle) + pointerY
-		currentAngle = currentAngle + addAngle
-	end
-
-	local minX, minY = 0, 0
-	for i = 1, #polygonCornerList do -- find the smallest x and y
-		if (polygonCornerList[i][1] <= minX) then
-			minX = polygonCornerList[i][1]
-		end
-		if (polygonCornerList[i][2] <= minY) then
-			minY = polygonCornerList[i][2]
-		end
-	end
-	minX = math.abs(minX)         -- should eventually calculate the difference between minX and 0
-	minY = math.abs(minY)         -- should eventually calculate the difference between minY and 0
-
-	for i = 1, #polygonCornerList do -- make it bounded to 0, 0
-		polygonCornerList[i][1] = round(polygonCornerList[i][1] + minX)
-		polygonCornerList[i][2] = round(polygonCornerList[i][2] + minY)
+	for i = 1, #polygon_corner_list do
+		polygon_corner_list[i][1] = round(polygon_corner_list[i][1] + radius + 1)
+		polygon_corner_list[i][2] = round(polygon_corner_list[i][2] + radius + 1)
 	end
 
 	if not module:construct_polygon_from_list() then
@@ -614,39 +579,74 @@ function module:polygon(numSides, sideLength, offsetAngle) -- offSetAngle is opt
 	end
 end
 
-function module:circle_like_polygon_prism(numSides, diameter, height, offsetAngle)
-	offsetAngle = offsetAngle or 0
+function module:polygon(num_sides, side_length, offset_angle) -- offset_angle is optional, defaults to 0.
+	local current_angle = 0 + (math.rad(offset_angle or 0))  -- start at 0 or offset angle. offset_angle will be in degrees
+	local add_angle = ((math.pi * 2) / num_sides)
+	local pointer_x, pointer_y = 0, 0
+	side_length = side_length - 1
+
+	for i = 1, num_sides do
+		polygon_corner_list[i] = { pointer_x, pointer_y }
+		pointer_x = side_length * math.cos(current_angle) + pointer_x
+		pointer_y = side_length * math.sin(current_angle) + pointer_y
+		current_angle = current_angle + add_angle
+	end
+
+	local min_x, min_y = 0, 0
+	for i = 1, #polygon_corner_list do -- find the smallest x and y
+		if (polygon_corner_list[i][1] <= min_x) then
+			min_x = polygon_corner_list[i][1]
+		end
+		if (polygon_corner_list[i][2] <= min_y) then
+			min_y = polygon_corner_list[i][2]
+		end
+	end
+	min_x = math.abs(min_x)         -- should eventually calculate the difference between min_x and 0
+	min_y = math.abs(min_y)         -- should eventually calculate the difference between min_y and 0
+
+	for i = 1, #polygon_corner_list do -- make it bounded to 0, 0
+		polygon_corner_list[i][1] = round(polygon_corner_list[i][1] + min_x)
+		polygon_corner_list[i][2] = round(polygon_corner_list[i][2] + min_y)
+	end
+
+	if not module:construct_polygon_from_list() then
+		error("This error should never happen.")
+	end
+end
+
+function module:circle_like_polygon_prism(num_sides, diameter, height, offset_angle)
+	offset_angle = offset_angle or 0
 	for i = 1, height do
-		module:circle_like_polygon(numSides, diameter, offsetAngle)
+		module:circle_like_polygon(num_sides, diameter, offset_angle)
 		if i ~= height then
 			self.track:to(self.track.location.x, self.track.location.y + 1, self.track.location.z, self.force)
 		end
 	end
 end
 
-function module:polygon_prism(numSides, sideLength, height, offsetAngle)
-	offsetAngle = offsetAngle or 0
+function module:polygon_prism(num_sides, side_length, height, offset_angle)
+	offset_angle = offset_angle or 0
 	for i = 1, height do
-		module:polygon(numSides, sideLength, offsetAngle)
+		module:polygon(num_sides, side_length, offset_angle)
 		if i ~= height then
 			self.track:to(self.track.location.x, self.track.location.y + 1, self.track.location.z, self.force)
 		end
 	end
 end
 
-function module:hexagon(length) -- Deprecated, please use polygon(6, sideLength, 0). Fills out polygonCornerList with the points for a hexagon.
+function module:hexagon(length) -- Deprecated, please use polygon(6, side_length, 0). Fills out polygon_corner_list with the points for a hexagon.
 	module:polygon_prism(6, length, 0)
 end
 
-function module:octagon(length) -- Deprecated, please use polygon(8, sideLength, 0). Fills out polygonCornerList with the points for an octagon
+function module:octagon(length) -- Deprecated, please use polygon(8, side_length, 0). Fills out polygon_corner_list with the points for an octagon
 	module:polygon_prism(8, length, 0)
 end
 
-function module:hexagon_prism(length, height) -- Deprecated, please use polygonPrism(6, sideLength, height, 0).
+function module:hexagon_prism(length, height) -- Deprecated, please use polygonPrism(6, side_length, height, 0).
 	module:polygon_prism(6, length, height, 0)
 end
 
-function module:octagon_prism(length, height) -- Deprecated, please use polygonPrism(8, sideLength, height, 0).
+function module:octagon_prism(length, height) -- Deprecated, please use polygonPrism(8, side_length, height, 0).
 	module:polygon_prism(8, length, height, 0)
 end
 

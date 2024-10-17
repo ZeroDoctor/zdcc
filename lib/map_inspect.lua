@@ -36,14 +36,14 @@ function module:inspect()
 	end
 end
 
-function module:inspectUp()
+function module:inspect_up()
 	local has_block, data = turtle.inspectUp()
 	if has_block then
 		self:add_block(data)
 	end
 end
 
-function module:inspectDown()
+function module:inspect_down()
 	local has_block, data = turtle.inspectDown()
 	if has_block then
 		self:add_block(data)
