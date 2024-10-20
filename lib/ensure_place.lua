@@ -18,16 +18,18 @@ local module = {
 	patch = {}, -- occurs when no blocks exists
 	put = {}, -- occurs when blocks already exist
 	check = require('../lib.check_inventory'),
-	careful =  require('../lib.careful_dig'),
 	force_place = false, -- TODO: if true then place block if solid block not found
+
+	pre_place = {},
+	pre_placeUp = {},
+	pre_placeDown = {}
 }
 
-function module:new(check, careful)
+function module:new(check)
 	local class = setmetatable({}, self)
 	self.__index = self
 
 	self.check = check or self.check
-	self.careful = careful or self.careful
 
 	return class
 end
@@ -101,10 +103,16 @@ function module:place(config, text)
 		return false
 	end
 
-	if not self.careful:dig() then
-		log:warn('{place:place} failed to dig for [name={}]',
-			config.name
-		)
+	-- if not self.careful:dig() then
+	-- 	log:warn('{place:place} failed to dig for [name={}]',
+	-- 		config.name
+	-- 	)
+	-- end
+
+	for index, _ in ipairs(self.pre_place) do
+		if self.pre_place[index]() then
+			return
+		end
 	end
 
 	turtle.select(slot)
@@ -126,10 +134,16 @@ function module:placeUp(config, text)
 		return false
 	end
 
-	if not self.careful:digUp() then
-		log:warn('{place:placeUp} failed to dig up for [name={}]',
-			config.name
-		)
+	-- if not self.careful:digUp() then
+	-- 	log:warn('{place:placeUp} failed to dig up for [name={}]',
+	-- 		config.name
+	-- 	)
+	-- end
+
+	for index, _ in ipairs(self.pre_placeUp) do
+		if self.pre_placeUp[index]() then
+			return
+		end
 	end
 
 	turtle.select(slot)
@@ -151,10 +165,16 @@ function module:placeDown(config, text)
 		return false
 	end
 
-	if not self.careful:digDown() then
-		log:warn('{place:placeDown} failed to dig down for [name={}]',
-			config.name
-		)
+	-- if not self.careful:digDown() then
+	-- 	log:warn('{place:placeDown} failed to dig down for [name={}]',
+	-- 		config.name
+	-- 	)
+	-- end
+
+	for index, _ in ipairs(self.pre_placeDown) do
+		if self.pre_placeDown[index]() then
+			return
+		end
 	end
 
 	turtle.select(slot)

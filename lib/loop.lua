@@ -20,8 +20,8 @@ function module:new(move, dig, place, inventory)
 
 	self.check = inventory or self.check:new()
 	self.careful = dig or self.careful:new()
-	self.ensure = place or self.ensure:new(inventory, dig)
-	self.track = move or self.track:new(dig, place, inventory)
+	self.ensure = place or self.ensure:new(inventory)
+	self.track = move or self.track:new()
 
 	return class
 end
@@ -71,7 +71,7 @@ function module:start(config)
 	self.careful:set_log(log)
 	self.careful.avoid = config.avoid
 
-	self.ensure = self.ensure or self.ensure:new(self.check, self.careful)
+	self.ensure = self.ensure or self.ensure:new(self.check)
 	self.ensure:set_log(log)
 	self.ensure.patch = config.patch or {}
 	self.ensure.put = config.put or {}
@@ -83,18 +83,16 @@ function module:start(config)
 		self.track.limit = config.move_limit
 	end
 
-	if config.patch == nil and config.put == nil then
-		self.track = self.track or self.track:new(self.careful, nil)
-	else
-		self.track = self.track or self.track:new(self.careful, self.ensure)
-	end
+	self.track = self.track or self.track:new()
 	self.track:set_log(log)
 
 	log:debug('{loop:start} [config={}]', config)
 
 	self.track.limit = turtle.getFuelLevel() / 2
 
-  local running = true
+	self.init()
+
+	local running = true
 	while running do
 		if config.refuel then
 			self.track:retrace(config.hard_reset)
@@ -105,11 +103,15 @@ function module:start(config)
 end
 
 function module:front_dir() return 0 end
+
 function module:right_dir() return 1 end
+
 function module:back_dir() return 2 end
+
 function module:left_dir() return 3 end
+
 function module:top_dir() return 4 end
+
 function module:bottom_dir() return 5 end
 
 return module
-

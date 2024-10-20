@@ -26,20 +26,27 @@ local module = {
 	goback = false,
 	need_fuel = false,
 
-	careful = require("../lib.careful_dig"),
-	ensure = require("../lib.ensure_place"),
-	check = require("../lib.check_inventory"),
+	-- careful = require("../lib.careful_dig"),
+	-- ensure = require("../lib.ensure_place"),
+	-- check = require("../lib.check_inventory"),
+
+	pre_forward = {},
+	post_forward = {},
+	pre_up = {},
+	post_up = {},
+	pre_down = {},
+	post_down = {},
 
 	auto_place_after = 0,
 }
 
-function module:new(careful, ensure, check)
+function module:new()
 	local class = setmetatable({}, self)
 	self.__index = self
 
-	self.careful = careful or self.careful
-	self.ensure = ensure or self.ensure
-	self.check = check or self.check
+	-- self.careful = careful or self.careful
+	-- self.ensure = ensure or self.ensure
+	-- self.check = check or self.check
 
 	return class
 end
@@ -78,18 +85,23 @@ function module:forward(num, force)
 	-- start moving
 	local count = 0
 	for _ = 1, num, 1 do
-		if force == 1 then
-			self.careful:dig()
+		-- if force == 1 then
+		-- 	self.careful:dig()
+		-- end
+
+		for index, _ in ipairs(self.pre_forward) do
+			if self.pre_forward[index](num) then
+				return
+			end
 		end
 
 		if turtle.forward() then
 			count = count + 1
 		end
 
-		if self.ensure ~= nil and
-			self.auto_place_after ~= 0 and
-			(self.cost + count) % self.auto_place_after == 0 then
-			self.ensure:auto()
+
+		for index, _ in ipairs(self.post_forward) do
+			self.post_forward[index](num, count)
 		end
 	end
 
@@ -121,32 +133,7 @@ function module:back(num, force)
 
 		module:turn_left(2)
 
-		return -- movement already tracked in forward
-	end
-
-	local count = 0
-	for _ = 1, num, 1 do
-		if turtle.back() then
-			count = count + 1
-		end
-
-		if self.ensure ~= nil and
-			self.auto_place_after ~= 0 and
-			(self.cost + count) % self.auto_place_after == 0 then
-			self.ensure:auto()
-		end
-	end
-
-	-- keep track of movement
-	track_dir(count, self.location)
-	self.cost = self.cost + count
-	if not self.goback then
-		table.insert(self.trace, track_dir(count, {x=0, y=0, z=0, dir=self.location.dir}))
-
-		-- retrace steps if limit reached
-		if self.need_fuel then
-			module:retrace(self.hard_reset)
-		end
+		-- movement already tracked in forward
 	end
 end
 
@@ -160,18 +147,28 @@ function module:up(num, force)
 	-- start moving
 	local count = 0
 	for i = 1, num, 1 do
-		if force == 1 then
-			self.careful:digUp()
+		-- if force == 1 then
+		-- 	self.careful:digUp()
+		-- end
+
+		for index, _ in ipairs(self.pre_up) do
+			if self.pre_up[index](num) then
+				return
+			end
 		end
 
 		if turtle.up() then
 			count = count + 1
 		end
 
-		if self.ensure ~= nil and
-			self.auto_place_after ~= 0 and
-			(math.abs(self.location.y) + i) % self.auto_place_after == 0 then
-			self.ensure:auto()
+		-- if self.ensure ~= nil and
+		-- 	self.auto_place_after ~= 0 and
+		-- 	(math.abs(self.location.y) + i) % self.auto_place_after == 0 then
+		-- 	self.ensure:auto()
+		-- end
+
+		for index, _ in ipairs(self.post_up) do
+			self.post_up[index](num, count)
 		end
 	end
 
@@ -199,18 +196,28 @@ function module:down(num, force)
 	-- start moving
 	local count = 0
 	for i = 1, num, 1 do
-		if force == 1 then
-			self.careful:digDown()
+		-- if force == 1 then
+		-- 	self.careful:digDown()
+		-- end
+
+		for index, _ in ipairs(self.pre_down) do
+			if self.pre_down[index](num) then
+				return
+			end
 		end
 
 		if turtle.down() then
 			count = count + 1
 		end
 
-		if self.ensure ~= nil and
-			self.auto_place_after ~= 0 and
-			(math.abs(self.location.y) + i) % self.auto_place_after == 0 then
-			self.ensure:auto()
+		-- if self.ensure ~= nil and
+		-- 	self.auto_place_after ~= 0 and
+		-- 	(math.abs(self.location.y) + i) % self.auto_place_after == 0 then
+		-- 	self.ensure:auto()
+		-- end
+
+		for index, _ in ipairs(self.post_down) do
+			self.post_down[index](num, count)
 		end
 	end
 
@@ -486,12 +493,12 @@ function module:check_additional_fuel()
 		log:info('{move:check_additional_fuel} additional pylons (fuel) required... (press enter when pylons added)')
 		local _ = io.read()
 
-		self.check:update()
-		local inv = self.check:search_name({'*.coal', '*.lava', '*.charcoal'}, true)
-		if inv ~= nil and inv.location[1] ~= nil then
-			turtle.select(inv.location[1])
-			turtle.refuel()
-		end
+		-- self.check:update()
+		-- local inv = self.check:search_name({'*.coal', '*.lava', '*.charcoal'}, true)
+		-- if inv ~= nil and inv.location[1] ~= nil then
+		-- 	turtle.select(inv.location[1])
+		-- 	turtle.refuel()
+		-- end
 
 		self.limit = turtle.getFuelLevel() / 2
 	end
